@@ -1,5 +1,7 @@
 # WareFlow 🏗️📦
 
+This repository represents a real learning and development process, not a polished template project.
+
 **WareFlow** is a full stack web application designed to manage inventory and product assignments in real-world operational environments.
 
 This project is part of my transition into full stack software development and represents my first complete Ruby on Rails application deployed to production.
