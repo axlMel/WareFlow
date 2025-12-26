@@ -1,0 +1,66 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="p-6">
+    <%= render "shared/modal" do %>
+      <div class="bg-white p-6 rounded-2xl shadow-xl space-y-6">
+        <!-- Título -->
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold text-gray-800">Detalles del Folio</h1>
+          <span class="text-sm text-gray-500">ID: <%= @folio.id %></span>
+        </div>
+
+        <!-- Datos del folio -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+          <div>
+            <p class="font-semibold">Cliente:</p>
+            <p><%= @folio.client %></p>
+          </div>
+          <div>
+            <p class="font-semibold">Usuario asignado:</p>
+            <p><%= @folio.user&.username || "No asignado" %></p>
+          </div>
+          <div>
+            <p class="font-semibold">Estado:</p>
+            <p><%= @folio.status.presence || "No asignado" %></p>
+          </div>
+          <div>
+            <p class="font-semibold">Servicio:</p>
+            <p><%= @folio.service.presence || "No especificado" %></p>
+          </div>
+          <div class="md:col-span-2">
+            <p class="font-semibold">Accesorios:</p>
+            <p><%= @folio.accessories.presence || "Ninguno" %></p>
+          </div>
+          <div class="md:col-span-2">
+            <p class="font-semibold">Fecha de creación:</p>
+            <p><%= l(@folio.created_at, format: :long) %></p>
+          </div>
+        </div>
+
+        <!-- Productos asignados -->
+        <div>
+          <h2 class="text-lg font-semibold text-gray-800 mb-2">Productos asignados</h2>
+
+          <% if @folio.assignments.any? %>
+            <ul class="space-y-2 text-sm text-gray-700 list-disc pl-6">
+              <% @folio.assignments.each do |assignment| %>
+                <li>
+                  <span class="font-medium"><%= assignment.product.title %></span>
+                  – Cantidad: <%= assignment.quantity %>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-gray-500 text-sm">No hay productos asignados a este folio.</p>
+          <% end %>
+        </div>
+
+        <!-- Acciones -->
+        <div class="pt-4 flex flex-wrap justify-end gap-3">
+          <%= link_to "Editar", edit_folio_path(@folio), class: "bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600 transition", data: { turbo_frame: "modal" } %>
+          <%= link_to "Volver", folios_path, class: "text-gray-600 px-4 py-2 rounded-xl hover:bg-gray-100 transition", data: { turbo_frame: "main_content" } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+

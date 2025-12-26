@@ -1,0 +1,35 @@
+<% if Current.user %>
+  <%= link_to new_product_path, class: "flex items-center space-x-2 px-4 mb-6" do %>
+    <%= image_tag 'icons/chart.svg', class: "w-6 h-6 opacity-70 hover:opacity-100" %>
+    <span class="menu-label hover:opacity-100">Agregar</span>
+  <% end %>
+
+  <%= link_to favorites_path, class: "flex items-center space-x-2 px-4 mb-6" do %>
+    <%= image_tag 'icons/menu.svg', class: "w-6 h-6 opacity-70 hover:opacity-100" %>
+    <span class="menu-label hover:opacity-100">Favoritos</span>
+  <% end %>
+
+  <% if Current.user&.admin %>
+    <%= link_to categories_path, class: "flex items-center space-x-2 px-4 mb-6" do %>
+      <%= image_tag 'icons/chart.svg', class: "w-6 h-6 opacity-70 hover:opacity-100" %>
+      <span class="menu-label hover:opacity-100">Categorías</span>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= link_to new_session_path, class: "flex items-center space-x-2 px-4 mb-6" do %>
+    <%= image_tag 'icons/user.svg', class: "w-6 h-6 opacity-70 hover:opacity-100" %>
+    <span class="menu-label hover:opacity-100">Iniciar sesión</span>
+  <% end %>
+
+  <%= link_to new_user_path, class: "flex items-center space-x-2 px-4 mb-6" do %>
+    <%= image_tag 'icons/email.svg', class: "w-6 h-6 opacity-70 hover:opacity-100" %>
+    <span class="menu-label hover:opacity-100">Registro</span>
+  <% end %>
+<% end %>
+
+<% if Current.user %>
+  <%= link_to session_path(Current.user.id), data: { turbo_method: :delete, turbo_confirm: t('common.confirm') }, class: "flex items-center space-x-2 px-4 mb-6" do %>
+    <%= image_tag 'icons/logout.svg', class: "w-6 h-6 opacity-70 hover:opacity-100" %>
+    <span class="menu-label hover:opacity-100">Cerrar sesión</span>
+  <% end %>
+<% end %>

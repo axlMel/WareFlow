@@ -1,0 +1,128 @@
+<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
+  <!-- Sidebar de filtros -->
+  <div class="w-full lg:w-1/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow space-y-4">
+      <h1 class="text-3xl font-bold text-gray-800">Filtro</h1>
+
+      
+
+      <div class="pt-4 flex justify-center">
+        <%= link_to "Agregar Soporte", new_support_path, class: "bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl shadow" %>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Panel derecho: tabla de entregas -->
+  <div class="w-full lg:w-3/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h1 class="text-xl font-bold text-gray-800 py-4 px-4">Historial de Soporte técnico</h1>
+
+      <div class="p-6 space-y-6">
+        <!-- Top controls -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <!-- Left filters -->
+          <div class="flex flex-wrap gap-3 items-end">
+
+            <!-- Formulario de búsqueda -->
+            <%= form_with url: supports_path, method: :get, local: true, class: "flex gap-2 items-center" do |f| %>
+              <%= f.text_field :q, placeholder: "Buscar soporte...", value: params[:q], class: "border border-gray-300 rounded-xl px-4 py-2 shadow-sm focus:ring focus:ring-indigo-100 text-sm w-64" %>
+              <%= f.submit "Buscar", class: "px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 text-sm" %>
+            <% end %>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <!-- Formulario de fechas -->
+            <%= form_with url: supports_path, method: :get, local: true, class: "flex gap-2 items-center" do |f| %>
+              <%= f.label :from, "Desde", class: "text-sm text-gray-600" %>
+              <%= f.date_field :from, value: params[:from], class: "border border-gray-300 rounded-xl px-3 py-2 shadow-sm text-sm" %>
+              
+              <%= f.label :to, "Hasta", class: "text-sm text-gray-600" %>
+              <%= f.date_field :to, value: params[:to], class: "border border-gray-300 rounded-xl px-3 py-2 shadow-sm text-sm" %>
+
+              <%= f.submit "Filtrar fechas", class: "px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm" %>
+            <% end %>
+          </div>
+
+          <!-- Right buttons -->
+          <div class="flex flex-wrap gap-2">
+            <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow">Exportar a Excel</a>
+            <a href="#" class="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow">Exportar a PDF</a>
+          </div>
+        </div>
+
+        <!-- Result controls -->
+        <div class="flex justify-between items-center text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <label for="per_page">Mostrar:</label>
+            <%= form_with url: supports_path, method: :get, local: true do |f| %>
+              <%= hidden_field_tag :q, params[:q] %> <!-- conserva búsqueda -->
+              <%= select_tag :per_page,
+                    options_for_select([10, 30, 50, 100], params[:per_page] || 10),
+                    onchange: "this.form.submit();",
+                    class: "border border-gray-300 rounded-lg px-2 py-1 text-sm" %>
+            <% end %>
+          </div>
+          <div>
+            <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Soportes" %></span>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl shadow overflow-x-auto">
+          <table class="min-w-full text-sm table-auto">
+            <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+              <tr>
+                <th class="px-3 py-2"><%= sortable("id", "ID ") %></th>
+                <th class="px-3 py-2"><%= sortable("service", "SERVICIO") %></th>
+                <th class="px-3 py-2"><%= sortable("client", "CLIENTE") %></th>
+                <th class="px-3 py-2"><%= sortable("product_id", "PRODUCTO") %></th>
+                <th class="px-3 py-2"><%= sortable("folio_id", "FOLIO") %></th>
+                <th class="px-3 py-2"><%= sortable("user_id", "USUARIO") %></th>
+                <th class="px-3 py-2"><%= sortable("car_type", "CARROCERIA") %></th>
+                <th class="px-3 py-2"><%= sortable("plate", "PLACA") %></th>
+                <th class="px-3 py-2"><%= sortable("eco", "ECO") %></th>
+                <th class="px-3 py-2"><%= sortable("commit", "COMENTARIO") %></th>
+                <th class="px-3 py-2"><%= sortable("created_at", "FECHA CREACION") %></th>
+                <th class="px-3 py-2"><%= sortable("updated_at", "FECHA ACTUALIZACIOM") %></th>
+                <th class="px-3 py-2">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <% @supports.each do |support| %>
+                <tr class="hover:bg-gray-50 transition">
+                  <td class="px-6 py-4"><%= support.id %></td>
+                  <td class="px-6 py-4"><%= support.service %></td>
+                  <td class="px-6 py-4"><%= support.client %></td>
+                  <td class="px-6 py-4"><%= support.product&.title || "N/A" %></td>
+                  <td class="px-6 py-4"><%= support.folio_id %></td>
+                  <td class="px-6 py-4"><%= support.user&.username || "N/A" %></td>
+                  <td class="px-6 py-4"><%= support.car_type %></td>
+                  <td class="px-6 py-4"><%= support.plate %></td>
+                  <td class="px-6 py-4"><%= support.eco %></td>
+                  <td class="px-6 py-4"><%= truncate(support.commit, length: 40) %></td>
+                  <td class="px-6 py-4"><%= l(support.created_at, format: :short) %></td>
+                  <td class="px-6 py-4"><%= l(support.updated_at, format: :short) %></td>
+                  <td class="px-6 py-4 text-center space-x-2 whitespace-nowrap w-40">
+                    <%= link_to "Ver", support_path(support), class: "text-blue-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
+                    <%= link_to "Editar", edit_support_path(support), class: "text-yellow-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
+                    <%= link_to "Eliminar", support_path(support), method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-600 hover:underline text-sm" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-4">
+          <div class="text-sm text-gray-500"><%= "Mostrando #{@pagy.from} a #{@pagy.to} de #{@pagy.count} Soportes en total" %>
+          </div>
+          <div>
+            <%= pagy_nav(@pagy).html_safe %>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

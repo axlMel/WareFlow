@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: panico
+  user: luis
+  quantity: 1
+
+two:
+  product: relay
+  user: luis
+  quantity: 1

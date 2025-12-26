@@ -1,0 +1,8 @@
+<%= turbo_stream.update "assignmentsContainer" do %>
+  <%= render partial: "supports/assignment_products",
+             locals: {
+               assignments_by_category: @assignments_by_category,
+               user_stock_products: @user_stock_products,
+               replacements: @replacements
+             } %>
+<% end %>

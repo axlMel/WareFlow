@@ -1,0 +1,52 @@
+<!-- Contenedor del formulario -->
+<div class="w-full max-w-md p-8 rounded-2xl shadow-xl bg-gradient-to-b from-white/70 to-white/30 backdrop-blur-md text-gray-800">
+  <div class="text-center mb-6">
+    <p class="text-sm text-gray-700"><%= t(".got_account") %></p>
+    <%= link_to t(".login"), new_session_path, class: "text-sm font-semibold text-blue-600 hover:underline" %>
+    <h2 class="text-3xl font-bold text-gray-900 mt-4"><%= t(".register") %></h2>
+  </div>
+
+  <!-- Formulario -->
+  <%= form_with(model: @user) do |form| %>
+    <% @user.errors.full_messages.each do |error| %>
+    <div>
+      <%= error %>
+    </div>
+    <% end %>
+    <div class="mb-4">
+      <div class="flex items-center bg-white rounded-full px-3 py-2 shadow-sm">
+        <span class="text-gray-400 pr-2">
+          <%# <i class="fas fa-user"></i> %>
+          <%= image_tag 'icons/email.svg', width: 20, height: 20 %>
+        </span>
+        <%= form.email_field :email, placeholder: t(".email"), class: "w-full border-none focus:outline-none bg-transparent text-sm", required: true %>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <div class="flex items-center bg-white rounded-full px-3 py-2 shadow-sm">
+        <span class="text-gray-400 pr-2">
+          <%= image_tag 'icons/user.svg', width: 20, height: 20 %>
+        </span>
+        <%= form.text_field :username, placeholder: t(".username"), class: "w-full border-none focus:outline-none bg-transparent text-sm", required: true %>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <div class="flex items-center bg-white rounded-full px-3 py-2 shadow-sm">
+        <span class="text-gray-400 pr-2">
+          <%= image_tag 'icons/password.svg', width: 20, height: 20 %>
+        </span>
+        <%= form.password_field :password, placeholder: t(".password"), class: "w-full border-none focus:outline-none bg-transparent text-sm", required: true %>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <%= form.submit t(".login_register"), class: "w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 rounded-full transition" %>
+    </div>
+  <% end %>
+
+  <div class="text-center mt-4">
+    <%= link_to t(".forgot_password"), "#", class: "text-sm text-gray-600 hover:underline" %>
+  </div>
+</div>

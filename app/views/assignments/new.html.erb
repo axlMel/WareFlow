@@ -1,0 +1,8 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="p-6">
+    <%= render "shared/modal" do %>
+		<h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">Nueva Asignación</h1>
+		<%= render "form", assignment: @assignment %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,84 @@
+<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
+
+  <!-- Panel izquierdo: filtros -->
+  <div class="w-full lg:w-1/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow space-y-4">
+      <h1 class="text-2xl font-bold">Filtrar folios</h1>
+
+      <%= form_with url: folios_path, method: :get, local: true do |form| %>
+        <div class="space-y-4">
+          <!-- Cliente -->
+          <div>
+            <%= form.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          </div>
+
+          <!-- Folio -->
+          <div>
+            <%= form.label :id, "Folio", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.number_field :id, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          </div>
+
+          <!-- Usuario -->
+          <div>
+            <%= form.label :user_id, "Usuario", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.collection_select :user_id, @users, :id, :username, {}, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          </div>
+
+          <!-- Estado -->
+          <div>
+            <%= form.label :status, "Estado", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.select :status, [["Creado", "creado"], ["Asignado", "asignado"]], {}, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          </div>
+
+          <div class="pt-2">
+            <%= form.submit 'Filtrar', class: "w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-indigo-700 transition" %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="pt-4">
+        <%= link_to 'Nuevo folio', new_folio_path, data: { turbo_frame: "modal" }, class: "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel derecho: tabla de folios -->
+  <div class="w-full lg:w-3/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h2 class="text-xl font-semibold mb-4">Lista de folios</h2>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left border-collapse">
+          <thead class="text-xs text-gray-500 uppercase border-b">
+            <tr>
+              <th class="px-4 py-2">Fecha</th>
+              <th class="px-4 py-2">Folio</th>
+              <th class="px-4 py-2">Cliente</th>
+              <th class="px-4 py-2">Usuario</th>
+              <th class="px-4 py-2">Estado</th>
+              <th class="px-4 py-2">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <% @folios.each do |folio| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2"><%= folio.created_at.strftime("%d/%m/%Y") %></td>
+                <td class="px-4 py-2 font-medium"><%= folio.id %></td>
+                <td class="px-4 py-2"><%= folio.client %></td>
+                <td class="px-4 py-2"><%= folio.user&.username || "No asignado" %></td>
+                <td class="px-4 py-2 capitalize"><%= folio.status %></td>
+                <td class="px-4 py-2 flex gap-2">
+                  <%= link_to 'Ver', folio_path(folio), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
+                  <%= link_to 'Editar', edit_folio_path(folio), class: "text-yellow-600 hover:underline", data: { turbo_frame: "modal" } %>
+                  <%= link_to 'Eliminar', folio_path(folio), method: :delete, data: { confirm: '¿Estás seguro?' }, class: "text-red-600 hover:underline" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+

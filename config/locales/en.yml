@@ -1,0 +1,136 @@
+en:
+  category_component:
+    all: "All"
+  app_name: 'AlmacenGT'
+  meta_title: '2025'
+  activerecord:
+    models:
+      product: Product
+      user: User
+      category: Category
+    attributes:
+      product:
+        title: 'Title'
+        description: 'Description'
+        price: 'Price'
+        photo: 'Photo'
+        category_id: 'Category'
+      user:
+        email: 'Email'
+        username: 'Username'
+        password: 'Password'
+      category:
+        name: 'Name'
+  common:
+    confirm: 'Are you sure?'
+    back: 'Go back'
+    not_logged_in: 'You have to login or create an account'
+    not_authorized: 'You do not have permissions for this action'
+    not_found: 'Not found'
+  shared:
+    sidebar:
+      app: 'AlmacenGT'
+      warehouse: 'Warehouse'
+      stats: 'Statistics'
+      deliveries: 'Deliveries'
+      assign: 'Assignments'
+      config: 'Settings'
+      add_product: 'Add product'
+      favs: 'Favs'
+      categories: 'Categories'
+      supports: 'Support'
+      warranties: 'warranties'
+      folios: 'Folios'
+      logout: 'Logout'
+      login: 'Login'
+      register: 'Register'
+    items:
+      add: 'Add product'
+      categories: 'Add category'
+      login: 'Login'
+      register: 'Register'
+      logout: 'Logout'
+  authentication:
+    users:
+      new:
+        got_account: 'DDo you already have an account?'
+        login: 'Login'
+        register: 'Register'
+        email: 'Email'
+        username: 'Username'
+        password: 'Password'
+        login_register: 'Regist'
+        forgot_password: 'Forgot your password??'
+      create:
+        created: 'Your account has been created'
+        failed: 'Invalid login'
+    sessions:
+      new:
+        username: 'Username'
+        password: 'Password'
+        login: 'Login'
+        forgot_password: 'Forgot your password?'
+        no_account: '¿No have account?'
+        register: 'Register'
+        welcome: 'Welcome'
+      create:
+        created: 'Welcome'
+        failed: 'Invalid login'
+      destroy:
+        destroyed: 'Session ended, bye.'
+  products:
+    edit:
+      title: 'Edit product'
+    new:
+      title: 'Add product'
+    form:
+      title_placeholder: 'What do you want to add?'
+      description_placeholder: 'Could you describe your product?'
+      price_placeholder: 'For how much?'
+      category_placeholder: 'In what category could fit better?'
+      submit: 'Add it now!'
+    index:
+      title: 'Products:'
+      all: 'All'
+      min_stock: 'Min stock'
+      max_stock: 'Max stock'
+      query_text: 'What do you want to search?'
+      expensive: 'Expensive first'
+      cheapest: 'Cheaper first'
+      newest: 'Recently added'
+      add_product: 'Añadir producto'
+      filter: "Filter"
+    show:
+      edit: 'Edit product'
+      delete: 'Delete product'
+      view_more_products: 'View more products by %{username}'
+    create:
+      created: 'Your product has been successfully created'
+    update:
+      updated: 'Your product has been successfully updated'
+    destroy:
+      destroyed: 'Your product has been successfully destroyed'
+  categories:
+    category:
+      edit: 'Edit'
+      delete: 'Delete'
+    index:
+      title: 'Categories'
+      new: 'Add category'
+    edit:
+      title: 'Edit category'
+    create:
+      created: 'Your category has been successfully created'
+    update:
+      updated: 'Your category has been successfully updated'
+    destroy:
+      destroyed: 'Your category has been successfully destroyed'
+    new:
+      title: 'New category'
+  favorites:
+    index:
+      title: "My favorites"
+  user_mailer:
+    welcome:
+      subject: 'Welcome to AlmacenGT'
+      welcome_message: "Hey %{username}, welcome, I hope you a good administration"

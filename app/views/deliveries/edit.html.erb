@@ -1,0 +1,98 @@
+<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
+
+  <!-- Panel izquierdo -->
+  <div class="w-full lg:w-1/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow space-y-4">
+      <h1 class="text-2xl font-bold">Editar entrega</h1>
+
+      <%= form_with model: @delivery, local: true do |f| %>
+        <div class="space-y-4">
+
+          <!-- Cliente -->
+          <div>
+            <%= f.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          </div>
+
+          <!-- Usuario receptor -->
+          <div>
+            <%= f.label :user_id, "Usuario receptor", class: "block text-sm font-medium text-gray-700" %>
+            <%= f.collection_select :user_id, @users, :id, :username, {}, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Folio asociado info -->
+          <div class="space-y-2 text-sm text-gray-700">
+            <h2 class="text-lg font-semibold">Folio Asociado</h2>
+            <p><strong>ID:</strong> <%= @delivery.folio.id %></p>
+            <p><strong>Cliente:</strong> <%= @delivery.folio.client %></p>
+            <p><strong>Usuario asignado:</strong> <%= @delivery.folio.user.username %></p>
+            <p><strong>Estatus:</strong> <%= @delivery.folio.status %></p>
+          </div>
+
+          <!-- Editar folio -->
+          <div>
+            <h2 class="text-lg font-semibold mt-4 mb-2">Editar folio</h2>
+            <%= f.fields_for :folio, @delivery.folio do |ff| %>
+              <div>
+                <%= ff.label :user_id, "Usuario asignado al folio", class: "block text-sm font-medium text-gray-700" %>
+                <%= ff.collection_select :user_id, @users, :id, :username, {}, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- Panel derecho: Asignaciones -->
+  <div class="w-full lg:w-3/4 overflow-auto space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <h2 class="text-xl font-semibold mb-4">Productos Asignados</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left border-collapse">
+          <thead class="text-xs text-gray-500 uppercase border-b">
+            <tr>
+              <th class="px-4 py-2">Producto</th>
+              <th class="px-4 py-2">Cantidad</th>
+              <th class="px-4 py-2">Estado</th>
+              <th class="px-4 py-2">Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @assignments.each_with_index do |assignment, index| %>
+              <%= f.fields_for :assignments, assignment do |af| %>
+                <tr class="border-t">
+                  <td class="px-4 py-2"><%= assignment.product.title %></td>
+                  <td class="px-4 py-2">
+                    <%= af.number_field :quantity, class: "w-20 border border-gray-300 rounded px-2 py-1" %>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="inline-block px-2 py-1 text-xs font-semibold rounded 
+                      <%= assignment.status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+                      <%= assignment.status.humanize %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <%= af.check_box :_destroy %>
+                    <span class="text-sm text-red-500 ml-1">Eliminar</span>
+                  </td>
+
+                  <%= af.hidden_field :id %>
+                  <%= af.hidden_field :product_id %>
+                  <%= af.hidden_field :folio_id %>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <%= f.submit "Actualizar entrega", class: "bg-indigo-600 text-white font-semibold px-6 py-2 rounded-xl hover:bg-indigo-700 transition" %>
+      </div>
+    </div>
+  </div>
+
+  <% end %>
+</div>

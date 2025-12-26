@@ -1,0 +1,21 @@
+<%= form_with model: folio, local: false do |f| %>
+  <div class="mb-4">
+    <%= f.label :client, "Cliente", class: "block font-medium" %>
+    <%= f.text_field :client, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :service, "Servicio", class: "block font-medium" %>
+    <%= f.select :service, ["Instalación", "Desinstalación", "Revisión", "Demo"], prompt: "Selecciona un servicio", class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :accessories, "Accesorios", class: "block font-medium" %>
+    <%= f.text_field :accessories, class: "w-full border px-2 py-1 rounded", placeholder: "Escribe los accesorios necesarios..." %>
+  </div>
+
+  <div class="space-x-2">
+    <%= f.submit "Guardar", class: "bg-green-500 text-white px-4 py-2 rounded" %>
+    <%= link_to "Cancelar", folios_path, class: "text-gray-600" %>
+  </div>
+<% end %>

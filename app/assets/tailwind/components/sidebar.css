@@ -1,0 +1,37 @@
+.sidebar-expanded {
+  background: rgba(255, 255, 255, 0.2); /* Reducimos la opacidad (antes era 0.7) */
+  backdrop-filter: blur(8px); /* Menos blur (antes era 10px) */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Ajustamos la sombra */
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.menu-label {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-10px); /* Aparece de izquierda a derecha */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.sidebar-expanded .menu-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.sidebar-link {
+  @apply h-10 items-center;
+}
+
+.pin-toggle-button {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  pointer-events: none; /* evita que se pueda hacer clic cuando está oculto */
+}
+
+.sidebar-expanded .pin-toggle-button {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}

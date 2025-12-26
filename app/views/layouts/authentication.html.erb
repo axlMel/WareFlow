@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= t('app_name')%> | <%= t('meta_title')%></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="relative min-h-screen overflow-hidden bg-gradient-to-b from-cyan-900 via-indigo-900 to-purple-900 flex items-center justify-center">
+    <%= render 'shared/flash' %>
+
+    <!-- Estrellas -->
+    <div class="absolute inset-0 z-0 opacity-20 bg-repeat" style="background-image: url(<%= asset_path('star-pattern.png') %>)"></div>
+
+    <!-- Sol -->
+    <%= link_to products_path do %>
+      <div class="absolute top-10 left-1/2 transform -translate-x-1/2 z-10">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-24 h-24 text-white drop-shadow-[0_0_15px_white]">
+          <path fill-rule="evenodd" d="M11.47 10.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 12.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z" clip-rule="evenodd" />
+          <path fill-rule="evenodd" d="M11.47 4.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 6.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z" clip-rule="evenodd" />
+        </svg>
+      </div>
+    <% end %>
+
+    <!-- Montañas -->
+    <div class="absolute -bottom-32 -left-32 w-[500px] h-[300px] rounded-full bg-purple-800 opacity-70 z-0"></div>
+    <div class="absolute -bottom-28 left-1/2 transform -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-purple-900 opacity-80 z-0"></div>
+    <div class="absolute -bottom-32 -right-32 w-[500px] h-[300px] rounded-full bg-purple-800 opacity-70 z-0"></div>
+
+    <!-- Contenedor del formulario -->
+    <main class="z-10 w-full max-w-md p-8 rounded-2xl shadow-2xl bg-gradient-to-b from-indigo-300/30 to-purple-200/30 backdrop-blur-md border border-white/20">
+      <%= yield %>
+    </main>
+
+  </body>
+</html>

@@ -1,0 +1,13 @@
+#uso el product_id para relacionar el diagrama y comandos.
+"490398394":
+  diagrama: "relay.jpg"
+  comandos:
+    - BLOQUEO DE MOTOR: "AT+GTOUT=gv300w,1,,,0,0,0,0,0,FFFF$"
+    - DESBLOQUEO DE MOTOR: "AT+GTOUT=gv300w,0,,,0,0,0,0,0,FFFF$"
+    - BLOQUEO PROGRESIVO: "AT+GTGDO=gv300w,1,30,1,,,,,,FFFF$"
+
+"294700717":
+  diagrama: "panic_button.jpg"
+  comandos:
+    - Activar evento: "AT+GTIGN=gv300w,1,1,10,1,,,,,,FFFF$"
+    - Desactivar evento: "AT+GTIGN=gv300w,0,0,0,0,,,,,,FFFF$"

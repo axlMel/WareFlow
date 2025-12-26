@@ -1,0 +1,151 @@
+es:
+  category_component:
+    all: "Todas"
+  app_name: 'AlmacenGT'
+  meta_title: '2025'
+  activerecord:
+    models:
+      product: Producto
+      user: Usuario
+      category: Categoría
+    attributes:
+      product:
+        title: 'Título'
+        description: 'Descripción'
+        price: 'Precio'
+        photo: 'Foto'
+        category_id: 'Categoria'
+      user:
+        email: 'Correo electronico'
+        username: 'Usuario'
+        password: 'Contraseña'
+      category:
+        name: 'Nombre'
+  common:
+    confirm: '¿Estás seguro?'
+    back: 'Volver'
+    not_logged_in: 'Necesitas logearte o crear una cuenta'
+    not_authorized: 'No tienes permisos para esta acción'
+    not_found: 'No se ha encontrado'
+  shared:
+    sidebar:
+      app: 'AlmacenGT'
+      warehouse: 'Almacen'
+      stats: 'Gráficas'
+      deliveries: 'Entregas'
+      assign: 'Asignaciones'
+      config: 'Configuración'
+      add_product: 'Añadir producto'
+      favs: 'Favoritos'
+      categories: 'Categorías'
+      supports: 'Soporte'
+      warranties: 'Garantías'
+      folios: 'Folios'
+      logout: 'Cerrar sesión'
+      login: 'Iniciar sesión'
+      register: 'Registrarse'
+    items:
+      add: 'Añadir producto'
+      categories: 'Categorias'
+      login: 'Entrar'
+      register: 'Registrar'
+      logout: 'Salir'
+  authentication:
+    users:
+      new:
+        got_account: '¿Ya tienes una cuenta?'
+        login: 'Iniciar sesión'
+        register: 'Registrate'
+        email: 'Correo electronico'
+        username: 'Usuario'
+        password: 'Contraseña'
+        login_register: 'Registrar'
+        forgot_password: '¿Olvidaste tu Contraseña?'
+      create:
+        created: 'Tu cuenta se ha creado'
+        failed: 'Login invalido'
+    sessions:
+      new:
+        username: 'Usuario'
+        password: 'Contaseña'
+        login: 'Ingresar'
+        forgot_password: '¿Olvidaste tu Contraseña?'
+        no_account: '¿No tienes una cuenta?'
+        register: 'Registrarse'
+        welcome: 'Bienvenido'
+      create:
+        created: 'Bienvenido'
+        failed: 'Login invalido'
+      destroy:
+        destroyed: 'Tu sesión ha finalizado'
+  products:
+    edit:
+      title: 'Editar producto'
+    new:
+      title: 'Añadir producto'
+    form:
+      title_placeholder: '¿Qué quieres añadir al almacen?'
+      description_placeholder: '¿Puedes describir el producto?'
+      price_placeholder: '¿Cuánto cuesta?'
+      category_placeholder: '¿En qué categoría encaja mejor?'
+      submit: 'Añadir'
+    index:
+      title: 'Productos:'
+      all: 'Todos'
+      min_stock: 'Stock min'
+      max_stock: 'Stock max'
+      query_text: '¿Qué quieres buscar?'
+      expensive: 'Más caro'
+      cheapest: 'Más barato'
+      newest: 'Añadido recientemente'
+      add_product: 'Añadir producto'
+      filter: 'Filtrar'
+    show:
+      edit: 'Editar producto'
+      delete: 'Borrar producto'
+      view_more_products: 'Ver más productos de %{username}'
+    create:
+      created: 'Tu producto se ha creado correctamente'
+    update:
+      updated: 'Tu producto se ha actualizado correctamente'
+    destroy:
+      destroyed: 'Tu producto se ha eliminado correctamente'
+  supports:
+    new:
+      title: 'Formulario de soporte'
+      finder_title: 'Buscar Folio'
+      finder_prompt: 'Cliente, usuario o ID...'
+      folio!: 'Servicio sin folio'
+      client: 'Cliente'
+      folio_id: 'Folio'
+      user: 'Usuario'
+      service: 'Servicio'
+      car_type: 'Tipo de unidad'
+      plate: 'Placas'
+      eco: 'Económico'
+      comment: 'Observaciones'
+      assigned_products: 'Productos asignados'
+  categories:
+    category:
+      edit: 'Editar'
+      delete: 'Borrar'
+    index:
+      title: 'Categorías'
+      new: 'Añadir categoría'
+    edit:
+      title: 'Editar categoría'
+    create:
+      created: 'Tu categoría se ha creado correctamente'
+    update:
+      updated: 'Tu categoría se ha actualizado correctamente'
+    destroy:
+      destroyed: 'Tu categoría se ha eliminado correctamente'
+    new:
+      title: 'Añadir categoría'
+  favorites:
+    index:
+      title: "Mis favoritos"
+  user_mailer:
+    welcome:
+      subject: 'Bienvenido a AlmacenGT'
+      welcome_message: "Hey %{username}, bienvenido, Esperamos que administres de lo mejor con esta aplicación."

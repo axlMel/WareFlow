@@ -1,0 +1,28 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="p-6">
+    <%= render "shared/modal" do %>
+      <div class="p-6 space-y-6 bg-white rounded-2xl shadow">
+        <h1 class="text-2xl font-bold text-gray-800 border-b pb-2">Detalles de la Garantía</h1>
+
+        <div class="space-y-2 text-sm text-gray-700">
+          <p><strong>ID:</strong> <%= @warranty.id %></p>
+          <p><strong>Producto:</strong> <%= @warranty.product&.title || "No asignado" %></p>
+          <p><strong>Cliente:</strong> <%= @warranty.client %></p>
+          <p><strong>Usuario asignado:</strong> <%= @warranty.user&.username || "No asignado" %></p>
+          <p><strong>Estado:</strong> 
+            <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold <%= @warranty.state == 1 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+              <%= @warranty.state == 1 ? 'Asignado' : 'Creado' %>
+            </span>
+          </p>
+          <p><strong>Comentarios:</strong> <%= @warranty.commit.presence || "Sin comentarios" %></p>
+          <p><strong>Fecha de creación:</strong> <%= l(@warranty.created_at, format: :long) %></p>
+        </div>
+
+        <div class="pt-4 flex justify-between">
+          <%= link_to "Editar", edit_warranty_path(@warranty), class: "bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
+          <%= link_to "Volver", warranties_path, class: "text-indigo-600 hover:underline", data: { turbo_frame: "main_content" } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

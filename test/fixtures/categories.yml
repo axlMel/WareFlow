@@ -1,0 +1,26 @@
+device:
+  name: Dispositivos
+
+consumable:
+  name: Consumible
+
+notuse:
+  name: Sin Usar
+
+accesory:
+  name: Accesorio
+
+sim:
+  name: SIM
+
+stationery:
+  name: Papelería
+
+bolt:
+  name: Chapas
+
+tool:
+  name: Herramienta
+
+gauge:
+  name: Calibrador

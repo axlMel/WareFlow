@@ -1,0 +1,55 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Diagrama -->
+  <div class="p-4 border rounded-2xl h-full bg-gray-50 shadow-sm">
+    <p class="font-semibold text-gray-800 mb-3">Diagrama de instalación:</p>
+    <div class="aspect-video bg-white flex items-center justify-center rounded-md border border-gray-300 overflow-hidden cursor-zoom-in" data-action="click->support-form#zoomImage">
+      <%= image_tag diagram, class: "w-full h-full object-cover rounded-md mb-2 ", loading: "lazy", data: { support_form_target: "zoomableImage" } %>
+    </div>
+  </div>
+
+  <!-- Comandos -->
+  <div class="p-4 border rounded-2xl h-full bg-gray-50 shadow-sm justify-between">
+    <p class="font-semibold text-gray-800 mb-3">Comandos de configuración:</p>
+    <div class="aspect-video bg-white flex items-center justify-center rounded-md border border-gray-300 overflow-hidden">
+      <div class="bg-black text-green-400 w-full h-full font-mono p-4 rounded-lg text-sm space-y-3 overflow-x-auto relative">
+        <div class="absolute top-2 right-3">
+          <button type="button" class="text-xs bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600 transition" data-action="click->support-form#copyCommands">Copiar</button>
+        </div>
+        <p class="text-xs uppercase tracking-wide text-gray-400 mb-2 flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v2H2V4zm0 4h16v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8z"/></svg>
+          Terminal virtual
+        </p>
+        <hr class="border-t border-gray-600 my-3">
+        <div data-support-form-target="commandOutput">
+          <% commands.each do |entry| %>
+            <% entry.each do |label, command| %>
+              <div>
+                <span class="text-blue-300"># <%= label %></span><br>
+                <code class="block pl-4 whitespace-pre-wrap"><%= command %></code>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para zoom de imagen -->
+<div id="image-zoom-modal" 
+class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 flex items-center justify-center hidden" 
+data-support-form-target="zoomModal" 
+data-action="click->support-form#closeZoom">
+  <!-- Panel del modal -->
+  <div class="relative inline-flex bg-white rounded-xl shadow-xl p-6 overflow-hidden max-w-[95vw] max-h-[90vh]"data-action="click->support-form#stopPropagation">
+    
+    <!-- Botón de cerrar -->
+    <button type="button"
+            data-action="click->support-form#closeZoom"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold z-50">
+      &times;
+    </button>
+
+    <img src="#" alt="Zoom Imagen" class="max-w-[90vw] max-h-[80vh] rounded shadow-lg object-contain" data-support-form-target="zoomImageLarge">
+  </div>
+</div>

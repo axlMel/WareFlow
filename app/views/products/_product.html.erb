@@ -1,0 +1,9 @@
+<%= link_to product_path(product), class: 'product bg-white rounded-xl shadow p-4 w-full sm:w-[48%] lg:w-[32%] transition hover:shadow-md', data: { turbo_frame: 'modal' } do %>
+  <%= image_tag product.photo.attached? ? product.photo : 'sinFotoRails.jpg', class: "w-full h-48 object-cover rounded-md mb-2" %>
+  <div>
+    <div class="text-gray-400 text-xs mb-1">ID: <%= product.id %></div>
+    <h2 class="text-lg font-semibold"><%= product.title %></h2>
+    <p class="text-sm text-gray-500"><%= product.description %></p>
+    <div class="text-right mt-2 font-bold text-teal-500"><%= product.stock %></div>
+  </div>
+<% end %>

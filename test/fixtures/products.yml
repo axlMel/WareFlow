@@ -1,0 +1,207 @@
+wire:
+  title: Cable
+  description: 10 mts de cable awd14
+  price: 30
+  category: consumable
+  user: david
+  stock: 10
+
+screw:
+  title: Tornillos
+  description: 6 Tornillos para chapas
+  price: 10
+  category: consumable
+  user: david
+  stock: 10
+
+gtx11:
+  title: GV300W
+  description: Queclink
+  price: 1000
+  category: device
+  user: david
+  stock: 1
+
+panico:
+  title: Boton de pánico
+  description: Con su caja, solo tiene algún pequeño arañazo
+  price: 50
+  category: accesory
+  user: david
+  stock: 100
+
+sim:
+  title: SIM TELCEL
+  description: 8952020023292816438
+  price: 90
+  category: sim
+  user: david
+  stock: 1
+
+notebook:
+  title: Libreta
+  description: Libreta con pluma
+  price: 25
+  category: stationery
+  user: david
+  stock: 1
+
+chapa:
+  title: Chapa segumafra
+  description: Kit completo de chapa
+  price: 650
+  category: bolt
+  user: david
+  stock: 10
+
+drill:
+  title: Taladro de impacto
+  description: Con su caja. Color verde transparente.
+  price: 150
+  category: tool
+  user: david
+  stock: 1
+
+ligoc:
+  title: Calibrador Ligo
+  description: Calibrador moderno
+  price: 90
+  category: gauge
+  user: david
+  stock: 10
+
+relay:
+  title: Relevador
+  description: Accesorio para bloqueo
+  price: 590
+  category: accesory
+  user: david
+  stock: 10
+
+microphone:
+  title: Microfono
+  description: Microfono seminuevo
+  price: 1500
+  category: accesory
+  user: david
+  stock: 10
+
+speaker:
+  title: Bocina kit de voz
+  description: Bocina kit de voz
+  price: 95
+  category: accesory
+  user: david
+  stock: 10
+
+ant:
+  title: Antena GPS
+  description: Antena GPS
+  price: 4500
+  category: accesory
+  user: david
+  stock: 10
+
+antgsm:
+  title: Antena GSM
+  description: Antena GSM
+  price: 5500
+  category: accesory
+  user: david
+  stock: 10
+
+sim2:
+  title: SIM TELCEL
+  description: 8952020023295555555
+  price: 90
+  category: sim
+  user: david
+  stock: 10
+
+desenganche:
+  title: Sensor de desenganche
+  description: Ligeras marcas de uso de los años 80
+  price: 35
+  category: accesory
+  user: david
+  stock: 10
+
+manual:
+  title: Manual de instalacion impreso
+  description: Manual de GV628W
+  price: 350
+  category: stationery
+  user: alma
+  stock: 10
+
+mototool:
+  title: Mototool
+  description: Tiene marcas de uso pero funciona bien
+  price: 35
+  category: tool
+  user: david
+  stock: 10
+
+esmeril:
+  title: Esmeriladora
+  description: Como nuevo a estrenar con su caja
+  price: 175
+  category: tool
+  user: luis
+  stock: 10
+
+fmc150:
+  title: Teltonika FM150
+  description: Bien cuidados!
+  price: 65
+  category: device
+  user: david
+  stock: 10
+
+incidencias:
+  title: Manual de incidencias
+  description: Libro en buen estado
+  price: 15
+  category: stationery
+  user: luis
+  stock: 10
+
+iphone:
+  title: iPhone 13
+  description: Funciona correctamente.
+  price: 400
+  category: device
+  user: luis
+  stock: 10
+
+pixel:
+  title: Google Pixel 4
+  description: Le falla la batería
+  price: 100
+  category: device
+  user: alma
+  stock: 10
+
+asist:
+  title: Boton de asistencia
+  description: Usada dos veces. Como nueva.
+  price: 125
+  category: consumable
+  user: alma
+  stock: 10
+
+boots:
+  title: Botas de trabajo
+  description: Fabricada en fibra de carbono. Solo un par de arañazos
+  price: 135
+  category: consumable
+  user: luis
+  stock: 10
+
+calibant:
+  title: Calibrador antiguo
+  description: Como nuevo
+  price: 75
+  category: gauge
+  user: luis
+  stock: 10

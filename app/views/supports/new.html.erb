@@ -1,0 +1,170 @@
+<%= form_with model: @support, class: "space-y-6" do |f| %>
+  <div data-controller="support-form">
+    <div class="mt-6 rounded-2xl min-h-full flex flex-col lg:flex-row gap-3">
+
+      <!-- 🟥 Tarjeta 1: Formulario (lado izquierdo, 1 columna en pantallas grandes) -->
+      <div class="w-full lg:w-5/16 space-y-4">
+        <div class="bg-white p-6 rounded-2xl shadow-xl col-span-1">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4"> <%= t('.title') %> </h2>
+
+          <!-- Selector de folio -->
+          <div >
+            <div class="mb-4">
+              <label for="folio_id" class="block text-sm font-medium text-gray-700"><%= t('.finder_title') %></label>
+
+              <!-- input para buscar folios (escribe ID, cliente o usuario) -->
+              <input type="text"
+                    id="folio_id" 
+                    list="folios" 
+                    data-action="input->support-form#searchFolio" 
+                    data-support-form-target="search" 
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                    placeholder= "<%= t(".finder_prompt") %>" />
+
+              <!-- lista de opciones (se actualizarán en JS o puedes precargar algunas si gustas) -->
+              <datalist id="folios">
+                <% @folios.each do |folio| %>
+                  <option value="#<%= folio.id %> - <%= folio.client %> - <%= folio.user&.username %>">
+                <% end %>
+              </datalist>
+
+              <button type="button"
+                      data-action="support-form#disableFolioMode"
+                      class="mt-2 text-sm text-blue-600 underline">
+                      <%= t(".folio!") %>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-sm" data-support-form-target="formFields">
+              <div>
+                <%= f.label :client, t('.client'), class: "text-gray-700" %>
+                <%= f.text_field :client, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300", data: { support_form_target: "client" } %>
+              </div>
+              <div>
+                <%= f.label :folio_id, t('.folio_id'), class: "text-gray-700" %>
+                <%= f.text_field :folio_id, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300", data: { support_form_target: "folio_id"} %>
+              </div>
+              <div>
+                <%= f.label :user_id, t('.user'), class: "text-gray-700" %>
+                <%= f.text_field :user_id, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300", data: { support_form_target: "user"} %>
+                <%= f.hidden_field :user_id, data: { support_form_target: "userId" } %>
+              </div>
+              <div>
+                <%= f.label :service, t('.service'), class: "text-gray-700" %>
+                <%= f.text_field :service, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300", data: { support_form_target: "service"} %>
+              </div>
+              <div>
+                <%= f.label :car_type, t('.car_type'), class: "text-gray-700" %>
+                <%= f.text_field :car_type, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300" %>
+              </div>
+              <div>
+                <%= f.label :plate, t('.plate'), class: "text-gray-700" %>
+                <%= f.text_field :plate, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300" %>
+              </div>
+              <div>
+                <%= f.label :eco, t('.eco'), class: "text-gray-700" %>
+                <%= f.text_field :eco, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300" %>
+              </div>
+              <div class="col-span-2">
+                <%= f.label :commit, t('.comment'), class: "text-gray-700" %>
+                <%= f.text_area :commit, readonly: true, rows: 3, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🟦 Tarjeta 2: Productos asignados (lado derecho, 2 columnas en pantallas grandes) -->
+
+      <div class="bg-white p-6 rounded-2xl shadow-xl flex-1 min-h-[200px] max-h-[70vh] overflow-auto">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4"><%= t('.assigned_products') %></h2>
+
+        <div class="flex flex-wrap gap-4" data-support-form-target="productsContainer">
+          <!-- Aquí se cargarán los productos con parciales (_product_card.html.erb) -->
+          <div class="border p-4 rounded-xl shadow hover:shadow-lg transition">
+            <p class="font-medium text-gray-700">Cámara Hikvision DS-2CD...</p>
+            <div class="mt-2 flex justify-between text-sm text-gray-600">
+              <span>Estado:</span>
+              <span class="font-semibold text-green-600">Usado</span>
+            </div>
+          </div>
+          <div class="border p-4 rounded-xl shadow hover:shadow-lg transition">
+            <p class="font-medium text-gray-700">Router TP-Link TL-MR6400</p>
+            <div class="mt-2 flex justify-between text-sm text-gray-600">
+              <span>Estado:</span>
+              <span class="font-semibold text-red-600">Defectuoso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🟨 Tarjeta 3: Guía de instalación (debajo de ambas columnas) -->
+    <div class="bg-white p-6 mt-6 rounded-2xl shadow-xl">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Guía de instalación y configuración</h2>
+
+      <!-- Contenedor Padre -->
+      <div id="installation-guide-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 rounded-2xl min-h-full flex flex-col lg:flex-row">
+          <!-- Diagrama -->
+          <div class="p-4 border rounded-2xl h-full bg-gray-50 shadow-sm">
+            <p class="font-medium text-gray-800 mb-3">Diagrama de instalación:</p>
+            <div class="aspect-video bg-white flex items-center justify-center rounded-md border border-gray-300 overflow-hidden cursor-zoom-in" data-action="click->support-form#zoomImage">
+              <%= image_tag 'sinFotoRails.jpg', class: "w-full h-full object-cover rounded-md mb-2", loading: "lazy", data: { support_form_target: "zoomableImage" } %>
+              
+            </div>
+          </div>
+
+          <!-- Comandos -->
+          <div class="p-4 border rounded-2xl h-full bg-gray-50 shadow-sm justify-between">
+            <p class="font-medium text-gray-800 mb-3">Comandos de configuración:</p>
+            <div class="aspect-video bg-white flex items-center justify-center rounded-md border border-gray-300 overflow-hidden">
+              <div class="bg-black text-green-400 w-full h-full font-mono p-4 rounded-lg text-sm space-y-3 overflow-x-auto relative">
+                <div class="absolute top-2 right-3">
+                  <button type="button" class="text-xs bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600 transition" data-action="click->support-form#copyCommands">Copiar</button>
+                </div>
+                <p class="text-xs uppercase tracking-wide text-gray-400 mb-2 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v2H2V4zm0 4h16v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8z"/></svg>
+                  Terminal virtual
+                </p>
+                <hr class="border-t border-gray-600 my-3">
+
+                <div data-support-form-target="commandOutput">
+                  <span class="text-blue-300">Aquí se enlistarán los comandos según el accesorio o dispositivo elegido</span><br>
+                  <code class="block pl-4 whitespace-pre-wrap">- Por favor selecciona una tarjeta de productos asignados para acceder a su data</code>
+                  <code class="block pl-4 whitespace-pre-wrap">- AT+GTOUT=gv300w,1,,,0,0,0,0,0,FFFF$</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal para zoom de imagen -->
+          <div id="image-zoom-modal" 
+          class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 flex items-center justify-center hidden" 
+          data-support-form-target="zoomModal" 
+          data-action="click->support-form#closeZoom">
+            <!-- Panel del modal -->
+            <div class="relative inline-flex bg-white rounded-xl shadow-xl p-6 overflow-hidden max-w-[95vw] max-h-[90vh]"data-action="click->support-form#stopPropagation">
+              
+              <!-- Botón de cerrar -->
+              <button type="button"
+                      data-action="click->support-form#closeZoom"
+                      class="absolute top-0 right-1 text-gray-500 hover:text-gray-700 text-2xl font-bold z-50">
+                &times;
+              </button>
+
+              <img src="#" alt="Zoom Imagen" class="max-w-[90vw] max-h-[80vh] rounded shadow-lg object-contain" data-support-form-target="zoomImageLarge">
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón guardar -->
+    <div class="mt-6 flex justify-end">
+      <%= f.submit "Guardar soporte", class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium" %>
+    </div>
+  </div>
+<% end %>

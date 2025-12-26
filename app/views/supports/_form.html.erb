@@ -1,0 +1,61 @@
+<%= form_with(model: support, local: true, class: "space-y-6") do |f| %>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Servicio -->
+    <div>
+      <%= f.label :service, "Servicio", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :service, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500" %>
+    </div>
+
+    <!-- Cliente -->
+    <div>
+      <%= f.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Producto -->
+    <div>
+      <%= f.label :product_id, "Producto", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.number_field :product_id, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Folio -->
+    <div>
+      <%= f.label :folio, "Folio", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.number_field :folio, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Usuario -->
+    <div>
+      <%= f.label :user_id, "Usuario", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.number_field :user_id, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Tipo de vehículo -->
+    <div>
+      <%= f.label :car_type, "Tipo de vehículo", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :car_type, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Placa -->
+    <div>
+      <%= f.label :plate, "Placa", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :plate, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Eco -->
+    <div>
+      <%= f.label :eco, "ECO", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :eco, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+    </div>
+
+    <!-- Comentarios -->
+    <div class="md:col-span-2">
+      <%= f.label :commit, "Comentarios", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_area :commit, rows: 4, class: "w-full border border-gray-300 rounded-lg px-3 py-2 resize-none" %>
+    </div>
+  </div>
+
+  <div class="pt-4 flex justify-end">
+    <%= f.submit "Guardar cambios", class: "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded-xl transition" %>
+  </div>
+<% end %>

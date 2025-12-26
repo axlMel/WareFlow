@@ -1,0 +1,76 @@
+<%# =============================== %>
+<%# supports/_product_card.html.erb actualizado con botón de reemplazo %>
+<%# =============================== %>
+<% is_selectable = ["accesorio", "dispositivos"].any? { |k| product[:category].to_s.downcase.include?(k) } %>
+<% card_classes = "border p-4 rounded-xl shadow hover:shadow-lg transition box-border max-w-full break-words transition-all duration-150 hover:scale-[1.01] hover:shadow-lg cursor-pointe" +
+                 (is_selectable ? "cursor-pointer hover:border-blue-500 hover:ring-2 hover:ring-blue-200" : "") %>
+
+<% if is_selectable %>
+  <div class="<%= card_classes %>"
+       data-product-card-target="card"
+       data-index="<%= product[:index] %>"
+       data-assignment-id="<%= product[:assignment_id] %>"
+       data-product-id="<%= product[:product_id] %>" 
+       data-action="click->support-form#selectProduct">
+
+    <p class="font-medium text-gray-700 mb-2">
+      <%= product[:title] %> <span class="text-xs text-gray-400">(unidad <%= product[:index] %>)</span>
+    </p>
+
+    <div class="text-sm text-gray-600">
+      <h2 class="block font-medium mb-1">Estado:</h2>
+      <div class="flex flex-wrap transition sm:flex-row gap-3">
+        <label class="inline-flex items-center gap-1" for="used_<%= product[:assignment_id] %>">
+          <input type="radio"
+                id="used_<%= product[:assignment_id] %>"
+                name="status[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+                value="used"
+                data-action="change->support-form#toggleReplacement">
+          <span>Usado</span>
+        </label>
+        <label class="inline-flex items-center gap-1" for="defective_<%= product[:assignment_id] %>">
+          <input type="radio"
+                id="defective_<%= product[:assignment_id] %>"
+                name="status[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+                value="defective"
+                data-action="change->support-form#toggleReplacement">
+          <span>Defectuoso</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="mt-3 hidden"
+         data-support-form-target="replacement"
+         data-replacement-for="<%= product[:assignment_id] %>"
+         data-index="<%= product[:index] %>">
+      <label for="replacement_<%= product[:assignment_id] %>" class="text-sm text-gray-600 block mb-1">Seleccionar reemplazo:</label>
+      <select id="replacement_<%= product[:assignment_id] %>" name="replacement[<%= product[:assignment_id] %>_<%= product[:index] %>]" class="w-full rounded border-gray-300">
+        <option value="">-- Selecciona un producto --</option>
+        <% product[:replacements].each do |r| %>
+          <option value="<%= r.id %>" data-stock="<%= r.stock_quantity %>">
+            <%= r.title %> - Stock: <%= r.stock_quantity %>
+          </option>
+        <% end %>
+      </select>
+      <input type="number"
+      name="replacement_quantity[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+      min="1"
+      class="mt-2 w-full rounded border-gray-300"
+      placeholder="Cantidad a reemplazar">
+
+      <input type="text"
+      name="replacement_commit[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+      class="mt-2 w-full rounded border-gray-300"
+      placeholder="Motivo del reemplazo">
+
+      <!-- Botón para enviar reemplazo -->
+      <button type="button"
+        data-assignment-id="<%= product[:assignment_id] %>"
+        data-index="<%= product[:index] %>"
+        data-action="click->support-form#submitReplacement"
+        class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1 rounded shadow-sm">
+        Guardar reemplazo
+      </button>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> <%= t('app_name')%> | <%= t('meta_title')%> </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-[#F4F2FF] text-gray-800 font-sans">
+    <%= turbo_stream_from "flash" %>
+    <%= turbo_frame_tag "flash" do %>
+      <%= render 'shared/flash' %>
+    <% end %>
+
+    <div class="flex min-h-screen">
+      <div id="sidebar" data-turbo-permanent>
+        <%= render 'shared/sidebar' %>
+      </div>
+
+      <main class="flex-1 p-6 overflow-y-auto scrollbar-none">
+        <%= yield %> <!-- Aquí se renderizan las vistas de cada controller -->
+      </main>
+    </div>
+    <%= turbo_frame_tag "modal" %> 
+  </body>
+</html>

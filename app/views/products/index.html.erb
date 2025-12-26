@@ -1,0 +1,86 @@
+<%= turbo_frame_tag "main_content" do %>
+  <%= turbo_frame_tag 'home' do %>
+
+    <!-- Contenedor de paneles -->
+    <div class="h-screen overflow-hidden flex flex-col lg:flex-row gap-6">
+
+      <!-- Panel izquierdo -->
+      <div class="lg:w-1/4 space-y-4 overflow-hidden">
+
+        <!-- Buscador -->
+        <div class="bg-white p-4 rounded-2xl shadow">
+          <%= form_with url: products_path, method: :get do |form| %>
+            <%= form.text_field :query_text, placeholder: t('.query_text'), onChange: 'this.form.requestSubmit()', value: params[:query_text], class: "w-full mb-2 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+          <% end %>
+        </div>
+
+        <!-- Métricas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+          <div class="bg-white p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm text-gray-500">Productos totales</h3>
+            <p class="text-xl font-semibold text-gray-800">168 <span class="text-sm text-gray-400">unidades</span></p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm text-gray-500">Productos asignados</h3>
+            <p class="text-xl font-semibold text-gray-800">42 <span class="text-sm text-blue-500 ml-1">23.8% del total</span></p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl shadow text-center">
+            <h3 class="text-sm text-gray-500">Valor monetario</h3>
+            <p class="text-xl font-semibold text-gray-800">$1269.09</p>
+          </div>
+          <!-- Botón de añadir -->
+          <div class="flex justify-center">
+            <%= link_to t('.add_product'), new_product_path, data: { turbo_frame: "modal" }, class: "bg-indigo-600 text-white font-semibold px-5 py-2 rounded-xl shadow hover:bg-indigo-700 transition" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel derecho -->
+      <div id="products-scroll-container" class="lg:w-3/4 space-y-4 overflow-y-auto overflow-hidden pr-2" style="max-height: 100vh;">
+        <!-- Filtros -->
+        <%= form_with url: products_path, method: :get, class: "bg-white p-4 rounded-2xl shadow space-y-4" do |form| %>
+          <%= form.hidden_field :view, value: params[:view] || 'cards' %>
+          <div class="flex flex-wrap gap-2">
+            <%= form.select :category_id, options_for_select([[t('.all'), nil]] + @categories.map { |c| [c.name, c.id] }, params[:category_id]), {}, class: "flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+            <%= form.select :order_by, options_for_select(Product::ORDER_BY.keys.map { |k| [t(".#{k}"), k] }, params[:order_by]), {}, class: "flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+            <%= form.number_field :min_stock, placeholder: t('.min_stock'), value: params[:min_stock], class: "w-28 border border-gray-300 rounded-lg px-3 py-2" %>
+            <%= form.number_field :max_stock, placeholder: t('.max_stock'), value: params[:max_stock], class: "w-28 border border-gray-300 rounded-lg px-3 py-2" %>
+            <%= form.submit t('.filter'), class: "bg-indigo-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-indigo-700 transition" %>
+
+            <div class="flex items-center justify-start">
+              <div class="flex bg-indigo-100 rounded-full p-1 space-x-1">
+                <!-- Botón de vista tabla -->
+                <%= link_to products_path(request.query_parameters.merge(view: 'table')), class: "p-2 rounded-full #{params[:view] == 'table' ? 'bg-indigo-600' : 'hover:bg-indigo-200'} transition" do %>
+                  <%= image_tag 'icons/list.svg', class: "w-5 h-5 #{params[:view] == 'table' ? 'invert brightness-0' : 'text-indigo-600'}" %>
+                <% end %>
+
+                <!-- Botón de vista cards -->
+                <%= link_to products_path(request.query_parameters.merge(view: 'cards')), class: "p-2 rounded-full #{params[:view] != 'table' ? 'bg-indigo-600' : 'hover:bg-indigo-200'} transition" do %>
+                  <%= image_tag 'icons/card.svg', class: "w-5 h-5 #{params[:view] != 'table' ? 'invert brightness-0' : 'text-indigo-600'}" %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Lista de productos con paginación -->
+        <%= turbo_frame_tag :products, class: "flex flex-col m-2" do %>
+          <%= turbo_frame_tag "products-#{@pagy.page}", class: "products w-full" do %>
+            <% if params[:view] == 'table' %>
+              <%= render partial: 'products_table', locals: { products: @products } %>
+            <% else %>
+              <div class="flex flex-col w-full sm:flex-row sm:flex-wrap sm:gap-x-2 gap-y-4">
+                <%= render partial: 'product', collection: @products %>
+              </div>
+            <% end %>
+
+            <% if @pagy.next %>
+              <% next_frame_src = pagy_url_for(@pagy, @pagy.next) %>
+              <%= turbo_frame_tag "products-#{@pagy.next}", src: next_frame_src, loading: :lazy, class: "products " %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

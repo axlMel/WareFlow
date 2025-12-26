@@ -1,0 +1,66 @@
+<div class="min-h-screen p-4 lg:p-6 space-y-6">
+
+  <!-- Información general de la entrega -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-2">
+    <h1 class="text-2xl font-bold text-gray-800">Entrega Folio <%= @delivery.folio_id %></h1>
+     <!-- Accesorios del folio -->
+    <% if @delivery.folio.accessories.present? %>
+      <div class="mt-6 text-sm text-gray-600 italic border-l-4 border-blue-400 pl-4 bg-blue-50 py-2 justify-start max-w-fit">
+        🧩 Accesorios solicitados desde el folio: <strong><%= @delivery.folio.accessories %></strong>  
+      </div>
+    <% end %>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 text-sm">
+      <p><strong>Cliente:</strong> <%= @delivery.client %></p>
+      <p><strong>Usuario receptor:</strong> <%= @delivery.user.username %></p>
+      <p><strong>Fecha de entrega:</strong> <%= @delivery.created_at.strftime("%d/%m/%Y") %></p>
+      <p><strong>Estatus:</strong> 
+        <span class="inline-block px-2 py-1 rounded text-xs font-semibold 
+          <%= @delivery.assignments.all?(&:assigned?) ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+          <%= @delivery.assignments.all?(&:assigned?) ? "Pendiente" : "Completada" %>
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Asignaciones -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+    
+    <div class="mt-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Productos asignados</h2>
+      <div class="overflow-x-auto rounded shadow">
+        <table class="min-w-full bg-white text-sm text-left border border-gray-200">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="px-4 py-2 border-b">Producto</th>
+              <th class="px-4 py-2 border-b">Usuario</th>
+              <th class="px-4 py-2 border-b">Cantidad</th>
+              <th class="px-4 py-2 border-b">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @delivery.assignments.each do |assignment| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2 border-b"><%= assignment.product.title %></td>
+                <td class="px-4 py-2 border-b"><%= assignment.user.username %></td>
+                <td class="px-4 py-2 border-b"><%= assignment.quantity %></td>
+                <td class="px-4 py-2 border-b border-black <%= assignment.assigned? ? 'text-yellow-600' : 'text-green-600' %>">
+                  <%= assignment.status.titleize %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones -->
+  <div class="flex justify-end gap-4">
+    <!-- Acciones -->
+    <%= link_to "Agregar Asignación", new_assignment_path, class: "bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition" %>
+    <%= link_to "Editar Entrega", edit_delivery_path(@delivery), class: "bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600 transition" %>
+    <%= link_to "Volver", deliveries_path, class: "bg-gray-300 text-gray-800 px-4 py-2 rounded-xl hover:bg-gray-400 transition" %>
+  </div>
+
+</div>

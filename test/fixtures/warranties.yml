@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product: screw
+  client: Value arrendadora
+  user: luis
+  commit: Se rompio
+  assignment: one
+  state: 1
+
+two:
+  product: panico
+  client: Farmacias del ahorro
+  user: luis
+  commit: No hace continuidad
+  assignment: two
+  state: 1
