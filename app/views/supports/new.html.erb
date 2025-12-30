@@ -21,7 +21,7 @@
                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
                     placeholder= "<%= t(".finder_prompt") %>" />
 
-              <!-- lista de opciones (se actualizarán en JS o puedes precargar algunas si gustas) -->
+              <!-- lista de opciones (se actualizarán en JS) -->
               <datalist id="folios">
                 <% @folios.each do |folio| %>
                   <option value="#<%= folio.id %> - <%= folio.client %> - <%= folio.user&.username %>">
@@ -42,7 +42,7 @@
               </div>
               <div>
                 <%= f.label :folio_id, t('.folio_id'), class: "text-gray-700" %>
-                <%= f.text_field :folio_id, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300", data: { support_form_target: "folio_id"} %>
+                <%= f.text_field :folio_id, readonly: true, class: "readonly bg-gray-100 border mt-1 w-full rounded-md border-gray-300", data: { support_form_target: "folioId"} %>
               </div>
               <div>
                 <%= f.label :user_id, t('.user'), class: "text-gray-700" %>

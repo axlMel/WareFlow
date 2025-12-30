@@ -24,7 +24,7 @@ class SupportsController < ApplicationController
 
   def new
     @support = Support.new
-    @folios = Folio.where(status: :crafted).includes(:user, assignments: [:product, :user])
+    @folios = Folio.where(status: :assigned).includes(:user, assignments: [:product, :user]) #uso de enum corregido
     @assignments = []
   end
 

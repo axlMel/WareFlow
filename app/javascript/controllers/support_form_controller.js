@@ -1,13 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["search", "client", "folio_id", "user", "service", "userId", "formFields", "productsContainer", "card", "selectProduct", "commandOutput", "zoomModal", "zoomImageLarge", "zoomableImage", "replacement"]
+  static targets = ["search", "client", "folio_id", "folioId", "user", "service", "userId", "formFields", "productsContainer", "card", "selectProduct", "commandOutput", "zoomModal", "zoomImageLarge", "zoomableImage", "replacement"]
 
   connect() {
     this.manualMode = false
     this.timeout = null
     this.lastFetchedFolioId = null
   }
+
 
   searchFolio(event) {
     clearTimeout(this.timeout)
@@ -46,7 +47,8 @@ export default class extends Controller {
 
     // Asignar valores al formulario
     this.clientTarget.value = data.client || ""
-    this.folioTarget.value = `${data.folio_id}` || ""
+    // Yo digo que es folioIdTarget 
+    this.folioIdTarget.value = `${data.folio_id}` || ""
     this.userTarget.value = data.user || ""
     this.serviceTarget.value = data.service || ""
     this.userIdTarget.value = data.user_id || ""

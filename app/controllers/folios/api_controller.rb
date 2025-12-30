@@ -13,6 +13,7 @@ class Folios::ApiController < ApplicationController
     }
   end
 
+
   def products
     @folio = Folio.includes(deliveries: { assignments: { product: :category } }).find(params[:id])
 
