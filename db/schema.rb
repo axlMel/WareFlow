@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_01_185604) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_31_164550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -118,6 +118,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_185604) do
     t.index ["user_id"], name: "index_stocks_on_user_id"
   end
 
+  create_table "support_assignments", force: :cascade do |t|
+    t.bigint "support_id", null: false
+    t.bigint "assignment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id"], name: "index_support_assignments_on_assignment_id"
+    t.index ["support_id"], name: "index_support_assignments_on_support_id"
+  end
+
   create_table "supports", force: :cascade do |t|
     t.string "service"
     t.string "client"
@@ -128,10 +137,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_185604) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "folio_id"
-    t.bigint "assignment_id"
     t.bigint "user_id"
     t.bigint "product_id"
-    t.index ["assignment_id"], name: "index_supports_on_assignment_id"
     t.index ["folio_id"], name: "index_supports_on_folio_id"
     t.index ["product_id"], name: "index_supports_on_product_id"
     t.index ["user_id"], name: "index_supports_on_user_id"
@@ -178,7 +185,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_185604) do
   add_foreign_key "products", "users"
   add_foreign_key "stocks", "products"
   add_foreign_key "stocks", "users"
-  add_foreign_key "supports", "assignments"
+  add_foreign_key "support_assignments", "assignments"
+  add_foreign_key "support_assignments", "supports"
   add_foreign_key "supports", "folios"
   add_foreign_key "supports", "products"
   add_foreign_key "supports", "users"

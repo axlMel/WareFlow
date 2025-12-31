@@ -36,23 +36,24 @@ class SupportsController < ApplicationController
     ActiveRecord::Base.transaction do
       @support.save!
 
-      # 1. Cambiar el status del folio a "instalado"
-      @support.folio.update!(status: "Instalado")
+      params[:status]&.each do |assignment_id, value|
+        next unless value == "used"
 
-      # 2. Cambiar status de asignaciones marcadas como "used"
-      params[:status]&.each do |assignment_key, value|
-        next unless value == "used" # Solo procesar los marcados como "used"
+        assignment = @support.folio.assignments.find(assignment_id)
 
-        assignment = Assignment.find_by(id: assignment_key)
-        next unless assignment # ignorar si no existe
+        SupportAssignment.create!(
+          support: @support,
+          assignment: assignment
+        )
 
-        assignment.update!(status: :installed) unless assignment.installed?
+        assignment.update!(status: :installed)
       end
-    end
 
+      @support.folio.update!(status: :delivered)
+    end
     redirect_to supports_path, notice: "Soporte creado correctamente."
   rescue => e
-    @folios = Folio.where(status: :crafted).includes(:user)
+    @folios = Folio.where(status: :assigned).includes(:user)
     flash.now[:alert] = "Error al crear soporte: #{e.message}"
     render :new, status: :unprocessable_entity
   end
