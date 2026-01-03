@@ -23,7 +23,7 @@
         <label class="inline-flex items-center gap-1" for="used_<%= product[:assignment_id] %>">
           <input type="radio"
                 id="used_<%= product[:assignment_id] %>"
-                name="status[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+                name="status[<%= product[:assignment_id] %>][<%= product[:index] %>]"
                 value="used"
                 data-action="change->support-form#toggleReplacement">
           <span>Usado</span>
@@ -31,7 +31,7 @@
         <label class="inline-flex items-center gap-1" for="defective_<%= product[:assignment_id] %>">
           <input type="radio"
                 id="defective_<%= product[:assignment_id] %>"
-                name="status[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+                name="status[<%= product[:assignment_id] %>][<%= product[:index] %>]"
                 value="defective"
                 data-action="change->support-form#toggleReplacement">
           <span>Defectuoso</span>
@@ -44,7 +44,7 @@
          data-replacement-for="<%= product[:assignment_id] %>"
          data-index="<%= product[:index] %>">
       <label for="replacement_<%= product[:assignment_id] %>" class="text-sm text-gray-600 block mb-1">Seleccionar reemplazo:</label>
-      <select id="replacement_<%= product[:assignment_id] %>" name="replacement[<%= product[:assignment_id] %>_<%= product[:index] %>]" class="w-full rounded border-gray-300">
+      <select id="replacement_<%= product[:assignment_id] %>" name="replacement[<%= product[:assignment_id] %>][<%= product[:index] %>]" class="w-full rounded border-gray-300">
         <option value="">-- Selecciona un producto --</option>
         <% product[:replacements].each do |r| %>
           <option value="<%= r.id %>" data-stock="<%= r.stock_quantity %>">
@@ -53,13 +53,13 @@
         <% end %>
       </select>
       <input type="number"
-      name="replacement_quantity[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+      name="replacement_quantity[<%= product[:assignment_id] %>][<%= product[:index] %>]"
       min="1"
       class="mt-2 w-full rounded border-gray-300"
       placeholder="Cantidad a reemplazar">
 
       <input type="text"
-      name="replacement_commit[<%= product[:assignment_id] %>_<%= product[:index] %>]"
+      name="replacement_commit[<%= product[:assignment_id] %>][<%= product[:index] %>]"
       class="mt-2 w-full rounded border-gray-300"
       placeholder="Motivo del reemplazo">
 

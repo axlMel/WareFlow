@@ -36,8 +36,11 @@ class SupportsController < ApplicationController
     ActiveRecord::Base.transaction do
       @support.save!
 
-      params[:status]&.each do |assignment_id, value|
-        next unless value == "used"
+      params[:status]&.each do |assignment_id, units|
+
+        unless units.values.all? {|v| v == "used"} 
+          raise ActiveRecord::Rollback, "No todos los productos fueron marcados como usados"
+        end
 
         assignment = @support.folio.assignments.find(assignment_id)
 

@@ -4,7 +4,6 @@ one:
   assignment: one
   service: Instalacion
   client: MyString
-  product: panico
   folio: one
   user: luis
   car_type: Bus
@@ -16,7 +15,6 @@ two:
   assignment: two
   service: Revision
   client: Value arrendadora
-  product: screw
   folio: two 
   user: luis
   car_type: Van

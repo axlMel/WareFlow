@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_31_164550) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_02_210226) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -124,6 +124,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_31_164550) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assignment_id"], name: "index_support_assignments_on_assignment_id"
+    t.index ["support_id", "assignment_id"], name: "index_support_assignments_on_support_id_and_assignment_id", unique: true
     t.index ["support_id"], name: "index_support_assignments_on_support_id"
   end
 
@@ -138,9 +139,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_31_164550) do
     t.datetime "updated_at", null: false
     t.bigint "folio_id"
     t.bigint "user_id"
-    t.bigint "product_id"
     t.index ["folio_id"], name: "index_supports_on_folio_id"
-    t.index ["product_id"], name: "index_supports_on_product_id"
     t.index ["user_id"], name: "index_supports_on_user_id"
   end
 
@@ -188,7 +187,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_31_164550) do
   add_foreign_key "support_assignments", "assignments"
   add_foreign_key "support_assignments", "supports"
   add_foreign_key "supports", "folios"
-  add_foreign_key "supports", "products"
   add_foreign_key "supports", "users"
   add_foreign_key "warranties", "assignments"
   add_foreign_key "warranties", "products"
