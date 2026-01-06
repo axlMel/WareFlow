@@ -24,7 +24,7 @@ class SupportsController < ApplicationController
 
   def new
     @support = Support.new
-    @folios = Folio.where(status: :assigned).includes(:user, assignments: [:product, :user]) #uso de enum corregido
+    @folios = Folio.where(status: :assigned).includes(:user, assignments: [:user]) #uso de enum corregido, antes [:product, :user]
     @assignments = []
   end
 
@@ -81,6 +81,6 @@ class SupportsController < ApplicationController
   end
 
   def support_params
-    params.require(:support).permit(:service, :client, :product_id, :folio_id, :user_id, :car_type, :plate, :eco, :commit)
+    params.require(:support).permit(:service, :client, :folio_id, :user_id, :car_type, :plate, :eco, :commit)
   end
 end
