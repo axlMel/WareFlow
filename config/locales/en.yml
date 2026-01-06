@@ -31,7 +31,9 @@ en:
     sidebar:
       app: 'AlmacenGT'
       warehouse: 'Warehouse'
-      stats: 'Statistics'
+      stats: 'Stats'
+      services: 'Services'
+      dashboard: 'Dashboard'
       deliveries: 'Deliveries'
       assign: 'Assignments'
       config: 'Settings'

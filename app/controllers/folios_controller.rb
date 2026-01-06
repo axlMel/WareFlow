@@ -51,7 +51,13 @@ class FoliosController < ApplicationController
     @folio.crafted!
 
     if @folio.save
-      redirect_to folio_path(@folio), notice: "Folio creado correctamente."
+      #redirect_to folio_path(@folio), notice: "Folio creado correctamente."
+      respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/new", locals: { folio: @folio }) })
+      end
+      format.html # fallback
+    end
     else
       render :new, status: :unprocessable_entity
     end

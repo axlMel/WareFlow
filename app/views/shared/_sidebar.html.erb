@@ -21,7 +21,6 @@
     <nav class="flex flex-col gap-2 w-full transition-all duration-300 ease-in-out">
 
       <!-- Enlace sin submenu -->
-      <%= sidebar_link_to products_path, icon: 'icons/chart.svg', label: t('.stats') %>
 
       <% if Current.user %>
         <!-- Grupo Almacen -->
@@ -34,16 +33,25 @@
           </button>
 
           <div data-menu-target="submenu" class="ml-8 mt-0 flex flex-col gap-3 overflow-hidden transition-all duration-300 ease-in-out">
-            <%= sidebar_link_to new_product_path, icon: 'icons/chart.svg', label: t('.add_product'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
-            <%= sidebar_link_to favorites_path, icon: 'icons/menu.svg', label: t('.favs'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+            <%= sidebar_link_to products_path, icon: 'icons/dashboard.svg', label: t('.dashboard'),  icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+            <%= sidebar_link_to new_product_path, icon: 'icons/add.svg', label: t('.add_product'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+            <%= sidebar_link_to favorites_path, icon: 'icons/fav.svg', label: t('.favs'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+            <%= sidebar_link_to categories_path, icon: 'icons/categories.svg', label: t('.categories'),  icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
           </div>
         </div>
 
-        <%= sidebar_link_to deliveries_path, icon: 'icons/deliveries.svg', label: t('.deliveries') %>
-        <%= sidebar_link_to assignments_path, icon: 'icons/assign.svg', label: t('.assign') %>
-
+        <div>
+          <button type="button" class="sidebar-link flex space-x-2 pl-3 w-full group hover:opacity-100 transition" data-action="click->menu#toggleSubmenu">
+            <%= image_tag 'icons/card.svg', class: "w-6 h-6 opacity-70 group-hover:opacity-100" %>
+            <span class="menu-label group-hover:opacity-100"><%= t('.services') %></span>
+          </button>
+          
+          <div data-menu-target="submenu" class="ml-8 mt-0 flex flex-col gap-3 overflow-hidden transition-all duration-300 ease-in-out">
+            <%= sidebar_link_to deliveries_path, icon: 'icons/deliveries.svg', label: t('.deliveries'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+            <%= sidebar_link_to assignments_path, icon: 'icons/assign.svg', label: t('.assign'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+          </div>
+        </div>
         <% if Current.user.admin? %>
-          <%= sidebar_link_to categories_path, icon: 'icons/chart.svg', label: t('.categories') %>
           <%= sidebar_link_to supports_path, icon: 'icons/support.svg', label: t('.supports') %>
           <%= sidebar_link_to warranties_path, icon: 'icons/warranty.svg', label: t('.warranties') %>
           <%= sidebar_link_to folios_path, icon: 'icons/folio.svg', label: t('.folios') %>
