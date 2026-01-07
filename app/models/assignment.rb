@@ -2,7 +2,6 @@ class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :delivery
   belongs_to :product
-  belongs_to :folio, optional: true
 
   validates :quantity, numericality: { greater_than: 0 }
   validate :quantity_cannot_exceed_stock

@@ -9,7 +9,7 @@ class ReplacementsController < ApplicationController
 
     # Buscar el stock del usuario al que pertenece la asignación
     replacement_stock = Stock.find_by(
-      user_id: assignment.folio.user_id,
+      user_id: assignment.delivery.folio.user_id,
       product_id: replacement_product.id
     )
 
@@ -22,8 +22,8 @@ class ReplacementsController < ApplicationController
     warranty = Warranty.create!(
       assignment_id: assignment.id,
       product_id: replacement_product.id,
-      user_id: assignment.folio.user_id, # el dueño real
-      client: assignment.folio.client,
+      user_id: assignment.delivery.folio.user_id, # el dueño real
+      client: assignment.delivery.folio.client,
       state: :pending,
       commit: commit
     )

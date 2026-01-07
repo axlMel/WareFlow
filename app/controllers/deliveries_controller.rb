@@ -24,7 +24,6 @@ class DeliveriesController < ApplicationController
     @delivery.user_id = delivery_params[:user_id]
 
     @delivery.assignments.each do |assignment|
-      assignment.folio_id = @delivery.folio_id
       assignment.user_id = @delivery.user_id
     end
 
@@ -151,7 +150,7 @@ class DeliveriesController < ApplicationController
 
   def delivery_params
     params.require(:delivery).permit(:user_id, :client, :folio_id,
-      assignments_attributes: [:id, :product_id, :quantity, :status,:folio_id, :user_id, :_destroy], folio_attributes: [:id, :user_id, :status])
+      assignments_attributes: [:id, :product_id, :quantity, :status, :user_id, :_destroy], folio_attributes: [:id, :user_id, :status])
   end
 
   def load_dependencies

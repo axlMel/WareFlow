@@ -59,6 +59,6 @@ class WarrantiesController < ApplicationController
   end
 
   def warranty_params
-    params.require(:warranty).permit(:client, :user_id, :assignment_id, :state, :commit)
+    params.require(:warranty).permit(:client, :user_id, :state, :commit)
   end
 end

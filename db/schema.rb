@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_02_210226) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_204038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,10 +49,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_210226) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "folio_id", null: false
     t.bigint "user_id", null: false
     t.index ["delivery_id"], name: "index_assignments_on_delivery_id"
-    t.index ["folio_id"], name: "index_assignments_on_folio_id"
     t.index ["product_id"], name: "index_assignments_on_product_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
@@ -172,7 +170,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_02_210226) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assignments", "deliveries"
-  add_foreign_key "assignments", "folios"
   add_foreign_key "assignments", "products"
   add_foreign_key "assignments", "users"
   add_foreign_key "deliveries", "folios"

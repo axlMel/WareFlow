@@ -28,9 +28,6 @@ class FoliosController < ApplicationController
     @user_stock_products = Product.with_positive_available_stock_for(Current.user)
     @replacements = @user_stock_products.group_by(&:category_id)
 
-
-
-
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
@@ -53,11 +50,11 @@ class FoliosController < ApplicationController
     if @folio.save
       #redirect_to folio_path(@folio), notice: "Folio creado correctamente."
       respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/new", locals: { folio: @folio }) })
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/new", locals: { folio: @folio }) })
+        end
+        format.html # fallback
       end
-      format.html # fallback
-    end
     else
       render :new, status: :unprocessable_entity
     end
@@ -65,7 +62,13 @@ class FoliosController < ApplicationController
 
   def update
     if @folio.update(folio_params)
-      redirect_to folio_path(@folio), notice: "Folio actualizado correctamente."
+      #redirect_to folio_path(@folio), notice: "Folio actualizado correctamente."
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/edit", locals: { folio: @folio }) })
+        end
+        format.html # fallback
+      end
     else
       render :edit, status: :unprocessable_entity
     end
@@ -85,6 +88,13 @@ class FoliosController < ApplicationController
 
   def show
     @folio = Folio.find(params[:id])
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/show", locals: { folio: @folio }) })
+      end
+      format.html # fallback
+    end
   end
 
   def new
@@ -149,6 +159,6 @@ class FoliosController < ApplicationController
   end
 
   def folio_params
-    params.require(:folio).permit(:client, :user_id, :status, :service, :accessories, :folio_id)
+    params.require(:folio).permit(:client, :user_id, :status, :service, :accessories)
   end
 end
