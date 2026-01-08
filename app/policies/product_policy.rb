@@ -1,13 +1,13 @@
 class ProductPolicy < BasePolicy
   def edit
-    record.owner?
+    true
   end
 
   def update
-    record.owner?
+    true
   end
 
   def destroy
-    record.owner?
+    true
   end
 end

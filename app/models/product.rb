@@ -14,41 +14,38 @@ class Product < ApplicationRecord
 
   has_one_attached :photo
 
-  validates :title, presence: true
-  validates :description, presence: true
-  validates :price, presence: true
-  validates :stock, numericality: { greater_than_or_equal_to: 0, allow_nil: false }
-
-
-
   belongs_to :category
-  belongs_to :user, default: -> { Current.user }
   has_many :assignments
-  has_many :users, through: :assignments
-  has_many :stock_tecnicos
+
+  validates :title, :description, :price, presence: true
+  validates :stock, numericality: { greater_than_or_equal_to: 0}
+
+
+  #has_many :users, through: :assignments
+  #has_many :stock_tecnicos
   
   # Calcula available_stock de forma eficiente
-  def self.with_available_stock_for(user)
-    left_joins(:assignments)
-      .where(user_id: user.id)
-      .where('assignments.status = ? OR assignments.id IS NULL', 0)
-      .group('products.id')
-      .select(
-        'products.*',
-        'COALESCE(SUM(assignments.quantity), 0) AS assigned_quantity'
-      )
-  end
+  #def self.with_available_stock_for(user)
+  #  left_joins(:assignments)
+  #    .where(user_id: user.id)
+  #    .where('assignments.status = ? OR assignments.id IS NULL', 0)
+  #    .group('products.id')
+  #    .select(
+  #      'products.*',
+  #      'COALESCE(SUM(assignments.quantity), 0) AS assigned_quantity'
+  #    )
+  #end
 
-  def available_stock
-    stock - (self.try(:assigned_quantity) || 0)
-  end
+  #def available_stock
+  #  stock - (self.try(:assigned_quantity) || 0)
+  #end
 
-  scope :with_positive_available_stock_for, ->(user) {
-  with_available_stock_for(user).select { |p| p.available_stock > 0 }}
+  #scope :with_positive_available_stock_for, ->(user) {
+  #with_available_stock_for(user).select { |p| p.available_stock > 0 }}
 
-  def owner?
-    user_id == Current.user&.id
-  end
+  #def owner?
+  #  user_id == Current.user&.id
+  #end
 
   def broadcast
     broadcast_replace_to self, partial: 'products/product_details', locals: { product: self }

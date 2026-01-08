@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_204038) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_07_222759) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_204038) do
   end
 
   create_table "assignments", force: :cascade do |t|
-    t.bigint "delivery_id", null: false
+    t.bigint "delivery_id"
     t.bigint "product_id", null: false
     t.integer "quantity"
     t.integer "status", default: 0
@@ -99,10 +99,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_204038) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "category_id", null: false
-    t.bigint "user_id", null: false
     t.integer "stock"
     t.index ["category_id"], name: "index_products_on_category_id"
-    t.index ["user_id"], name: "index_products_on_user_id"
   end
 
   create_table "stocks", force: :cascade do |t|
@@ -178,7 +176,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_204038) do
   add_foreign_key "favorites", "users"
   add_foreign_key "folios", "users"
   add_foreign_key "products", "categories"
-  add_foreign_key "products", "users"
   add_foreign_key "stocks", "products"
   add_foreign_key "stocks", "users"
   add_foreign_key "support_assignments", "assignments"

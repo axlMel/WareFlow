@@ -29,10 +29,6 @@
         <span class="text-gray-500 text-sm">Precio:</span>
         <span class="font-bold text-cyan-600">$<%= product.price %></span>
       </div>
-
-      <div class="mt-4 text-sm text-gray-500">
-        Agregado por <%= link_to product.user.username, user_path(product.user.username), class: "text-cyan-600 hover:underline" %>
-      </div>
     </div>
   </div>
 </div>
