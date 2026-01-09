@@ -8,7 +8,7 @@ class Assignment < ApplicationRecord
 
   enum :status, { assigned: 0, installed: 1 }
 
-  after_create :move_stock_to_user
+  after_commit :move_stock_to_user, on: :create
   before_update :revert_previous_stock, if: :stock_relevant_changes?
   after_update :apply_new_stock, if: :stock_relevant_changes?
   before_destroy :restore_stock

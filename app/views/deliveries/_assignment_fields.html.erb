@@ -1,12 +1,7 @@
+<% assignment = f.object || Assignment.new %>
 <div class="assignment-fields bg-gray-50 p-4 rounded-xl shadow space-y-2">
   <div class="border p-4 rounded mb-4 bg-gray-50">
-    <% if f.object.errors.any? %>
-      <div class="text-red-600 mb-2">
-        <% f.object.errors.full_messages.each do |msg| %>
-          <div><%= msg %></div>
-        <% end %>
-      </div>
-    <% end %>
+
 
     <div class="mb-2" data-controller="product-stock">
       <%= f.label :product_id, "Producto" %>
@@ -14,8 +9,8 @@
             class: "w-full p-2 border rounded",
             data: { action: "change->product-stock#update" } %>
 
-      <% stock_value = if f.object.product_id.present? && @products[f.object.product_id]
-                         @products[f.object.product_id].stock
+      <% stock_value = if assignment.product_id.present? && @products[assignment.product_id]
+                        @products[assignment.product_id].stock
                        else
                          "-"
                        end %>
@@ -30,7 +25,7 @@
       <%= f.number_field :quantity, min: 1, class: "w-full p-2 border rounded" %>
     </div>
 
-    <%= f.hidden_field :status, value: "pending" %>
+
     <%= f.hidden_field :_destroy %>
 
     <button type="button" class="text-red-600 mt-2" data-action="click->assignment-fields#remove">Eliminar</button>

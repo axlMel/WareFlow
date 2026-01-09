@@ -51,10 +51,8 @@
 
           <!-- Template oculto para JS -->
           <div id="assignment-template" data-assignment-fields-target="template" style="display: none;">
-            <%= capture do %>
-              <%= form.fields_for(:assignments, Assignment.new, child_index: "NEW_RECORD") do |a| %>
-                <%= render 'assignment_fields', f: a %>
-              <% end %>
+            <%= form.fields_for :assignments, Assignment.new, child_index: "NEW_RECORD" do |a| %>
+              <%= render 'assignment_fields', f: a %>
             <% end %>
           </div>
 

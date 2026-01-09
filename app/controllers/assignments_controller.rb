@@ -2,7 +2,7 @@ class AssignmentsController < ApplicationController
   before_action :set_assignment, only: %i[show edit update destroy]
 
   def index
-    @assignments = Assignment.includes(:product, delivery: [:folio, :user]).order(created_at: :desc)
+    @assignments = Assignment.includes(:product, delivery: [:folio, :user]).order(created_at: :desc).where.not(delivery_id: nil) #coloco wherenot para saltar el error en front
     @users = User.where(admin: false)
   end
 

@@ -15,10 +15,13 @@ class DeliveriesController < ApplicationController
     @delivery = Delivery.new
     @delivery.assignments.build if @delivery.assignments.empty? # Para tener al menos una fila lista
     load_dependencies
+    @users = User.all
+    @products = Product.all.index_by(&:id)
   end
 
   def create
     @delivery = Delivery.new(delivery_params)
+
     folio = Folio.find(@delivery.folio_id)
     @delivery.client = folio.client
     @delivery.user_id = delivery_params[:user_id]
@@ -32,9 +35,7 @@ class DeliveriesController < ApplicationController
 
     @delivery.assignments.each do |assignment|
       product = assignment.product
-      quantity = assignment.quantity
-
-      if product.stock < quantity
+      if product.stock < assignment.quantity
         stock_errors << "Stock insuficiente para el producto #{product.title}"
       end
     end
@@ -49,15 +50,14 @@ class DeliveriesController < ApplicationController
     ActiveRecord::Base.transaction do
       @delivery.save!
 
-      # @delivery.assignments.each do |assignment|
-      #   product = assignment.product
-      #   quantity = assignment.quantity
-      #   product.update!(stock: product.stock - quantity)
-      # end
+      @delivery.assignments.each do |assignment|
+        product = assignment.product
+      end
 
-      folio.user_id = @delivery.user_id
-      folio.status = "Asignado"
-      folio.save!
+      folio.update!(
+        user_id: @delivery.user_id,
+        status: 1
+      )
     end
 
     redirect_to @delivery, notice: "Entrega creada exitosamente y folio asignado."
@@ -78,40 +78,10 @@ class DeliveriesController < ApplicationController
 
   def update
     @delivery = Delivery.find(params[:id])
-    previous_assignments = @delivery.assignments.index_by(&:id)
-    stock_errors = []
     @users = User.where(admin: false)
 
     ActiveRecord::Base.transaction do
       if @delivery.update(delivery_params)
-        @delivery.assignments.each do |assignment|
-          product = assignment.product
-          previous = previous_assignments[assignment.id]
-
-          if assignment.marked_for_destruction?
-            product.update!(stock: product.stock + previous.quantity) if previous
-            next
-          end
-
-          if previous.nil?
-            if product.stock < assignment.quantity
-              stock_errors << "Stock insuficiente para el producto #{product.title}"
-              raise ActiveRecord::Rollback
-            else
-              product.update!(stock: product.stock - assignment.quantity)
-            end
-
-          elsif previous.quantity != assignment.quantity
-            diff = assignment.quantity - previous.quantity
-            if product.stock < diff
-              stock_errors << "Stock insuficiente para el producto #{product.title}"
-              raise ActiveRecord::Rollback
-            else
-              product.update!(stock: product.stock - diff)
-            end
-          end
-        end
-
         if delivery_params[:folio_attributes].present?
           @delivery.folio.update!(
             user_id: delivery_params[:folio_attributes][:user_id]
@@ -131,9 +101,6 @@ class DeliveriesController < ApplicationController
     render :edit, status: :unprocessable_entity and return
   end
 
-
-
-
   def destroy
     @delivery.destroy
     redirect_to deliveries_path, notice: 'Entrega eliminada.'
@@ -150,7 +117,7 @@ class DeliveriesController < ApplicationController
 
   def delivery_params
     params.require(:delivery).permit(:user_id, :client, :folio_id,
-      assignments_attributes: [:id, :product_id, :quantity, :status, :user_id, :_destroy], folio_attributes: [:id, :user_id, :status])
+      assignments_attributes: [:id, :product_id, :quantity, :user_id, :_destroy])
   end
 
   def load_dependencies
