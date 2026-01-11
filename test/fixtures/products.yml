@@ -3,7 +3,6 @@ wire:
   description: 10 mts de cable awd14
   price: 30
   category: consumable
-  user: david
   stock: 10
 
 screw:
@@ -11,7 +10,6 @@ screw:
   description: 6 Tornillos para chapas
   price: 10
   category: consumable
-  user: david
   stock: 10
 
 gtx11:
@@ -19,7 +17,6 @@ gtx11:
   description: Queclink
   price: 1000
   category: device
-  user: david
   stock: 1
 
 panico:
@@ -27,7 +24,6 @@ panico:
   description: Con su caja, solo tiene algún pequeño arañazo
   price: 50
   category: accesory
-  user: david
   stock: 100
 
 sim:
@@ -35,7 +31,6 @@ sim:
   description: 8952020023292816438
   price: 90
   category: sim
-  user: david
   stock: 1
 
 notebook:
@@ -43,7 +38,6 @@ notebook:
   description: Libreta con pluma
   price: 25
   category: stationery
-  user: david
   stock: 1
 
 chapa:
@@ -51,7 +45,6 @@ chapa:
   description: Kit completo de chapa
   price: 650
   category: bolt
-  user: david
   stock: 10
 
 drill:
@@ -59,7 +52,6 @@ drill:
   description: Con su caja. Color verde transparente.
   price: 150
   category: tool
-  user: david
   stock: 1
 
 ligoc:
@@ -67,7 +59,6 @@ ligoc:
   description: Calibrador moderno
   price: 90
   category: gauge
-  user: david
   stock: 10
 
 relay:
@@ -75,7 +66,6 @@ relay:
   description: Accesorio para bloqueo
   price: 590
   category: accesory
-  user: david
   stock: 10
 
 microphone:
@@ -83,7 +73,6 @@ microphone:
   description: Microfono seminuevo
   price: 1500
   category: accesory
-  user: david
   stock: 10
 
 speaker:
@@ -91,7 +80,6 @@ speaker:
   description: Bocina kit de voz
   price: 95
   category: accesory
-  user: david
   stock: 10
 
 ant:
@@ -99,7 +87,6 @@ ant:
   description: Antena GPS
   price: 4500
   category: accesory
-  user: david
   stock: 10
 
 antgsm:
@@ -107,7 +94,6 @@ antgsm:
   description: Antena GSM
   price: 5500
   category: accesory
-  user: david
   stock: 10
 
 sim2:
@@ -115,7 +101,6 @@ sim2:
   description: 8952020023295555555
   price: 90
   category: sim
-  user: david
   stock: 10
 
 desenganche:
@@ -123,7 +108,6 @@ desenganche:
   description: Ligeras marcas de uso de los años 80
   price: 35
   category: accesory
-  user: david
   stock: 10
 
 manual:
@@ -131,7 +115,6 @@ manual:
   description: Manual de GV628W
   price: 350
   category: stationery
-  user: alma
   stock: 10
 
 mototool:
@@ -139,7 +122,6 @@ mototool:
   description: Tiene marcas de uso pero funciona bien
   price: 35
   category: tool
-  user: david
   stock: 10
 
 esmeril:
@@ -147,7 +129,6 @@ esmeril:
   description: Como nuevo a estrenar con su caja
   price: 175
   category: tool
-  user: luis
   stock: 10
 
 fmc150:
@@ -155,7 +136,6 @@ fmc150:
   description: Bien cuidados!
   price: 65
   category: device
-  user: david
   stock: 10
 
 incidencias:
@@ -163,7 +143,6 @@ incidencias:
   description: Libro en buen estado
   price: 15
   category: stationery
-  user: luis
   stock: 10
 
 iphone:
@@ -171,7 +150,6 @@ iphone:
   description: Funciona correctamente.
   price: 400
   category: device
-  user: luis
   stock: 10
 
 pixel:
@@ -179,7 +157,6 @@ pixel:
   description: Le falla la batería
   price: 100
   category: device
-  user: alma
   stock: 10
 
 asist:
@@ -187,7 +164,6 @@ asist:
   description: Usada dos veces. Como nueva.
   price: 125
   category: consumable
-  user: alma
   stock: 10
 
 boots:
@@ -195,7 +171,6 @@ boots:
   description: Fabricada en fibra de carbono. Solo un par de arañazos
   price: 135
   category: consumable
-  user: luis
   stock: 10
 
 calibant:
@@ -203,5 +178,4 @@ calibant:
   description: Como nuevo
   price: 75
   category: gauge
-  user: luis
   stock: 10
