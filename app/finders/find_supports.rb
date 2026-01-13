@@ -60,10 +60,6 @@ class FindSupports < ApplicationFinder
     end
   end
 
-  def parse_date(value)
-    Date.parse(value) rescue nil
-  end
-
   def integer_string?(str)
     Integer(str)
     true

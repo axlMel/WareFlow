@@ -7,4 +7,8 @@ class ApplicationFinder
   def call
     raise NotImplementedError, "Debes implementar el método `call` en tu finder."
   end
+
+  def parse_date(value)
+    Date.parse(value) rescue nil
+  end
 end

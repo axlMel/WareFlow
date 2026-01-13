@@ -42,6 +42,7 @@ class Assignment < ApplicationRecord
 
   def revert_previous_stock
     previous_quantity = quantity_before_last_save || quantity
+    return unless product_id_before_last_save
     previous_product = Product.find(product_id_before_last_save)
 
     ApplicationRecord.transaction do
