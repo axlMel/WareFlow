@@ -21,9 +21,13 @@ class AssignmentsController < ApplicationController
 
   def create
     @assignment = Assignment.new(assignment_params)
+    @assignment.status = :assigned
 
     if @assignment.save
-      redirect_to @assignment, notice: "Asignación creada con éxito."
+      respond_to do |format|
+        format.turbo_stream
+        format.html {redirect_to assignments_path}
+      end
     else
       load_dependencies
       render :new, status: :unprocessable_entity
@@ -37,7 +41,7 @@ class AssignmentsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             "assignment_edit_#{@assignment.id}",
-            partial: "assignments/edit_success", # puedes poner un parcial vacío
+            partial: "assignments/show", # puedes poner un parcial vacío
             locals: { assignment: @assignment }
           )
         end
@@ -51,7 +55,10 @@ class AssignmentsController < ApplicationController
 
   def destroy
     @assignment.destroy
-    redirect_to assignments_path, notice: "Asignación eliminada."
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to assignments_path}
+    end
   end
 
   private
@@ -65,7 +72,8 @@ class AssignmentsController < ApplicationController
   end
 
   def load_dependencies
-    @products = Product.all
+    @products = Product.all.order(:title)
     @deliveries = Delivery.all
+    @users = User.where(admin: false).order(:username)
   end
 end

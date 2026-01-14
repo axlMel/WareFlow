@@ -1,5 +1,5 @@
 require 'pagy/extras/countless'
-
+require "pagy/extras/overflow"
 require 'pagy'
 require 'pagy/extras/i18n'  # internacionalización
 

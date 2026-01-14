@@ -1,0 +1,5 @@
+<%= turbo_stream.prepend "assignments_table",
+      partial: "assignments/row",
+      locals: { assignment: @assignment } %>
+
+<%= turbo_stream.remove "modal" %>
