@@ -65,7 +65,7 @@ class FoliosController < ApplicationController
       #redirect_to folio_path(@folio), notice: "Folio actualizado correctamente."
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/edit", locals: { folio: @folio }) })
+          render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/show", locals: { folio: @folio }) })
         end
         format.html # fallback
       end

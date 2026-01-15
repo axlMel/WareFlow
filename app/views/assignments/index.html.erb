@@ -87,21 +87,12 @@
                   </td>
 
                   <td class="px-4 py-3 text-right space-x-3">
-                    <%= link_to "Ver",
-                          assignment_path(assignment),
-                          data: { turbo_frame: "modal" },
-                          class: "text-indigo-600 hover:underline text-sm" %>
+                    <%= link_to "Ver", assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-indigo-600 hover:underline text-sm" %>
+                    <% unless assignment.installed? %>
+                      <%= link_to "Editar", edit_assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline text-sm" %>
+                    <% end %>
+                    <%= button_to "Eliminar", assignment_path(assignment), method: :delete, form: { data: { confirm: "¿Estás seguro?" } }, class: "text-red-600 hover:underline text-sm" %>
 
-                    <%= link_to "Editar",
-                          edit_assignment_path(assignment),
-                          data: { turbo_frame: "modal" },
-                          class: "text-yellow-600 hover:underline text-sm" %>
-
-                    <%= button_to "Eliminar",
-                          assignment_path(assignment),
-                          method: :delete,
-                          form: { data: { confirm: "¿Estás seguro?" } },
-                          class: "text-red-600 hover:underline text-sm" %>
                   </td>
                 </tr>
               <% end %>
@@ -130,3 +121,7 @@
     <% end %>
   </div>
 </div>
+<turbo-frame
+  id="modal"
+  src="<%= assignment_path(params[:show]) if params[:show].present? %>">
+</turbo-frame>

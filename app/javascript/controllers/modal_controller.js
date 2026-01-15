@@ -9,16 +9,10 @@ export default class extends Controller {
       this.panelTarget.classList.remove("scale-95")
       this.panelTarget.classList.add("scale-100")
     }, 10)
-
-    this.element.addEventListener("turbo:submit-end", (event) => {
-      if (event.detail.success) {
-        this.close()
-        Turbo.visit(event.detail.fetchResponse.response.url)
-      }
-    })
   }
 
   close() {
+    this.element.parentElement.removeAttribute("src")
     this.element.remove()
   }
 

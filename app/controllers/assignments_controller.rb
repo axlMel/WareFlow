@@ -3,20 +3,23 @@ class AssignmentsController < ApplicationController
 
   def index
     finder = FindAssignments.new(Assignment.all, params)
-    assignments = finder.call
     @pagy, @assignments = pagy(finder.call)
   end
 
-  def show; end
+  def show;
+    render layout: false
+  end
 
   def new
     @assignment = Assignment.new
     load_dependencies
+    render layout: false
   end
 
   def edit
     @assignment = Assignment.find(params[:id])
     load_dependencies
+    render layout: false
   end
 
   def create
@@ -24,40 +27,28 @@ class AssignmentsController < ApplicationController
     @assignment.status = :assigned
 
     if @assignment.save
-      respond_to do |format|
-        format.turbo_stream
-        format.html {redirect_to assignments_path}
-      end
+      redirect_to assignments_path(show: @assignment.id), notice: "Asignación creada correctamente", status: :see_other
     else
       load_dependencies
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity, layout: false
     end
   end
 
   def update
-    @assignment = Assignment.find(params[:id])
     if @assignment.update(assignment_params)
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "assignment_edit_#{@assignment.id}",
-            partial: "assignments/show", # puedes poner un parcial vacío
-            locals: { assignment: @assignment }
-          )
-        end
-        format.html { redirect_to @assignment, notice: "Asignación actualizada." }
-      end
+      redirect_to assignments_path(show: @assignment.id), notice: "Asignación actualizada correctamente", status: :see_other
     else
       load_dependencies
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity, layout: false
     end
   end
+
 
   def destroy
     @assignment.destroy
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to assignments_path}
+      format.html { head :no_content, notice: "Asognación eliminada" }
     end
   end
 

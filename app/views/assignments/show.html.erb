@@ -18,10 +18,10 @@
         </div>
 
         <div class="pt-4 flex justify-end space-x-2">
-          <%= link_to "Editar", edit_assignment_path(@assignment),
-                      class: "bg-yellow-500 text-white font-semibold px-4 py-2 rounded-xl hover:bg-yellow-600 transition" %>
-          <%= link_to "Regresar", assignments_path,
-                      class: "text-blue-600 hover:underline font-medium px-4 py-2 rounded-xl" %>
+          <%= link_to "Editar", edit_assignment_path(@assignment), data: { turbo_frame: "modal" }, class: "bg-yellow-500 text-white font-semibold px-4 py-2 rounded-xl hover:bg-yellow-600 transition" %>
+          <%= link_to "Eliminar", assignment_path(@assignment),data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" }, class: "bg-red-500 text-white font-semibold px-4 py-2 rounded-xl hover:bg-yellow-600 transition" %>
+          <%= link_to "Regresar", assignments_path, class: "text-blue-600 hover:underline font-medium px-4 py-2 rounded-xl" %>
+          
         </div>
       </div>
     <% end %>
