@@ -91,7 +91,7 @@
                     <% unless assignment.installed? %>
                       <%= link_to "Editar", edit_assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline text-sm" %>
                     <% end %>
-                    <%= button_to "Eliminar", assignment_path(assignment), method: :delete, form: { data: { confirm: "¿Estás seguro?" } }, class: "text-red-600 hover:underline text-sm" %>
+                    <%= button_to "Eliminar", assignment_path(assignment),method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:underline text-sm" %>
 
                   </td>
                 </tr>

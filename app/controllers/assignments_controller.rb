@@ -46,10 +46,7 @@ class AssignmentsController < ApplicationController
 
   def destroy
     @assignment.destroy
-    respond_to do |format|
-      format.turbo_stream
-      format.html { head :no_content, notice: "Asognación eliminada" }
-    end
+    redirect_to assignments_path, notice: "Asignacion eliminada correctamente", status: :see_other
   end
 
   private
