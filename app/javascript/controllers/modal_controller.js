@@ -13,6 +13,7 @@ export default class extends Controller {
 
   close() {
     this.element.parentElement.removeAttribute("src")
+    history.replaceState({}, "", location.pathname)
     this.element.remove()
   }
 
