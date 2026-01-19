@@ -8,13 +8,13 @@
 
         <!-- Busqueda -->
         <div>
-          <%= f.label :q, "Buscar", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.label :q, "Busqueda", class: "block text-sm font-medium text-gray-700" %>
           <%= f.text_field :q, value: params[:q], placeholder: "Usuario o producto", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
         </div>
 
         <!-- Estado -->
         <div>
-          <%= f.label :status, "Buscar", class: "block text-sm font-medium text-gray-700" %>
+          <%= f.label :status, "Estado de asignación", class: "block text-sm font-medium text-gray-700" %>
           <%= f.select :status, options_for_select([["Asignado", "assigned"], ["instalado", "installed"]], params[:status]), { include_blank: "Solo asignados (default)"}, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
         </div>
 
