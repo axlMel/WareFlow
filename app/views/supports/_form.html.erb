@@ -1,4 +1,17 @@
-<%= form_with(model: support, local: true, class: "space-y-6") do |f| %>
+<%= form_with(model: support, data: { turbo_frame: "_top" }, class: "space-y-6") do |f| %>
+  <% if support.errors.any? %>
+    <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
+      <h2 class="font-semibold mb-2">
+        <%= pluralize(support.errors.count, "error") %> impidieron guardar la asignación:
+      </h2>
+      <ul class="list-disc list-inside text-sm">
+        <% support.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Servicio -->
     <div>
@@ -10,12 +23,6 @@
     <div>
       <%= f.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
       <%= f.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
-    </div>
-
-    <!-- Producto -->
-    <div>
-      <%= f.label :product_id, "Producto", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.number_field :product_id, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
     </div>
 
     <!-- Folio -->

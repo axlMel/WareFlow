@@ -10,21 +10,13 @@ class SupportsController < ApplicationController
     scoped = scoped.order("#{sort_column} #{sort_direction}")
 
     @pagy, @supports = pagy(scoped, items: params[:per_page] || 10)
-
-    @users = User.where(admin: false)
-    @clients = Support.distinct.pluck(:client).compact
-    @folios = Support.distinct.pluck(:folio_id).compact
-
-    respond_to do |format|
-      format.html
-    end
   end
 
   def show; end
 
   def new
     @support = Support.new
-    @folios = Folio.where(status: :assigned).includes(:user, assignments: [:user]) #uso de enum corregido, antes [:product, :user]
+    @folios = Folio.where(status: :assigned).includes(:user, deliveries: [:user]) #uso de enum corregido, antes [:product, :user]
     @assignments = []
   end
 

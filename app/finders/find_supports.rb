@@ -1,11 +1,10 @@
 class FindSupports < ApplicationFinder
   def call
-    scoped = @relation.includes(:product, :user)
+    scoped = @relation.includes(:folio, :user)
     scoped = apply_general_search(scoped) if @params[:q].present?
     scoped = apply_filters(scoped)
     scoped = apply_date_filter(scoped)
-    scoped = apply_sorting(scoped)
-    scoped
+    scoped.order(created_at: :desc)
   end
 
   private
@@ -21,7 +20,6 @@ class FindSupports < ApplicationFinder
       "CAST(supports.id AS TEXT) ILIKE :q OR
        CAST(supports.folio_id AS TEXT) ILIKE :q OR
        CAST(supports.user_id AS TEXT) ILIKE :q OR
-       CAST(supports.product_id AS TEXT) ILIKE :q OR
        supports.client ILIKE :q OR
        supports.plate ILIKE :q OR
        supports.eco ILIKE :q OR
@@ -35,7 +33,6 @@ class FindSupports < ApplicationFinder
     scoped = scoped.where("supports.client ILIKE ?", "%#{@params[:client]}%") if @params[:client].present?
     scoped = scoped.where(supports: { folio_id: @params[:folio_id] }) if @params[:folio_id].present?
     scoped = scoped.where(supports: { user_id: @params[:user_id] }) if @params[:user_id].present?
-    scoped = scoped.where(supports: { product_id: @params[:product_id] }) if @params[:product_id].present?
     scoped = scoped.where("supports.plate ILIKE ?", "%#{@params[:plate]}%") if @params[:plate].present?
     scoped = scoped.where("supports.eco ILIKE ?", "%#{@params[:eco]}%") if @params[:eco].present?
     scoped
@@ -49,21 +46,5 @@ class FindSupports < ApplicationFinder
     else
       scoped
     end
-  end
-
-  def apply_sorting(scoped)
-    if @params[:sort].present? && %w[client created_at folio].include?(@params[:sort])
-      direction = %w[asc desc].include?(@params[:direction]) ? @params[:direction] : "asc"
-      scoped.order(@params[:sort] => direction)
-    else
-      scoped.order(created_at: :desc)
-    end
-  end
-
-  def integer_string?(str)
-    Integer(str)
-    true
-  rescue ArgumentError
-    false
   end
 end
