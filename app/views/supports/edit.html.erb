@@ -1,7 +1,12 @@
 <%= turbo_frame_tag "modal" do %>
   <div class="p-6" data-controller="modal">
     <%= render "shared/modal" do %>
-      <h1 class="text-2xl font-bold text-gray-800 border-b mb-4">Editar Soporte</h1>
+      <h1 class="text-2xl font-bold text-gray-800 border-b mb-4">
+        Editar Soporte -
+        <span class="inline-block px-1 py-1 font-semibold text-xl text-sky-600">
+          <%= @support.id %>
+        </span>
+      </h1>
       <%= render 'form', support: @support %>
     <% end %>
   </div>

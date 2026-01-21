@@ -12,7 +12,9 @@ class SupportsController < ApplicationController
     @pagy, @supports = pagy(scoped, items: params[:per_page] || 10)
   end
 
-  def show; end
+  def show
+    render layout: false
+  end
 
   def new
     @support = Support.new
@@ -20,7 +22,10 @@ class SupportsController < ApplicationController
     @assignments = []
   end
 
-  def edit; end
+  def edit
+    render layout: false
+    load_dependencies
+  end
 
   def create
     @support = Support.new(support_params)
@@ -75,4 +80,10 @@ class SupportsController < ApplicationController
   def support_params
     params.require(:support).permit(:service, :client, :folio_id, :user_id, :car_type, :plate, :eco, :commit)
   end
+
+  def load_dependencies
+    @users = User.where(admin: false).order(:username)
+    @folios = Folio.where(status: :assigned).order(created_at: :asc)
+  end
+
 end

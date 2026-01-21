@@ -1,4 +1,4 @@
-<%= form_with(model: support, data: { turbo_frame: "_top" }, class: "space-y-6") do |f| %>
+<%= form_with(model: support, data: { turbo_frame: "_top" }, class: "space-y-4") do |f| %>
   <% if support.errors.any? %>
     <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
       <h2 class="font-semibold mb-2">
@@ -15,49 +15,49 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Servicio -->
     <div>
-      <%= f.label :service, "Servicio", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.label :service, "Servicio", class: "block text-sm font-semibold text-gray-700 mb-1" %>
       <%= f.text_field :service, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500" %>
     </div>
 
     <!-- Cliente -->
     <div>
-      <%= f.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.label :client, "Cliente", class: "block text-sm font-semibold text-gray-700 mb-1" %>
       <%= f.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
     </div>
 
     <!-- Folio -->
     <div>
-      <%= f.label :folio, "Folio", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.number_field :folio, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+      <%= f.label :folio, "Folio", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+      <%= f.collection_select :folio, @folios, :id, ->(f) { "#{f.id} - #{f.client}" }, {}, class: "block w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-blue-30" %>
     </div>
 
     <!-- Usuario -->
     <div>
-      <%= f.label :user_id, "Usuario", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.number_field :user_id, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+      <%= f.label :user_id, "Usuario", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+      <%= f.collection_select :user_id, @users, :id, :username, {}, class: "block w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-blue-30" %>
     </div>
 
     <!-- Tipo de vehículo -->
     <div>
-      <%= f.label :car_type, "Tipo de vehículo", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.label :car_type, "Tipo de vehículo", class: "block text-sm font-semibold text-gray-700 mb-1" %>
       <%= f.text_field :car_type, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
     </div>
 
     <!-- Placa -->
     <div>
-      <%= f.label :plate, "Placa", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.label :plate, "Placa", class: "block text-sm font-semibold text-gray-700 mb-1" %>
       <%= f.text_field :plate, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
     </div>
 
     <!-- Eco -->
     <div>
-      <%= f.label :eco, "ECO", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.label :eco, "ECO", class: "block text-sm font-semibold text-gray-700 mb-1" %>
       <%= f.text_field :eco, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
     </div>
 
     <!-- Comentarios -->
     <div class="md:col-span-2">
-      <%= f.label :commit, "Comentarios", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.label :commit, "Comentarios", class: "block text-sm font-semibold text-gray-700 mb-1" %>
       <%= f.text_area :commit, rows: 4, class: "w-full border border-gray-300 rounded-lg px-3 py-2 resize-none" %>
     </div>
   </div>

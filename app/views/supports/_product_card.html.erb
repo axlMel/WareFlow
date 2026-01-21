@@ -13,11 +13,12 @@
        data-product-id="<%= product[:product_id] %>" 
        data-action="click->support-form#selectProduct">
 
-    <p class="font-medium text-gray-700 mb-2">
-      <%= product[:title] %> <span class="text-xs text-gray-400">(unidad <%= product[:index] %>)</span>
+    <p class="font-medium mb-2 text-sm">
+      <span class="text-xs text-gray-800"><%= product[:title] %></span>
+      <span class="text-xs text-gray-400">(stock: <%= product[:index] %>)</span>
     </p>
 
-    <div class="text-sm text-gray-600">
+    <div class="text-xs text-gray-600">
       <h2 class="block font-medium mb-1">Estado:</h2>
       <div class="flex flex-wrap transition sm:flex-row gap-3">
         <label class="inline-flex items-center gap-1" for="used_<%= product[:assignment_id] %>">
@@ -26,7 +27,7 @@
                 name="status[<%= product[:assignment_id] %>][<%= product[:index] %>]"
                 value="used"
                 data-action="change->support-form#toggleReplacement">
-          <span>Usado</span>
+          <span class="text-xs">Usado</span>
         </label>
         <label class="inline-flex items-center gap-1" for="defective_<%= product[:assignment_id] %>">
           <input type="radio"
@@ -34,7 +35,7 @@
                 name="status[<%= product[:assignment_id] %>][<%= product[:index] %>]"
                 value="defective"
                 data-action="change->support-form#toggleReplacement">
-          <span>Defectuoso</span>
+          <span class="text-xs">Defectuoso</span>
         </label>
       </div>
     </div>
@@ -43,11 +44,11 @@
          data-support-form-target="replacement"
          data-replacement-for="<%= product[:assignment_id] %>"
          data-index="<%= product[:index] %>">
-      <label for="replacement_<%= product[:assignment_id] %>" class="text-sm text-gray-600 block mb-1">Seleccionar reemplazo:</label>
-      <select id="replacement_<%= product[:assignment_id] %>" name="replacement[<%= product[:assignment_id] %>][<%= product[:index] %>]" class="w-full rounded border-gray-300">
-        <option value="">-- Selecciona un producto --</option>
+      <label for="replacement_<%= product[:assignment_id] %>" class="text-xs text-gray-600 block mb-1">Seleccionar reemplazo:</label>
+      <select id="replacement_<%= product[:assignment_id] %>" name="replacement[<%= product[:assignment_id] %>][<%= product[:index] %>]" class="text-xs w-full rounded border-gray-300">
+        <option value="" class="text-xs text-gray-600 font block mb-1">Producto</option>
         <% product[:replacements].each do |r| %>
-          <option value="<%= r.id %>" data-stock="<%= r.stock_quantity %>">
+          <option value="<%= r.id %>" data-stock="<%= r.stock_quantity %>" class="text-xs text-gray-600 block mb-1">
             <%= r.title %> - Stock: <%= r.stock_quantity %>
           </option>
         <% end %>
@@ -55,13 +56,13 @@
       <input type="number"
       name="replacement_quantity[<%= product[:assignment_id] %>][<%= product[:index] %>]"
       min="1"
-      class="mt-2 w-full rounded border-gray-300"
-      placeholder="Cantidad a reemplazar">
+      class="mt-2 w-full rounded border-gray-300 text-xs"
+      placeholder="Cantidad">
 
       <input type="text"
       name="replacement_commit[<%= product[:assignment_id] %>][<%= product[:index] %>]"
-      class="mt-2 w-full rounded border-gray-300"
-      placeholder="Motivo del reemplazo">
+      class="mt-2 w-full rounded border-gray-300 text-xs"
+      placeholder="Motivo">
 
       <!-- Botón para enviar reemplazo -->
       <button type="button"

@@ -2,7 +2,12 @@
   <div class="p-6" data-controller="modal">
     <%= render "shared/modal" do %>
       <div class="space-y-6">
-        <h1 class="text-2xl font-bold text-gray-800">Detalle del Soporte</h1>
+        <h1 class="text-2xl font-bold text-gray-800 border-b mb-4">
+          Detalle del Soporte - 
+          <span class="inline-block px-1 py-1 font-semibold text-xl text-sky-600">
+            <%= @support.id %>
+          </span>
+        </h1> 
 
         <div class="bg-white rounded-2xl shadow-lg p-6 ring-1 ring-gray-200 space-y-6 text-sm text-gray-700">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -17,13 +22,8 @@
             </div>
 
             <div>
-              <p class="text-xs text-gray-500">Producto</p>
-              <p class="text-base font-medium text-gray-900"><%= @support.product&.title || "—" %></p>
-            </div>
-
-            <div>
               <p class="text-xs text-gray-500">Folio</p>
-              <p class="text-base font-medium text-gray-900"><%= @support.folio %></p>
+              <p class="text-base font-medium text-gray-900"><%= @support.folio.id %></p>
             </div>
 
             <div>
@@ -50,7 +50,7 @@
           <% if @support.commit.present? %>
             <div>
               <p class="text-xs text-gray-500">Comentario</p>
-              <div class="mt-1 bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-800 whitespace-pre-line">
+              <div class="mt-1 bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-800">
                 <%= @support.commit %>
               </div>
             </div>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="flex justify-between items-center pt-4 text-sm">
-          <%= link_to "← Volver al listado", supports_path, class: "text-blue-600 hover:text-blue-800 font-medium transition" %>
+          <%= link_to "← Volver al listado", supports_path, class: "text-sky-600 hover:text-blue-800 font-medium transition" %>
           <%= link_to "Editar soporte", edit_support_path(@support), class: "text-yellow-600 hover:text-yellow-700 font-medium transition" %>
         </div>
       </div>
