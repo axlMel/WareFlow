@@ -59,7 +59,7 @@
                 <th class="px-4 py-3 text-center"><%= sortable("folio_id", "FOLIO") %></th>
                 <th class="px-4 py-3 text-center"><%= sortable("user_id", "USUARIO") %></th>
                 <th class="px-4 py-3 text-left"><%= sortable("created_at", "FECHA CREACION") %></th>
-                <th class="px-4 py-3 text-left"><%= sortable("updated_at", "FECHA ACTUALIZACIOM") %></th>
+                <th class="px-4 py-3 text-left"><%= sortable("updated_at", "FECHA ACTUALIZACION") %></th>
                 <th class="px-4 py-3 text-right">ACTIONS</th>
               </tr>
             </thead>
@@ -75,7 +75,6 @@
                   <td class="px-4 py-3 text-right text-center space-x-2 whitespace-nowrap w-40">
                     <%= link_to "Ver", support_path(support), class: "text-blue-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
                     <%= link_to "Editar", edit_support_path(support), class: "text-yellow-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
-                    <%= link_to "Eliminar", support_path(support), method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-600 hover:underline text-sm" %>
                   </td>
                 </tr>
               <% end %>

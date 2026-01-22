@@ -4,7 +4,7 @@ class Assignment < ApplicationRecord
   belongs_to :product
 
   validates :quantity, numericality: { greater_than: 0 }
-  validate :quantity_cannot_exceed_product_stock
+  validate :quantity_cannot_exceed_product_stock, if: :will_save_change_to_quantity?
   validate :cannot_edit_installed, on: :update
 
   enum :status, { assigned: 0, installed: 1 }

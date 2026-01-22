@@ -23,8 +23,8 @@ class SupportsController < ApplicationController
   end
 
   def edit
-    render layout: false
     load_dependencies
+    render layout: false
   end
 
   def create
@@ -71,8 +71,9 @@ class SupportsController < ApplicationController
   end
 
   def destroy
-    @support.destroy
-    redirect_to supports_url, notice: "Soporte eliminado."
+    #eliminamos destroy
+    #@support.destroy
+    #redirect_to supports_url, notice: "Soporte eliminado."
   end
 
   private

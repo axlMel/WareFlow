@@ -43,12 +43,15 @@
           </thead>
           <tbody class="divide-y divide-gray-200">
             <% other_categories.each do |category, products| %>
-              <% products.each do |product| %>
+              <% products.group_by{ |p| p[:title] }.each do |title, units| %>
                 <tr class="border-b hover:bg-gray-50">
-                  <td class="px-6 py-4"><%= product[:title] %></td>
-                  <td class="px-6 py-4"><%= product[:stock] || 1 %></td>
+                  <td class="px-6 py-4"><%= title %></td>
+                  <td class="px-6 py-4"><%= units.size || 1 %></td>
                   <td class="px-6 py-4 text-gray-500"><%= category %></td>
                 </tr>
+                <% units.each do |unit| %>
+                  <input type="hidden" name="status[<%= unit[:assignment_id] %>][<%= unit[:index] %>]" value="used">
+                <% end %>
               <% end %>
             <% end %>
           </tbody>

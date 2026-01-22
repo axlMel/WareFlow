@@ -28,7 +28,7 @@
     <!-- Folio -->
     <div>
       <%= f.label :folio, "Folio", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-      <%= f.collection_select :folio, @folios, :id, ->(f) { "#{f.id} - #{f.client}" }, {}, class: "block w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-blue-30" %>
+      <%= f.collection_select :folio_id, @folios, :id, ->(f) { "#{f.id} - #{f.client}" }, {}, class: "block w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring focus:ring-blue-30" %>
     </div>
 
     <!-- Usuario -->
