@@ -39,7 +39,11 @@ class SupportsController < ApplicationController
           raise ActiveRecord::Rollback, "No todos los productos fueron marcados como usados"
         end
 
-        assignment = @support.folio.assignments.find(assignment_id)
+        assignment = Assignment.find(assignment_id)
+
+        unless assignment.delivery.folio_id == @support.folio_id
+          raise ActiveRecord::Rollback, "El assignment #{assignment.id} no pertenece al folio del soporte"
+        end
 
         SupportAssignment.create!(
           support: @support,
