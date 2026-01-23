@@ -45,19 +45,29 @@
   <!-- Tabla -->
   <div class="w-full lg:w-3/4 space-y-4">
     <div class="bg-white p-4 rounded-2xl shadow">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">Historial de Asignaciones</h2>
+      <div class="flex justify-between mt-2 mb-2">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Historial de Asignaciones</h2>
+        <!-- Top controls -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2">
+          <!-- Right buttons -->
+          <div class="flex flex-wrap gap-2">
+            <a href="#" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow">Excel</a>
+            <a href="#" class="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow">PDF</a>
+          </div>
+        </div>
+      </div>
       <!-- Tabla interna -->
       <turbo-frame id="assignments_table">
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm border-collapse">
             <thead class="text-xs text-gray-500 uppercase border-b">
               <tr>
-                <th class="px-4 py-2 text-left">Usuario</th>
-                <th class="px-4 py-2 text-left">Producto</th>
-                <th class="px-4 py-2 text-center">Cantidad</th>
-                <th class="px-4 py-2 text-center">Estado</th>
-                <th class="px-4 py-2 text-left">Fecha</th>
-                <th class="px-4 py-2 text-right">Acciones</th>
+                <th class="px-4 py-2 text-left"><%= sortable("user_id", "USUARIO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("product_id", "PRODUCTO") %></th>
+                <th class="px-4 py-2 text-center"><%= sortable("quantity", "CANTIDAD") %></th>
+                <th class="px-4 py-2 text-center"><%= sortable("status", "ESTADO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("created_at", "FECHA CREACION") %></th>
+                <th class="px-4 py-2 text-right">ACCIONES</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -68,8 +78,13 @@
                   <td class="px-4 py-2 text-center font-semibold"><%= assignment.quantity %></td>
                   <td class="px-4 py-2 text-center">
                     <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
-                      <%= assignment.assigned? ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
-                      <%= assignment.status.titleize %>
+                      <%= case assignment.status
+                        when "assigned"
+                          'bg-yellow-100 text-yellow-800'
+                        when "installed"
+                          'bg-green-100 text-green-800'                          
+                        end  %>">
+                      <%= t("activerecord.attributes.assignment.statuses.#{assignment.status}") %>
                     </span>
                   </td>
                   <td class="px-4 py-2 text-gray-500 text-sm"><%= assignment.created_at.to_date %></td>
@@ -85,18 +100,25 @@
             </tbody>
           </table>
         </div>
-
-        <div class="flex justify-between items-center mt-4">
-          <p class="text-sm text-gray-500">
-            Mostrando
-            <span class="font-semibold"><%= @pagy.from %></span>
-            a
-            <span class="font-semibold"><%= @pagy.to %></span>
-            de
-            <span class="font-semibold"><%= @pagy.count %></span>
-            asignaciones
-          </p>
-          <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="assignments_table"').html_safe %>
+        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <label for="per_page">Mostrar:</label>
+            <%= form_with url: assignments_path, method: :get, local: true do |f| %>
+              <%= hidden_field_tag :q, params[:q] %> <!-- conserva búsqueda -->
+              <%= select_tag :per_page,
+                    options_for_select([10, 30, 50, 100], params[:per_page] || 10),
+                    onchange: "this.form.submit();",
+                    class: "border border-gray-300 rounded-lg px-2 py-1 text-sm" %>
+            <% end %>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <div>
+              <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Asignaciones de (#{@pagy.count})" %></span>
+            </div>
+            <div>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="assignments_table').html_safe %>
+            </div>
+          </div>
         </div>
       </turbo-frame>
     </div>

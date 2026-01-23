@@ -22,10 +22,14 @@ es:
       category:
         name: 'Nombre'
       warranty:
-        state:
+        states:
           pending: "Pendiente"
           in_process: "En proceso"
           completed: "Completada"
+      assignment:
+        statuses:
+          assigned: "Asignado"
+          installed: "Instaldo"
 
   common:
     confirm: '¿Estás seguro?'

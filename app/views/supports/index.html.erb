@@ -50,29 +50,29 @@
       </div>
       
       <turbo-frame id="supports_table">
-        <div class="overflow-x-auto rounded-xl border">
+        <div class="overflow-x-auto">
           <table class="min-w-full text-sm table-auto">
-            <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+            <thead class="text-xs text-gray-500 uppercase border-b">
               <tr>
-                <th class="px-4 py-3 text-center"><%= sortable("service", "SERVICIO") %></th>
-                <th class="px-4 py-3 text-center"><%= sortable("client", "CLIENTE") %></th>
-                <th class="px-4 py-3 text-center"><%= sortable("folio_id", "FOLIO") %></th>
-                <th class="px-4 py-3 text-center"><%= sortable("user_id", "USUARIO") %></th>
-                <th class="px-4 py-3 text-left"><%= sortable("created_at", "FECHA CREACION") %></th>
-                <th class="px-4 py-3 text-left"><%= sortable("updated_at", "FECHA ACTUALIZACION") %></th>
-                <th class="px-4 py-3 text-right">ACTIONS</th>
+                <th class="px-4 py-2 text-center"><%= sortable("service", "SERVICIO") %></th>
+                <th class="px-4 py-2 text-center"><%= sortable("client", "CLIENTE") %></th>
+                <th class="px-4 py-2 text-center"><%= sortable("folio_id", "FOLIO") %></th>
+                <th class="px-4 py-2 text-center"><%= sortable("user_id", "USUARIO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("created_at", "FECHA CREACION") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("updated_at", "FECHA ACTUALIZACION") %></th>
+                <th class="px-4 py-2 text-right">ACCIONES</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
               <% @supports.each do |support| %>
-                <tr class="hover:bg-indigo-50 transition">
-                  <td class="px-4 py-3 text-center text-gray-700"><%= support.service %></td>
-                  <td class="px-4 py-3 text-center"><%= support.client %></td>
-                  <td class="px-4 py-3 text-center"><%= support.folio_id %></td>
-                  <td class="px-4 py-3 text-center font-medium text-gray-800"><%= support.user&.username || "N/A" %></td>
-                  <td class="px-4 py-3 text-left"><%= l(support.created_at, format: :short) %></td>
-                  <td class="px-4 py-3 text-lef"><%= l(support.updated_at, format: :short) %></td>
-                  <td class="px-4 py-3 text-right text-center space-x-2 whitespace-nowrap w-40">
+                <tr class="hover:bg-sky-50 transition">
+                  <td class="px-4 py-2 text-center text-gray-700"><%= support.service %></td>
+                  <td class="px-4 py-2 text-center"><%= support.client %></td>
+                  <td class="px-4 py-2 text-center"><%= support.folio_id %></td>
+                  <td class="px-4 py-2 text-center font-medium text-gray-800"><%= support.user&.username || "N/A" %></td>
+                  <td class="px-4 py-2 text-left"><%= l(support.created_at, format: :short) %></td>
+                  <td class="px-4 py-2 text-lef"><%= l(support.updated_at, format: :short) %></td>
+                  <td class="px-4 py-2 text-right text-center space-x-2 whitespace-nowrap w-40">
                     <%= link_to "Ver", support_path(support), class: "text-blue-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
                     <%= link_to "Editar", edit_support_path(support), class: "text-yellow-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
                   </td>
@@ -98,11 +98,16 @@
               <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Soportes de (#{@pagy.count})" %></span>
             </div>
             <div>
-              <%= pagy_nav(@pagy).html_safe %>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="supports_table').html_safe %>
             </div>
           </div>
         </div>
       </turbo-frame>      
     </div>
+    <% if @supports.empty? %>
+      <div class="text-center py-10 text-gray-400">
+        No hay asignaciones para mostrar
+      </div>
+    <% end %>
   </div>
 </div>
