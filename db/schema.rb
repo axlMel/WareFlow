@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_07_222759) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_22_214335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -157,10 +157,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_07_222759) do
     t.integer "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "assignment_id"
     t.bigint "user_id"
     t.bigint "product_id"
-    t.index ["assignment_id"], name: "index_warranties_on_assignment_id"
     t.index ["product_id"], name: "index_warranties_on_product_id"
     t.index ["user_id"], name: "index_warranties_on_user_id"
   end
@@ -182,7 +180,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_07_222759) do
   add_foreign_key "support_assignments", "supports"
   add_foreign_key "supports", "folios"
   add_foreign_key "supports", "users"
-  add_foreign_key "warranties", "assignments"
   add_foreign_key "warranties", "products"
   add_foreign_key "warranties", "users"
 end

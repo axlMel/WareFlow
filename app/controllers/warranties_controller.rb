@@ -2,14 +2,8 @@ class WarrantiesController < ApplicationController
   before_action :set_warranty, only: [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.all
-    @warranties = Warranty.includes(:user, :assignment).order(created_at: :desc)
-
-    # Filtros de búsqueda
-    @warranties = @warranties.where("client ILIKE ?", "%#{params[:client]}%") if params[:client].present?
-    @warranties = @warranties.where(id: params[:folio]) if params[:folio].present?
-    @warranties = @warranties.where(user_id: params[:user_id]) if params[:user_id].present?
-    @warranties = @warranties.where(state: params[:status]) if params[:status].present?
+    finder = FindWarranties.new(Warranty.all, params)
+    @pagy, @warranties = pagy(finder.call)
   end
 
   def new

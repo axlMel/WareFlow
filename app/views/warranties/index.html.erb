@@ -4,40 +4,39 @@
     <div class="bg-white p-4 rounded-2xl shadow space-y-4">
       <h1 class="text-2xl font-bold text-gray-800">Garantías</h1>
 
-      <%= form_with url: warranties_path, method: :get, local: true do |form| %>
-        <div class="space-y-4">
-          <!-- Cliente -->
-          <div>
-            <%= form.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
-          </div>
+      <%= form_with url: warranties_path, method: :get, data:{ controller: "debounce-search", turbo_frame: "warranties_table" }, class: "space-y-4" do |form| %>
 
-          <!-- Folio -->
-          <div>
-            <%= form.label :folio, "Folio", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.number_field :folio, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
-          </div>
+        <!-- Busqueda -->
+        <div>
+          <%= form.label :q, "Busqueda", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :q, value: params[:q], placeholder: "Usuario o producto", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
+        </div>
 
-          <!-- Usuario -->
-          <div>
-            <%= form.label :user_id, "Usuario", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.collection_select :user_id, @users, :id, :username, { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
-          </div>
+        <!-- Estado -->
+        <div>
+          <%= form.label :state, "Estado de garantía", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.select :state, options_for_select([['Pendiente', 0], ['En proceso', 1], ['Completado', 2]], params[:state]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
+        </div>
 
-          <!-- Estado -->
+        <!-- Fechas -->
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <%= form.label :status, "Estado", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.select :status, [['Creado', 0], ['Asignado', 1]], { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2" %>
+            <%= form.label :from, "Desde", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :from, value: params[:from], class:"w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
           </div>
+          <div>
+            <%= form.label :to, "Hasta", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :to, value: params[:to], class: "w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
+          </div>
+        </div>
 
-          <div class="pt-2">
-            <%= form.submit 'Filtrar', class: "w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-indigo-700 transition" %>
-          </div>
+        <div class="pt-2">
+          <%= form.submit 'Filtrar', class: "w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
         </div>
       <% end %>
 
       <div class="pt-4 flex justify-center">
-        <%= link_to "Nueva Garantía", new_warranty_path, data: { turbo_frame: "modal" }, class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow" %>
+        <%= link_to "Nueva Garantía", new_warranty_path, data: { turbo_frame: "modal" }, class: "bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow" %>
       </div>
     </div>
   </div>
@@ -46,46 +45,74 @@
   <div class="w-full lg:w-3/4 space-y-4">
     <div class="bg-white p-4 rounded-2xl shadow">
       <h2 class="text-xl font-semibold mb-4">Historial de Garantías</h2>
-
-      <% if @warranties.any? %>
+      <!-- Tabla interna -->
+      <turbo-frame id="warranties_table">
         <div class="overflow-x-auto">
-          <table class="min-w-full text-sm text-left border-collapse">
+          <table class="min-w-full text-sm border-collapse">
             <thead class="text-xs text-gray-500 uppercase border-b">
               <tr>
-                <th class="px-6 py-3">Folio</th>
-                <th class="px-6 py-3">Cliente</th>
-                <th class="px-6 py-3">Usuario</th>
-                <th class="px-6 py-3">Estado</th>
-                <th class="px-6 py-3">Fecha</th>
-                <th class="px-6 py-3">Acciones</th>
+                <th class="px-4 py-2">ID</th>
+                <th class="px-4 py-2">PRODUCTO</th>
+                <th class="px-4 py-2">Cliente</th>
+                <th class="px-4 py-2">Usuario</th>
+                <th class="px-4 py-2">Estado</th>
+                <th class="px-4 py-2">Fecha</th>
+                <th class="px-4 py-2">Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200">
               <% @warranties.each do |warranty| %>
-                <tr class="border-t hover:bg-gray-50">
-                  <td class="px-6 py-4"><%= warranty.id %></td>
-                  <td class="px-6 py-4"><%= warranty.client %></td>
-                  <td class="px-6 py-4"><%= warranty.user&.username || "N/A" %></td>
-                  <td class="px-6 py-4">
+                <tr class="hover:bg-gray-50 transition">
+                  <td class="px-4 py-2"><%= warranty.id %></td>
+                  <td class="px-4 py-2"><%= warranty.product&.title || "N/A" %></td>
+                  <td class="px-4 py-2"><%= warranty.client %></td>
+                  <td class="px-4 py-2"><%= warranty.user&.username || "N/A" %></td>
+                  <td class="px-4 py-2">
                     <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold
-                      <%= warranty.state == 1 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
-                      <%= warranty.state == 1 ? 'Asignado' : 'Creado' %>
+                      <%= case warranty.state 
+                        when "pending"
+                          "bg-red-100 text-red-800"
+                        when "in_process"
+                          "bg-yellow-100 text-yellow-800"
+                        when "completed"
+                          "bg-green-100 text-green-800"
+                        end %>">
+                      <%= warranty.state.humanize %>
                     </span>
                   </td>
-                  <td class="px-6 py-4"><%= l(warranty.created_at, format: :short) %></td>
-                  <td class="px-6 py-4 space-x-2 whitespace-nowrap">
-                    <%= link_to "Ver", warranty_path(warranty), class: "text-blue-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
-                    <%= link_to "Editar", edit_warranty_path(warranty), class: "text-yellow-600 hover:underline text-sm", data: { turbo_frame: "modal" } %>
-                    <%= link_to "Eliminar", warranty_path(warranty), method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-600 hover:underline text-sm" %>
+                  <td class="px-4 py-2 text-gray-500 text-sm"><%= l(warranty.created_at, format: :short) %></td>
+                  <td class="px-4 py-2 text-right flex gap-2">
+                    <%= link_to "Ver", warranty_path(warranty), class: "text-indigo-600 hover:underline", data: { turbo_frame: "modal" } %>
+                    <%= link_to "Editar", edit_warranty_path(warranty), class: "text-yellow-600 hover:underline", data: { turbo_frame: "modal" } %>
+                    <%= link_to "Eliminar", warranty_path(warranty), method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-600 hover:underline" %>
                   </td>
                 </tr>
               <% end %>
             </tbody>
           </table>
         </div>
-      <% else %>
-        <p class="text-gray-600">No hay garantías registradas.</p>
-      <% end %>
+        <div class="flex justify-between items-center mt-4">
+          <p class="text-sm text-gray-500">
+            Mostrando
+            <span class="font-semibold"><%= @pagy.from %></span>
+            a
+            <span class="font-semibold"><%= @pagy.to %></span>
+            de
+            <span class="font-semibold"><%= @pagy.count %></span>
+            Garantías
+          </p>
+          <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="warranties_table"').html_safe %>
+        </div>
+      </turbo-frame>
     </div>
+    <% if @warranties.empty? %>
+      <div class="text-center py-10 text-gray-400">
+        No hay garantías para mostrar
+      </div>
+    <% end %>
   </div>
 </div>
+<turbo-frame
+  id="modal"
+  src="<%= warranties_path(params[:show]) if params[:show].present? %>">
+</turbo-frame>

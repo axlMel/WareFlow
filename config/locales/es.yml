@@ -21,6 +21,12 @@ es:
         password: 'Contraseña'
       category:
         name: 'Nombre'
+      warranty:
+        state:
+          pending: "Pendiente"
+          in_process: "En proceso"
+          completed: "Completada"
+
   common:
     confirm: '¿Estás seguro?'
     back: 'Volver'

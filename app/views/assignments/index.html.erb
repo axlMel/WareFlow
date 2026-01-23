@@ -15,7 +15,7 @@
         <!-- Estado -->
         <div>
           <%= f.label :status, "Estado de asignación", class: "block text-sm font-medium text-gray-700" %>
-          <%= f.select :status, options_for_select([["Asignado", "assigned"], ["instalado", "installed"]], params[:status]), { include_blank: "Solo asignados (default)"}, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
+          <%= f.select :status, options_for_select([["Asignado", "assigned"], ["instalado", "installed"]], params[:status]), { include_blank: true }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
         </div>
 
         <!-- Fechas -->
@@ -48,37 +48,37 @@
       <h2 class="text-xl font-semibold text-gray-800 mb-4">Historial de Asignaciones</h2>
       <!-- Tabla interna -->
       <turbo-frame id="assignments_table">
-        <div class="overflow-x-auto rounded-xl border">
-          <table class="min-w-full text-sm">
-            <thead class="bg-gray-100 text-gray-600 uppercase text-sm">
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm border-collapse">
+            <thead class="text-xs text-gray-500 uppercase border-b">
               <tr>
-                <th class="px-4 py-3 text-left">Usuario</th>
-                <th class="px-4 py-3 text-left">Producto</th>
-                <th class="px-4 py-3 text-center">Cantidad</th>
-                <th class="px-4 py-3 text-center">Estado</th>
-                <th class="px-4 py-3 text-left">Fecha</th>
-                <th class="px-4 py-3 text-right">Acciones</th>
+                <th class="px-4 py-2 text-left">Usuario</th>
+                <th class="px-4 py-2 text-left">Producto</th>
+                <th class="px-4 py-2 text-center">Cantidad</th>
+                <th class="px-4 py-2 text-center">Estado</th>
+                <th class="px-4 py-2 text-left">Fecha</th>
+                <th class="px-4 py-2 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
               <% @assignments.each do |assignment| %>
-                <tr class="hover:bg-indigo-50 transition" id="<%= dom_id(assignment) %>">
-                  <td class="px-4 py-3 font-medium text-gray-800"><%= assignment.user.username %></td>
-                  <td class="px-4 py-3 text-gray-700"><%= assignment.product.title %></td>
-                  <td class="px-4 py-3 text-center font-semibold"><%= assignment.quantity %></td>
-                  <td class="px-4 py-3 text-center">
+                <tr class="hover:bg-sky-50 transition" id="<%= dom_id(assignment) %>">
+                  <td class="px-4 py-2 font-medium"><%= assignment.user.username %></td>
+                  <td class="px-4 py-2 text-gray-700"><%= assignment.product.title %></td>
+                  <td class="px-4 py-2 text-center font-semibold"><%= assignment.quantity %></td>
+                  <td class="px-4 py-2 text-center">
                     <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
                       <%= assignment.assigned? ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
                       <%= assignment.status.titleize %>
                     </span>
                   </td>
-                  <td class="px-4 py-3 text-gray-500 text-sm"><%= l(assignment.created_at, format: :short) %></td>
-                  <td class="px-4 py-3 text-right space-x-3">
-                    <%= link_to "Ver", assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-indigo-600 hover:underline text-sm" %>
+                  <td class="px-4 py-2 text-gray-500 text-sm"><%= assignment.created_at.to_date %></td>
+                  <td class="px-4 py-2 text-right flex gap-2">
+                    <%= link_to "Ver", assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-indigo-600 hover:underline" %>
                     <% unless assignment.installed? %>
-                      <%= link_to "Editar", edit_assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline text-sm" %>
+                      <%= link_to "Editar", edit_assignment_path(assignment), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
                     <% end %>
-                    <%= button_to "Eliminar", assignment_path(assignment),method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:underline text-sm" %>
+                    <%= button_to "Eliminar", assignment_path(assignment),method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
                   </td>
                 </tr>
               <% end %>

@@ -1,8 +1,8 @@
-class FindAssignments < ApplicationFinder
+class FindWarranties < ApplicationFinder
 
 	def call
 		scoped = @relation.includes(:user, :product)
-		scoped = apply_status_filter(scoped)
+		scoped = apply_state_filter(scoped)
 		scoped = apply_search(scoped)
 		scoped = apply_date_filter(scoped)
 		scoped.order(created_at: :desc)
@@ -10,9 +10,9 @@ class FindAssignments < ApplicationFinder
 
 	private
 
-	def apply_status_filter(scoped)
-		if @params[:status].present?
-			scoped.where(status: @params[:status])
+	def apply_state_filter(scoped)
+		if @params[:state].present?
+			scoped.where(state: @params[:state])
 		else
 			scoped.all
 		end
@@ -25,7 +25,7 @@ class FindAssignments < ApplicationFinder
 		pattern = "%#{query}%"
 
 		scoped.joins(:user, :product).where(
-			"users.username ILIKE :q OR products.title ILIKE :q",
+			"users.username ILIKE :q OR products.title ILIKE :q OR warranties.client ILIKE :q",
 			q: pattern
     )
 	end

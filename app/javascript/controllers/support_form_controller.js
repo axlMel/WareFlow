@@ -122,7 +122,6 @@ export default class extends Controller {
 
 
   submitReplacement(event) {
-    const assignmentId = event.target.dataset.assignmentId;
     const index = event.target.dataset.index;
     const selectWrapper = this.replacementTargets.find(
       el => el.dataset.replacementFor === assignmentId && el.dataset.index === index
@@ -145,7 +144,6 @@ export default class extends Controller {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRF-Token": this.getToken() },
       body: JSON.stringify({
-        assignment_id: assignmentId,
         replacement_product_id: replacementProductId,
         quantity: quantity,
         commit: commit
