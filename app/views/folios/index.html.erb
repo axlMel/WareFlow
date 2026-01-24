@@ -1,39 +1,37 @@
 <div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
-
-  <!-- Panel izquierdo: filtros -->
+  <!-- sidebar de filtros -->
   <div class="w-full lg:w-1/4 space-y-4">
     <div class="bg-white p-4 rounded-2xl shadow space-y-4">
-      <h1 class="text-2xl font-bold">Filtrar folios</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Filtrar folios</h1>
 
-      <%= form_with url: folios_path, method: :get, local: true do |form| %>
-        <div class="space-y-4">
-          <!-- Cliente -->
+      <%= form_with url: folios_path, method: :get, data:{ controller: "debounce-search", turbo_frame: "folios_table" }, class: "space-y-4" do |form| %>
+
+        <!-- Busqueda -->
+        <div>
+          <%= form.label :q, "Busqueda", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :q, value: params[:q], placeholder: "Cliente usuario o folio", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
+        </div>
+
+        <!-- Estado -->
+        <div>
+          <%= form.label :status, "Estado de folio", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.select :status, options_for_select([['Creado', :crafted], ['Asignado', :assigned], ['Finalizado', :delivered]], params[:status]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
+        </div>
+
+        <!-- Fechas -->
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <%= form.label :client, "Cliente", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.text_field :client, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+            <%= form.label :from, "Desde", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :from, value: params[:from], class:"w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
           </div>
-
-          <!-- Folio -->
           <div>
-            <%= form.label :id, "Folio", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.number_field :id, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+            <%= form.label :to, "Hasta", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :to, value: params[:to], class: "w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
           </div>
+        </div>
 
-          <!-- Usuario -->
-          <div>
-            <%= form.label :user_id, "Usuario", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.collection_select :user_id, @users, :id, :username, {}, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
-          </div>
-
-          <!-- Estado -->
-          <div>
-            <%= form.label :status, "Estado", class: "block text-sm font-medium text-gray-700" %>
-            <%= form.select :status, [["Creado", "creado"], ["Asignado", "asignado"]], {}, class: "w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
-          </div>
-
-          <div class="pt-2">
-            <%= form.submit 'Filtrar', class: "w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-indigo-700 transition" %>
-          </div>
+        <div class="pt-2">
+          <%= form.submit 'Filtrar', class: "w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
         </div>
       <% end %>
 

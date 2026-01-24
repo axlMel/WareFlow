@@ -1,7 +1,7 @@
 class Folio < ApplicationRecord
   belongs_to :user, optional: true
   has_many :deliveries
-  has_many :assignments, dependent: :nullify
+  has_many :assignments, through: :deliveries
 
   before_destroy :check_assignments
   enum :status, { crafted: 0, assigned: 1, delivered: 2 }
