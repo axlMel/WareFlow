@@ -2,23 +2,12 @@ class FoliosController < ApplicationController
   before_action :set_folio, only: [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.where(admin: false)
-    if params[:q].present?
-      query = params[:q]
-      @folios = Folio.joins(:user).where(
-        "folios.id::text ILIKE :q OR folios.client ILIKE :q OR users.username ILIKE :q",
-        q: "%#{query}%"
-      ).includes(:user).limit(10)
-
-      render json: @folios.map { |f| { id: f.id, client: f.client, user_username: f.user.username } }
-    else
-      @folios = Folio.includes(:user).order(created_at: :desc)
-
-      respond_to do |format|
-        format.html # <- esto es necesario
-        format.turbo_stream # <- y esto también
-      end
-    end
+    finder = FindFolios.new(Folio.all, params)
+    scoped = finder.call
+    sort_column = params[:sort] || 'folios.created_at'
+    sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+    scoped = scoped.order("#{sort_column} #{sort_direction}")
+    @pagy, @folios = pagy(scoped, items: params[:per_page] || 10)
   end
 
   def assignment_products

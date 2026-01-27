@@ -44,39 +44,93 @@
   <!-- Panel derecho: tabla de folios -->
   <div class="w-full lg:w-3/4 space-y-4">
     <div class="bg-white p-4 rounded-2xl shadow">
-      <h2 class="text-xl font-semibold mb-4">Lista de folios</h2>
-
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm text-left border-collapse">
-          <thead class="text-xs text-gray-500 uppercase border-b">
-            <tr>
-              <th class="px-4 py-2">Fecha</th>
-              <th class="px-4 py-2">Folio</th>
-              <th class="px-4 py-2">Cliente</th>
-              <th class="px-4 py-2">Usuario</th>
-              <th class="px-4 py-2">Estado</th>
-              <th class="px-4 py-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <% @folios.each do |folio| %>
-              <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2"><%= folio.created_at.strftime("%d/%m/%Y") %></td>
-                <td class="px-4 py-2 font-medium"><%= folio.id %></td>
-                <td class="px-4 py-2"><%= folio.client %></td>
-                <td class="px-4 py-2"><%= folio.user&.username || "No asignado" %></td>
-                <td class="px-4 py-2 capitalize"><%= folio.status %></td>
-                <td class="px-4 py-2 flex gap-2">
-                  <%= link_to 'Ver', folio_path(folio), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
-                  <%= link_to 'Editar', edit_folio_path(folio), class: "text-yellow-600 hover:underline", data: { turbo_frame: "modal" } %>
-                  <%= link_to 'Eliminar', folio_path(folio), method: :delete, data: { confirm: '¿Estás seguro?' }, class: "text-red-600 hover:underline" %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+      <div class="flex justify-between mt-2 mb-2">
+        <h2 class="text-xl font-semibold mb-4">Lista de folios</h2>
+        <!-- Top controls -->
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2">
+          <!-- Right buttons -->
+          <div class="flex flex-wrap gap-2">
+            <a href="#" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow">Excel</a>
+            <a href="#" class="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow">PDF</a>
+          </div>
+        </div>
       </div>
+
+      <turbo-fame id="folios_table">
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left border-collapse">
+            <thead class="text-xs text-gray-500 uppercase border-b">
+              <tr>
+                <th class="px-4 py-2"><%= sortable("id", "ID") %></th>
+                <th class="px-4 py-2"><%= sortable("created_at", "FECHA CREACION") %></th>              
+                <th class="px-4 py-2"><%= sortable("client", "CLIENTE") %></th>
+                <th class="px-4 py-2"><%= sortable("user_id", "USUARIO") %></th>
+                <th class="px-4 py-2"><%= sortable("status", "ESTADO") %></th>
+                <th class="px-4 py-2">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <% @folios.each do |folio| %>
+                <tr class="hover:bg-sky-50 transition">
+                  <td class="px-4 py-2 font-medium"><%= folio.id %></td>
+                  <td class="px-4 py-2"><%= folio.created_at.strftime("%d/%m/%Y") %></td>
+                  <td class="px-4 py-2"><%= folio.client %></td>
+                  <td class="px-4 py-2"><%= folio.user&.username || "No asignado" %></td>
+                  <td class="px-4 py-2">
+                    <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
+                      <%= case folio.status 
+                      when "crafted"
+                        'bg-red-100 text-red-600'
+                      when "assigned"
+                        'bg-yellow-100 text-yellow-800'
+                      when "delivered"
+                        'bg-green-100 text-green-800'
+                      end  %>">
+                      <%= t("activerecord.attributes.folio.statuses.#{folio.status}") %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-2 flex gap-2">
+                    <%= link_to 'Ver', folio_path(folio), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
+                    <% unless folio.delivered? %>
+                      <%= link_to "Editar", edit_folio_path(folio), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
+                    <% end %>
+                    <%= link_to 'Eliminar', folio_path(folio), method: :delete, data: { turbo_confirm: '¿Estás seguro?', turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <label for="per_page">Mostrar:</label>
+            <%= form_with url: folios_path, method: :get, local: true do |f| %>
+              <%= hidden_field_tag :q, params[:q] %> <!-- conserva búsqueda -->
+              <%= select_tag :per_page,
+                    options_for_select([10, 30, 50, 100], params[:per_page] || 10),
+                    onchange: "this.form.submit();",
+                    class: "border border-gray-300 rounded-lg px-2 py-1 text-sm" %>
+            <% end %>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <div>
+              <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Folios)" %></span>
+            </div>
+            <div>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="folios_table').html_safe %>
+            </div>
+          </div>
+        </div>
+      </turbo-fame>      
     </div>
+    <% if @folios.empty? %>
+      <div class="text-center py-10 text-gray-400">
+        No hay Folios para mostrar
+      </div>
+    <% end %>
   </div>
 </div>
-
+<turbo-frame
+  id="modal"
+  src="<%= folio_path(params[:show]) if params[:show].present? %>">
+</turbo-frame>
