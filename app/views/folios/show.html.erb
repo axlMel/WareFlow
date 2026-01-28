@@ -1,63 +1,63 @@
 <%= turbo_frame_tag "modal" do %>
   <div class="p-6" data-controller="modal">
     <%= render "shared/modal" do %>
-      <div class="bg-white p-6 rounded-2xl shadow-xl space-y-6">
-        <!-- Título -->
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-gray-800">Detalles del Folio</h1>
-          <span class="text-sm text-gray-500">ID: <%= @folio.id %></span>
+      <div class="space-y-6">
+        <h1 class="text-2xl font-bold text-gray-800 border-b mb-4">Detalles del Folio -
+          <span class="inline-block px-1 py-1 font-semibold text-xl text-sky-600">ID: <%= @folio.id %></span>
+        </h1>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 ring-1 ring-gray-200 space-y-6 text-sm text-gray-700">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <p class="text-base text-gray-500">Cliente:</p>
+              <p class="text-sm font-medium text-gray-900"><%= @folio.client || "-" %></p>
+            </div>
+            <div>
+              <p class="text-base text-gray-500">Usuario asignado:</p>
+              <p class="text-sm font-medium text-gray-900"><%= @folio.user&.username || "No asignado" %></p>
+            </div>
+            <div>
+              <p class="text-base text-gray-500">Estado:</p>
+              <p class="text-sm font-medium text-gray-900"><%= @folio.status.presence || "No status" %></p>
+            </div>
+            <div>
+              <p class="text-base text-gray-500">Servicio:</p>
+              <p class="text-sm font-medium text-gray-900"><%= @folio.service.presence || "No especificado" %></p>
+            </div>
+            <div class="md:col-span-2">
+              <p class="text-base text-gray-500">Accesorios:</p>
+              <p class="text-sm font-medium text-gray-900"><%= @folio.accessories.presence || "Ninguno" %></p>
+            </div>
+            <div class="md:col-span-2">
+              <p class="ftext-base text-gray-500">Fecha de creación:</p>
+              <p class="text-sm font-medium text-gray-900"><%= l(@folio.created_at, format: :long) %></p>
+            </div>
+          </div>
+
+          <!-- Productos asignados -->
+          <div>
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Productos asignados</h2>
+
+            <% if @folio.deliveries.any? %>
+              <ul class="space-y-2 text-sm text-gray-700 list-disc pl-6">
+                <% @folio.assignments.each do |assignment| %>
+                  <li>
+                    <span class="font-medium"><%= assignment.product.title %></span>
+                    – Cantidad: <%= assignment.quantity %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="text-gray-500 text-sm">No hay productos asignados a este folio aún.</p>
+            <% end %>
+          </div>
         </div>
-
-        <!-- Datos del folio -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-          <div>
-            <p class="font-semibold">Cliente:</p>
-            <p><%= @folio.client %></p>
-          </div>
-          <div>
-            <p class="font-semibold">Usuario asignado:</p>
-            <p><%= @folio.user&.username || "No asignado" %></p>
-          </div>
-          <div>
-            <p class="font-semibold">Estado:</p>
-            <p><%= @folio.status.presence || "No asignado" %></p>
-          </div>
-          <div>
-            <p class="font-semibold">Servicio:</p>
-            <p><%= @folio.service.presence || "No especificado" %></p>
-          </div>
-          <div class="md:col-span-2">
-            <p class="font-semibold">Accesorios:</p>
-            <p><%= @folio.accessories.presence || "Ninguno" %></p>
-          </div>
-          <div class="md:col-span-2">
-            <p class="font-semibold">Fecha de creación:</p>
-            <p><%= l(@folio.created_at, format: :long) %></p>
-          </div>
-        </div>
-
-        <!-- Productos asignados -->
-        <div>
-          <h2 class="text-lg font-semibold text-gray-800 mb-2">Productos asignados</h2>
-
-          <% if @folio.deliveries.any? %>
-            <ul class="space-y-2 text-sm text-gray-700 list-disc pl-6">
-              <% @folio.assignments.each do |assignment| %>
-                <li>
-                  <span class="font-medium"><%= assignment.product.title %></span>
-                  – Cantidad: <%= assignment.quantity %>
-                </li>
-              <% end %>
-            </ul>
-          <% else %>
-            <p class="text-gray-500 text-sm">No hay productos asignados a este folio.</p>
-          <% end %>
-        </div>
-
         <!-- Acciones -->
-        <div class="pt-4 flex flex-wrap justify-end gap-3">
-          <%= link_to "Editar", edit_folio_path(@folio), class: "bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600 transition", data: { turbo_frame: "main_content" } %>
-          <%= link_to "Volver", folios_path, class: "text-gray-600 px-4 py-2 rounded-xl hover:bg-gray-100 transition", data: { turbo_frame: "main_content" } %>
+        <div class="flex justify-between items-center text-sm">
+          <%= link_to "← Volver al listado", folios_path, class: "text-sky-600 hover:text-blue-800 font-medium transition" %>
+          <% unless @folio.delivered? %>
+            <%= link_to "Editar", edit_folio_path(@folio), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:text-yellow-700 font-medium transition" %>
+          <% end %>
         </div>
       </div>
     <% end %>

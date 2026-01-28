@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <turbo-fame id="folios_table">
+      <turbo-frame id="folios_table">
         <div class="overflow-x-auto">
           <table class="min-w-full text-sm text-left border-collapse">
             <thead class="text-xs text-gray-500 uppercase border-b">
@@ -89,12 +89,12 @@
                       <%= t("activerecord.attributes.folio.statuses.#{folio.status}") %>
                     </span>
                   </td>
-                  <td class="px-4 py-2 flex gap-2">
+                  <td class="px-4 py-2 text-center align-middle">
                     <%= link_to 'Ver', folio_path(folio), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
-                    <% unless folio.delivered? %>
-                      <%= link_to "Editar", edit_folio_path(folio), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
-                    <% end %>
-                    <%= link_to 'Eliminar', folio_path(folio), method: :delete, data: { turbo_confirm: '¿Estás seguro?', turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
+                    
+                    <%= link_to "Editar", edit_folio_path(folio), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
+                    
+                    <%= button_to 'Eliminar', folio_path(folio), method: :delete, data: { turbo_confirm: '¿Estás seguro?', turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
                   </td>
                 </tr>
               <% end %>
@@ -117,11 +117,11 @@
               <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Folios)" %></span>
             </div>
             <div>
-              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="folios_table').html_safe %>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="folios_table"').html_safe %>
             </div>
           </div>
         </div>
-      </turbo-fame>      
+      </turbo-frame>      
     </div>
     <% if @folios.empty? %>
       <div class="text-center py-10 text-gray-400">

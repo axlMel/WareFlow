@@ -2,7 +2,7 @@
   <% if warranty.errors.any? %>
     <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
       <h2 class="font-semibold mb-2">
-        <%= pluralize(warranty.errors.count, "error") %> impidieron guardar la garantía:
+        <%= pluralize(warranty.errors.count, "error") %> impidieron guardar la garantía.
       </h2>
       <ul class="list-disc list-inside text-sm">
         <%= warranty.errors.full_messages.each do |message| %>

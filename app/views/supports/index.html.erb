@@ -98,7 +98,7 @@
               <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Soportes de (#{@pagy.count})" %></span>
             </div>
             <div>
-              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="supports_table').html_safe %>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="supports_table"').html_safe %>
             </div>
           </div>
         </div>

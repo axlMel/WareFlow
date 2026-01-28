@@ -4,10 +4,20 @@ class FoliosController < ApplicationController
   def index
     finder = FindFolios.new(Folio.all, params)
     scoped = finder.call
+
     sort_column = params[:sort] || 'folios.created_at'
     sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
     scoped = scoped.order("#{sort_column} #{sort_direction}")
-    @pagy, @folios = pagy(scoped, items: params[:per_page] || 10)
+
+    # Asegurarse que per_page sea un número válido
+    per_page = params[:per_page].to_i
+    per_page = 10 if per_page <= 0
+    Rails.logger.error ">>> ITEMS QUE SE PASAN A PAGY = #{per_page}"
+
+    @pagy, @folios = pagy(scoped, items: per_page)
+    Rails.logger.error ">>> PARAMS[:per_page] ACTUAL = #{params[:per_page].inspect}"
+Rails.logger.error ">>> PAGY ITEMS = #{per_page}"
+Rails.logger.error ">>> SCOPED SQL = #{scoped.to_sql}"
   end
 
   def assignment_products
@@ -35,31 +45,20 @@ class FoliosController < ApplicationController
   def create
     @folio = Folio.new(folio_params)
     @folio.crafted!
-
     if @folio.save
-      #redirect_to folio_path(@folio), notice: "Folio creado correctamente."
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/new", locals: { folio: @folio }) })
-        end
-        format.html # fallback
-      end
+      redirect_to folios_path(show: @folio.id), notice: "Folio creado correctamente.", status: :see_other
     else
-      render :new, status: :unprocessable_entity
+      flash.now[:alert] = "No se pudo crear el folio"
+      render :new, status: :unprocessable_entity, layout: false
     end
   end
 
   def update
     if @folio.update(folio_params)
-      #redirect_to folio_path(@folio), notice: "Folio actualizado correctamente."
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/show", locals: { folio: @folio }) })
-        end
-        format.html # fallback
-      end
+      redirect_to folios_path(show: @folio.id), notice: "Folio actualizado correctamente.", status: :see_other
     else
-      render :edit, status: :unprocessable_entity
+      flash.now[:alert] = "No se pudo actualizar el folio"
+      render :edit, status: :unprocessable_entity, layout: false
     end
   end
 
@@ -77,13 +76,7 @@ class FoliosController < ApplicationController
 
   def show
     @folio = Folio.find(params[:id])
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/show", locals: { folio: @folio }) })
-      end
-      format.html # fallback
-    end
+    render layout: false
   end
 
   def new
@@ -112,27 +105,21 @@ class FoliosController < ApplicationController
   end
 
   def destroy
-    if @folio.assignments.exists?
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:alert] = "No puedes eliminar este folio porque ya tiene productos asignados. Contacta al Coordinador de Servicios para realizar la devolución."
-          render turbo_stream: turbo_stream.update("flash", partial: "shared/flash")
-        end
-        format.html do
-          redirect_to folios_path, alert: "No puedes eliminar este folio porque ya tiene productos asignados. Contacta al Coordinador de Servicios."
-        end
-      end
-      return
-    end
+    #if @folio.assignments.exists?
+    #  respond_to do |format|
+    #    format.turbo_stream do
+    #      flash.now[:alert] = "No puedes eliminar este folio porque ya tiene productos asignados. Contacta al Coordinador de Servicios para realizar la devolución."
+    #      render turbo_stream: turbo_stream.update("flash", partial: "shared/flash")
+    #    end
+    #    format.html do
+    #      redirect_to folios_path, alert: "No puedes eliminar este folio porque ya tiene productos asignados. Contacta al Coordinador de Servicios."
+    #    end
+    #  end
+    #  return
+    #end
 
     @folio.destroy
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.remove("folio_#{@folio.id}")
-      end
-      format.html { redirect_to folios_path, notice: "Folio eliminado correctamente." }
-    end
+    redirect_to folios_path, notice: "Folio eliminado exitosamente.", status: :see_other
   end
 
   private

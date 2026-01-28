@@ -24,7 +24,7 @@ class FindFolios < ApplicationFinder
     pattern = "%#{query}%"
 
     scoped.joins(:user).where(
-      "users.username ILIKE :q OR folios.client ILIKE :q OR folios.accessories ILIKE :q",
+      "users.username ILIKE :q OR folios.client ILIKE :q OR folios.id::text ILIKE :q",
       q: pattern
     )
   end
