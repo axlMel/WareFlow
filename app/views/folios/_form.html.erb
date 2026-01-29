@@ -28,7 +28,10 @@
   </div>
 
   <div>
-    <%= f.submit folio.new_record? ? "Crear Folio" : "Actualizar folio", class: "bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
+    <% if @folio.crafted? %>
+      <%= f.submit folio.new_record? ? "Crear Folio" : "Actualizar folio", class: "bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
+    <% end %>
+    
     <%= link_to "Cancelar", folios_path, class: "bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
   </div>
 <% end %>

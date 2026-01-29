@@ -1,6 +1,6 @@
 class Folio < ApplicationRecord
   belongs_to :user, optional: true
-  has_many :deliveries
+  has_many :deliveries, dependent: :restrict_with_error
   has_many :assignments, through: :deliveries
 
   validate :cannot_edit_delivered, on: :update
@@ -11,8 +11,8 @@ class Folio < ApplicationRecord
 
   private
   def cannot_edit_delivered
-    if status_was == "delivered"
-      errors.add(:base, "No se puede editar un folio realizado")
+    if status_was == "assigned" || status_was == "delivered"
+      errors.add(:base, "No se puede editar un folio asignado o realizado")
     end
   end
 

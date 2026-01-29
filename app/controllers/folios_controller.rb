@@ -7,17 +7,11 @@ class FoliosController < ApplicationController
 
     sort_column = params[:sort] || 'folios.created_at'
     sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
-    scoped = scoped.order("#{sort_column} #{sort_direction}")
+    scoped = scoped.unscope(:limit, :offset)
 
-    # Asegurarse que per_page sea un número válido
-    per_page = params[:per_page].to_i
-    per_page = 10 if per_page <= 0
-    Rails.logger.error ">>> ITEMS QUE SE PASAN A PAGY = #{per_page}"
-
-    @pagy, @folios = pagy(scoped, items: per_page)
-    Rails.logger.error ">>> PARAMS[:per_page] ACTUAL = #{params[:per_page].inspect}"
-Rails.logger.error ">>> PAGY ITEMS = #{per_page}"
-Rails.logger.error ">>> SCOPED SQL = #{scoped.to_sql}"
+    # Me aseguro que per_page sea un int no char
+    per_page = params[:per_page].presence&.to_i || 10
+    @pagy, @folios = pagy(scoped, items: per_page, limit: per_page)
   end
 
   def assignment_products
@@ -57,8 +51,7 @@ Rails.logger.error ">>> SCOPED SQL = #{scoped.to_sql}"
     if @folio.update(folio_params)
       redirect_to folios_path(show: @folio.id), notice: "Folio actualizado correctamente.", status: :see_other
     else
-      flash.now[:alert] = "No se pudo actualizar el folio"
-      render :edit, status: :unprocessable_entity, layout: false
+      redirect_to folios_path, alert: @folio.errors.full_messages.to_sentence, status: :see_other
     end
   end
 
@@ -117,9 +110,11 @@ Rails.logger.error ">>> SCOPED SQL = #{scoped.to_sql}"
     #  end
     #  return
     #end
-
-    @folio.destroy
-    redirect_to folios_path, notice: "Folio eliminado exitosamente.", status: :see_other
+    if @folio.destroy
+      redirect_to folios_path, notice: "Folio eliminado exitosamente.", status: :see_other
+    else
+      redirect_to folios_path, alert: @folio.errors.full_messages.to_sentence, status: :see_other
+    end
   end
 
   private
