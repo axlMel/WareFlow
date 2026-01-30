@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   resources :folios do
     collection do
       get :assignment_products
+      get :import
+      post :import
     end
   end
   resources :replacements, only: [:create]

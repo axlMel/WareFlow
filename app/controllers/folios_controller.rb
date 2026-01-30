@@ -98,24 +98,42 @@ class FoliosController < ApplicationController
   end
 
   def destroy
-    #if @folio.assignments.exists?
-    #  respond_to do |format|
-    #    format.turbo_stream do
-    #      flash.now[:alert] = "No puedes eliminar este folio porque ya tiene productos asignados. Contacta al Coordinador de Servicios para realizar la devolución."
-    #      render turbo_stream: turbo_stream.update("flash", partial: "shared/flash")
-    #    end
-    #    format.html do
-    #      redirect_to folios_path, alert: "No puedes eliminar este folio porque ya tiene productos asignados. Contacta al Coordinador de Servicios."
-    #    end
-    #  end
-    #  return
-    #end
     if @folio.destroy
       redirect_to folios_path, notice: "Folio eliminado exitosamente.", status: :see_other
     else
       redirect_to folios_path, alert: @folio.errors.full_messages.to_sentence, status: :see_other
     end
   end
+
+  def import
+    if request.get?
+      render partial: "shared/import"
+      return
+    end
+
+    file = params[:file]
+    redirect_to folios_path, alert: "Archivo requerido" and return unless file
+
+    spreadsheet = ExcelImporter.open(file)
+    header = spreadsheet.row(1).map(&:downcase)
+
+    ActiveRecord::Base.transaction do
+      (2..spreadsheet.last_row).each do |i|
+        row = Hash[header.zip(spreadsheet.row(i))]
+
+        Folio.create!(
+          client: row["client"],
+          service: row["service"],
+          accesories: row["accesories"]
+        )
+      end
+    end
+
+    redirect_to folios_path, notice: "Importación exitosa"
+  rescue => e
+    redirect_to folios_path, alert: e.message
+  end
+
 
   private
 
