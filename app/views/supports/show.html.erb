@@ -58,10 +58,8 @@
         </div>
 
         <div class="flex justify-between items-center text-sm">
-          <%= link_to "← Volver al listado", supports_path, class: "text-sky-600 hover:text-blue-800 font-medium transition" %>
-          <% unless @support.delivered? %>
-            <%= link_to "Editar soporte", edit_support_path(@support), class: "text-yellow-600 hover:text-yellow-700 font-medium transition" %>
-          <% end %>
+          <%= link_to "← Volver al listado", supports_path, class: "text-sky-600 hover:text-blue-800 font-medium transition" %>          
+          <%= link_to "Editar soporte", edit_support_path(@support), class: "text-yellow-600 hover:text-yellow-700 font-medium transition" %>
         </div>
       </div>
     <% end %>

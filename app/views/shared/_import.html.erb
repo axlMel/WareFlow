@@ -1,12 +1,14 @@
 <%= turbo_frame_tag "modal" do %>
-  <div class="p-6">
-    <h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">Importar Excel</h1>
-    <%= form_with url: import_folios_path, multipart: true, data: { turbo_frame: "_top" }, class: "space-y-4" do |f| %>
-      <%= f.file_field :file, accept: ".xlsx,.xlsm" %>
+  <div class="p-6" data-controller="modal">
+    <%= render "shared/modal" do %>
+      <h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">Importar Excel</h1>
+      <%= form_with url: import_folios_path, multipart: true, data: { turbo_frame: "_top" }, class: "space-y-4" do |f| %>
+        <%= f.file_field :file, accept: ".xlsx,.xlsm" %>
 
-      <div class="mt-4 flex justify-end">
-        <%= f.submit "Importar", class: "bg-emerald-600 text-white px-4 py-2 rounded-xl" %>
-      </div>
+        <div class="mt-4 flex justify-end">
+          <%= f.submit "Importar", class: "bg-emerald-600 text-white px-4 py-2 rounded-xl" %>
+        </div>
+      <% end %>
     <% end %>
   </div>
 <% end %>
