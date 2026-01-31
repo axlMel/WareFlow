@@ -35,8 +35,12 @@
 
       <main class="flex-1 p-6 overflow-y-auto scrollbar-none">
         <%= yield %> <!-- Aquí se renderizan las vistas de cada controller -->
+        <% if params[:show].present? %>
+          <turbo-frame id="modal" src="<%= url_for(controller: controller_name, action: :show, id: params[:show]) %>"></turbo-frame>
+        <% else %>
+          <turbo-frame id="modal"></turbo-frame>
+        <% end %>
       </main>
     </div>
-    <%= turbo_frame_tag "modal" %> 
   </body>
 </html>

@@ -122,9 +122,9 @@ class FoliosController < ApplicationController
         row = Hash[header.zip(spreadsheet.row(i))]
 
         Folio.create!(
-          client: row["client"],
-          service: row["service"],
-          accesories: row["accesories"]
+          client: row["cliente"],
+          service: row["servicio"],
+          accessories: row["accesorio"]
         )
       end
     end
