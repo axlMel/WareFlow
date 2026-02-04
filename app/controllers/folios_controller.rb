@@ -114,20 +114,7 @@ class FoliosController < ApplicationController
     file = params[:file]
     redirect_to folios_path, alert: "Archivo requerido" and return unless file
 
-    spreadsheet = ExcelImporter.open(file)
-    header = spreadsheet.row(1).map(&:downcase)
-
-    ActiveRecord::Base.transaction do
-      (2..spreadsheet.last_row).each do |i|
-        row = Hash[header.zip(spreadsheet.row(i))]
-
-        Folio.create!(
-          client: row["cliente"],
-          service: row["servicio"],
-          accessories: row["accesorio"]
-        )
-      end
-    end
+    Imports::FoliosImporter.new(file).import!
 
     redirect_to folios_path, notice: "Importación exitosa"
   rescue => e
