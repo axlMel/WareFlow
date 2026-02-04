@@ -134,6 +134,13 @@ class FoliosController < ApplicationController
     redirect_to folios_path, alert: e.message
   end
 
+  def download_base
+    send_file Rails.root.join("public/templates/foliosImport_base.xlsx"),
+              filename: "foliosImport_base.xlsx",
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              disposition: "attachment"
+  end
+
 
   private
 

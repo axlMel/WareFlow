@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     collection do
       get :assignment_products
       get :import
+      get :download_base
       post :import
     end
   end
