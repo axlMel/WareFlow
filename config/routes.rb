@@ -28,6 +28,8 @@ Rails.application.routes.draw do
       get :import
       get :download_base
       post :import
+      get :export
+      get :download
     end
   end
   resources :replacements, only: [:create]

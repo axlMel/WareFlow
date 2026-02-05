@@ -128,6 +128,38 @@ class FoliosController < ApplicationController
               disposition: "attachment"
   end
 
+  def export
+    render partial: "shared/export"
+  end
+
+  def download
+    relation = Folio.all
+
+    scope = if params[:scope] == "filtered"
+      FindFolios.new(relation, params).call
+    else
+      relation
+    end
+
+    exporter =
+      case params[:export_format]
+      when "xlsx"
+        Exports::Folios::ExcelExporter.new(scope)
+      when "pdf"
+        Exports::Folios::PdfExporter.new(scope)
+      else
+        raise "Formato no soportado"
+      end
+
+    file = exporter.export
+
+    if params[:export_format] == "xlsx"
+      send_data file.to_stream.read, filename: "folios.xlsx", disposition: "attachment"
+    else
+      send_data file.render, filename: "folios.pdf", type: "application/pdf", disposition: "attachment"
+    end
+  end
+
 
   private
 
