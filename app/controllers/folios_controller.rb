@@ -133,12 +133,10 @@ class FoliosController < ApplicationController
   end
 
   def download
-    relation = Folio.all
-
     scope = if params[:scope] == "filtered"
-      FindFolios.new(relation, params).call
+      FindFolios.new(Folio.all, params).call.unscope(:limit, :offset)
     else
-      relation
+      Folio.all
     end
 
     exporter =
