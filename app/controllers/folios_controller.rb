@@ -139,12 +139,17 @@ class FoliosController < ApplicationController
       Folio.all
     end
 
+    export_params = { exported_by: Current.user.username,
+      filters: params.permit(:q, :status, :from, :to).to_h
+    }
+
+
     exporter =
       case params[:export_format]
       when "xlsx"
-        Exports::Folios::ExcelExporter.new(scope)
+        Exports::Folios::ExcelExporter.new(scope, export_params)
       when "pdf"
-        Exports::Folios::PdfExporter.new(scope)
+        Exports::Folios::PdfExporter.new(scope, export_params)
       else
         raise "Formato no soportado"
       end

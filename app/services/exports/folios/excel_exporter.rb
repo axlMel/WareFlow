@@ -7,6 +7,18 @@ module Exports
         "Folios"
       end
 
+      def build_document(sheet)
+        add_title(sheet, "Listado de Folios")
+
+        add_metadata(
+          sheet,
+          base_metadata + filter_metadata
+        )
+
+        add_table(sheet)
+      end
+
+
       def headers
         ["ID",
           "Cliente", 
@@ -22,7 +34,7 @@ module Exports
           folio.client,
           folio.service,
           folio.accessories,
-          folio.status,
+          I18n.t("activerecord.attributes.folio.statuses.#{folio.status}"),
           folio.user&.username,
           folio.created_at.strftime("%d/%m/%Y")
         ]

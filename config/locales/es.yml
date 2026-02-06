@@ -9,6 +9,11 @@ es:
       user: Usuario
       category: Categoría
     attributes:
+      folio:
+        statuses:
+          crafted: "Creado"
+          assigned: "Asignado"
+          delivered: "Instalado"
       product:
         title: 'Título'
         description: 'Descripción'

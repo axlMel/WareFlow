@@ -9,6 +9,11 @@ en:
       user: User
       category: Category
     attributes:
+      folio:
+        statuses:
+          crafted: "Created"
+          assigned: "Assigned"
+          delivered: "Installed"
       product:
         title: 'Title'
         description: 'Description'
@@ -21,6 +26,15 @@ en:
         password: 'Password'
       category:
         name: 'Name'
+      warranty:
+        states:
+          pending: "Pending"
+          in_process: "In process"
+          completed: "Complete"
+      assignment:
+        statuses:
+          assigned: "Assigned"
+          installed: "Installed"
   common:
     confirm: 'Are you sure?'
     back: 'Go back'

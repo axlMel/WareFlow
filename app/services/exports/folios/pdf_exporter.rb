@@ -3,8 +3,26 @@ module Exports
     class PdfExporter < Exports::PdfExporter
       private
 
-      def title
-        "Listado de Folios"
+      def build_header(pdf)
+        pdf.text "Listado de Folios", size: 18, style: :bold
+        pdf.move_down 5
+        pdf.text "Reporte operativo", size: 10
+        pdf.stroke_horizontal_rule
+      end
+
+      def build_context(pdf)
+        pdf.move_down 10
+        pdf.text "Documento generado el #{Time.current.strftime('%d/%m/%Y %H:%M')}"
+        pdf.text "Extraído por: #{@params[:exported_by] || '-'}"
+
+        return if @params[:filters].blank?
+
+        pdf.move_down 5
+        pdf.text "Filtros aplicados:", style: :bold
+
+        @params[:filters].reject { |_k, v| v.blank? }.each do |key, value|
+          pdf.text "- #{key.to_s.humanize}: #{value}"
+        end
       end
 
       def headers
@@ -16,7 +34,7 @@ module Exports
           folio.client,
           folio.service,
           folio.accessories,
-          folio.status,
+          I18n.t("activerecord.attributes.folio.statuses.#{folio.status}"),
           folio.user&.username || "—",
           folio.created_at.strftime("%d/%m/%Y")
         ]
