@@ -24,6 +24,8 @@ module Exports
         title: workbook.styles.add_style(
           b: true,
           sz: 16,
+          bg_color: "51bce4",
+          fg_color: "3c3c3c",
           alignment: { horizontal: :center }
         ),
 
@@ -33,25 +35,27 @@ module Exports
 
         header: workbook.styles.add_style(
           b: true,
-          bg_color: "EEEEEE",
+          bg_color: "51bce4",
           border: { style: :thin, color: "CCCCCC" }
         ),
 
         meta: workbook.styles.add_style(
+          b: true,
           italic: true,
-          fg_color: "666666"
+          fg_color: "3c3c3c"
         )
       }
     end
 
     def add_title(sheet, text)
       sheet.add_row [text], style: @styles[:title]
+      sheet.merge_cells("A1:G1")
       sheet.add_row []
     end
 
     def add_metadata(sheet, rows)
       rows.each do |label, value|
-        sheet.add_row [label, value], style: @styles[:meta]
+        sheet.add_row ["#{label}: #{value}"], style: @styles[:meta]
       end
       sheet.add_row []
     end
@@ -67,20 +71,25 @@ module Exports
     end
 
     def add_table(sheet)
+      header_row_index = sheet.rows.size + 1
       sheet.add_row headers, style: @styles[:header]
 
       records.each do |record|
         sheet.add_row row(record)
       end
 
-      sheet.auto_filter = "A#{sheet.rows.size - records.size}:Z#{sheet.rows.size}"
+      return if records.empty?
+
+      last_column = ('A'.ord + headers.size - 1).chr
+      sheet.auto_filter = "A#{header_row_index}:#{last_column}#{sheet.rows.size}"
+
       sheet.sheet_view.pane do |pane|
-        pane.top_left_cell = "A2"
+        pane.top_left_cell = "A#{header_row_index + 1}"
         pane.state = :frozen
         pane.y_split = 1
+       # pane.y_split = header_row_index
         pane.active_pane = :bottom_left
       end
-
     end
 
     def sheet_name

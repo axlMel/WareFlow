@@ -50,8 +50,8 @@
         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2">
           <!-- Right buttons -->
           <div class="flex flex-wrap gap-2">
-            <%= link_to "Excel", import_folios_path, class: "bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
-            <%= link_to "PDF", export_folios_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]), class: "bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
+            <%= link_to "Importar", import_folios_path, class: "bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
+            <%= link_to "Exportar", export_folios_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]), class: "bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
           </div>
         </div>
       </div>

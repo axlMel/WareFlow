@@ -16,6 +16,7 @@ module Exports
         )
 
         add_table(sheet)
+        sheet.column_widths 12, 30, 18, 40, 15, 20, 18
       end
 
 
@@ -42,3 +43,4 @@ module Exports
     end
   end
 end
+

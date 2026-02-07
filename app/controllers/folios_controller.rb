@@ -129,7 +129,7 @@ class FoliosController < ApplicationController
   end
 
   def export
-    render partial: "shared/export"
+    render partial: "shared/export", locals: { export_url: download_folios_path }
   end
 
   def download
@@ -140,7 +140,7 @@ class FoliosController < ApplicationController
     end
 
     export_params = { exported_by: Current.user.username,
-      filters: params.permit(:q, :status, :from, :to).to_h
+      filters: params.permit(:q, :status, :from, :to, :scope, :export_format).to_h
     }
 
 
