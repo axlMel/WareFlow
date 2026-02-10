@@ -14,28 +14,6 @@ class FoliosController < ApplicationController
     @pagy, @folios = pagy(scoped, items: per_page, limit: per_page)
   end
 
-  def assignment_products
-    @folio = Folio.find(params[:id])
-    @assignments = @folio.assignments.includes(:product).where(status: :pending)
-    @assignments_by_category = @assignments.group_by { |a| a.product.category }
-    @user_stock_products = Product.with_positive_available_stock_for(Current.user)
-    @replacements = @user_stock_products.group_by(&:category_id)
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "assignmentsContainer",
-          partial: "supports/assignment_products",
-          locals: {
-            assignments_by_category: @assignments_by_category,
-            user_stock_products: @user_stock_products,
-            replacements: @replacements
-          }
-        )
-      end
-    end
-  end
-
   def create
     @folio = Folio.new(folio_params)
     @folio.crafted!
@@ -53,18 +31,6 @@ class FoliosController < ApplicationController
     else
       redirect_to folios_path, alert: @folio.errors.full_messages.to_sentence, status: :see_other
     end
-  end
-
-  def details
-    @folio = Folio.find(params[:id])
-    @assignments = @folio.assignments.includes(:products)
-
-    render turbo_stream: [
-      turbo_stream.update("client", @folio.client),
-      turbo_stream.update("user_id", @folio.user.username),
-      turbo_stream.update("id", @folio.id),
-      turbo_stream.update("folio-selector-products", partial: "supports/products", locals: { assignments: @assignments, user_stock_products: current_user.products })
-    ]
   end
 
   def show
@@ -165,12 +131,6 @@ class FoliosController < ApplicationController
 
 
   private
-
-  def support_info
-    @folio = Folio.find(params[:id])
-    @assignments = @folio.assignments.includes(:product, :user)
-    render partial: "supports/folio_info", locals: { folio: @folio, assignments: @assignments }
-  end
 
   def set_folio
     @folio = Folio.find(params[:id])

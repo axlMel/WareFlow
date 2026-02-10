@@ -11,7 +11,7 @@ class Folio < ApplicationRecord
 
   private
   def cannot_edit_delivered
-    if status_was == "assigned" || status_was == "delivered"
+    if status_was == "delivered"
       errors.add(:base, "No se puede editar un folio asignado o realizado")
     end
   end

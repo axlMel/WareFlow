@@ -47,13 +47,24 @@
       <div class="flex justify-between mt-2 mb-2">
         <h2 class="text-xl font-semibold mb-4">Lista de folios</h2>
         <!-- Top controls -->
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2">
-          <!-- Right buttons -->
-          <div class="flex flex-wrap gap-2">
-            <%= link_to "Importar", import_folios_path, class: "bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
-            <%= link_to "Exportar", export_folios_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]), class: "bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
-          </div>
+        <div class="flex items-center gap-1 bg-white-50 border border-gray-200 rounded-lg p-1 mb-2">
+          <%= link_to import_folios_path,
+            class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+            data: { turbo_frame: "modal" } do %>
+            <%= image_tag 'icons/import.svg',
+              class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+            Importar
+          <% end %>
+
+          <%= link_to export_folios_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]),
+            class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+            data: { turbo_frame: "modal" } do %>
+            <%= image_tag 'icons/export.svg',
+              class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+            Exportar
+          <% end %>
         </div>
+
       </div>
 
       <turbo-frame id="folios_table">

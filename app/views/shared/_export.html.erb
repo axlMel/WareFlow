@@ -37,17 +37,17 @@
           <div class="grid grid-cols-2 gap-3">
             <label class="cursor-pointer">
               <%= radio_button_tag :export_format, "xlsx", true, class: "peer hidden" %>
-              <div class="flex items-center justify-center gap-2 rounded-lg border p-4 peer-checked:border-green-600 peer-checked:bg-green-50">
-                <span class="text-green-600 text-xl">📊</span>
-                <span class="font-medium">Excel</span>
+              <div class="rounded-lg border p-4 text-center peer-checked:border-green-600 peer-checked:bg-green-50 flex flex-col items-center gap-1">
+                <%= image_tag 'icons/excel.svg', class: "w-10 h-10" %>
+                <p class="text-sm text-gray-500">Excel</p>
               </div>
             </label>
 
             <label class="cursor-pointer">
               <%= radio_button_tag :export_format, "pdf", false, class: "peer hidden" %>
-              <div class="flex items-center justify-center gap-2 rounded-lg border p-4 peer-checked:border-red-600 peer-checked:bg-red-50">
-                <span class="text-red-600 text-xl">📄</span>
-                <span class="font-medium">PDF</span>
+              <div class="rounded-lg border p-4 text-center peer-checked:border-red-600 peer-checked:bg-red-50 flex flex-col items-center gap-1">
+                <%= image_tag 'icons/pdf.svg', class: "w-10 h-10" %>
+                <p class="text-sm text-gray-500">Pdf</p>
               </div>
             </label>
           </div>

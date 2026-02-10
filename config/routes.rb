@@ -16,15 +16,10 @@ Rails.application.routes.draw do
   resources :categories, except: :show
   resources :deliveries
   resources :assignments
-  resources :supports do
-    member do
-      get :support_info
-    end
-  end
+  resources :supports
   resources :warranties
   resources :folios do
     collection do
-      get :assignment_products
       get :import
       get :download_base
       post :import

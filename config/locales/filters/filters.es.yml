@@ -7,3 +7,11 @@ es:
       status: "Estado"
       scope: "Alcance"
       export_format: "Formato de exportación"
+    values:
+      all: "Todos los folios"
+      filtered: "Filtrado"
+      crafted: "Creado"
+      assigned: "Asignado"
+      delivered: "Finalizado"
+      pdf: "pdf"
+      excel: "excel"
