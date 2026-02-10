@@ -13,7 +13,7 @@ module Exports
       def build_context(pdf)
         pdf.move_down 10
         pdf.text "Documento generado el #{Time.current.strftime('%d/%m/%Y %H:%M')}"
-        pdf.text "Extraído por: #{@params[:exported_by] || '-'}"
+        pdf.text "Extraído por: #{@params[:exported_by] || 'Admin'}"
 
         return if @params[:filters].blank?
 
@@ -21,7 +21,8 @@ module Exports
         pdf.text "Filtros aplicados:", style: :bold
 
         @params[:filters].reject { |_k, v| v.blank? }.each do |key, value|
-          pdf.text "- #{key.to_s.humanize}: #{value}"
+          label = I18n.t("exports.filters.#{key}", default: key.to_s.humanize)
+          pdf.text "- #{label}: #{value}"
         end
       end
 

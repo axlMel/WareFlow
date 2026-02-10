@@ -1,0 +1,9 @@
+es:
+  exports:
+    filters:
+      q: "Búsqueda"
+      from: "Desde"
+      to: "Hasta"
+      status: "Estado"
+      scope: "Alcance"
+      export_format: "Formato de exportación"
