@@ -4,9 +4,11 @@ class WarrantiesController < ApplicationController
   def index
     finder = FindWarranties.new(Warranty.all, params)
     scoped = finder.call
-    sort_column = params[:sort] || 'created_at'
+
+    sort_column = params[:sort] || 'warranties.created_at'
     sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
-    scoped = scoped.order("#{sort_column} #{sort_direction}")
+    scoped = scoped.reorder("#{sort_column} #{sort_direction}")
+    
     @pagy, @warranties = pagy(scoped, items: params[:per_page] || 10)
   end
 
@@ -50,6 +52,18 @@ class WarrantiesController < ApplicationController
   def destroy
     @warranty.destroy
     redirect_to warranties_path, notice: "Garantía eliminada exitosamente.", status: :see_other
+  end
+
+  def import
+  end
+
+  def export
+  end
+
+  def download
+  end
+
+  def download_base
   end
 
   private

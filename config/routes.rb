@@ -17,7 +17,15 @@ Rails.application.routes.draw do
   resources :deliveries
   resources :assignments
   resources :supports
-  resources :warranties
+  resources :warranties do
+    collection do
+      get :import
+      get :download
+      get :download_base
+      get :export
+      post :import
+    end
+  end
   resources :folios do
     collection do
       get :import

@@ -4,7 +4,7 @@
     <div class="bg-white p-4 rounded-2xl shadow space-y-4">
       <h1 class="text-2xl font-bold text-gray-800">Garantías</h1>
 
-      <%= form_with url: warranties_path, method: :get, data:{ controller: "debounce-search", turbo_frame: "warranties_table" }, class: "space-y-4" do |form| %>
+      <%= form_with url: warranties_path, method: :get, data:{ controller: "debounce-search", turbo_action: "advance" }, class: "space-y-4" do |form| %>
 
         <!-- Busqueda -->
         <div>
@@ -15,7 +15,7 @@
         <!-- Estado -->
         <div>
           <%= form.label :state, "Estado de garantía", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.select :state, options_for_select([['Pendiente', 0], ['En proceso', 1], ['Completado', 2]], params[:state]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
+          <%= form.select :state, options_for_select([['Pendiente', :pending], ['En proceso', :in_process], ['Completado', :completed]], params[:state]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
         </div>
 
         <!-- Fechas -->
@@ -44,7 +44,27 @@
   <!-- Panel principal -->
   <div class="w-full lg:w-3/4 space-y-4">
     <div class="bg-white p-4 rounded-2xl shadow">
-      <h2 class="text-xl font-semibold mb-4">Historial de Garantías</h2>
+      <div class="flex justify-between mt-2 mb-2">
+        <h2 class="text-xl font-semibold mb-4">Historial de Garantías</h2>
+        <!-- Top controls -->
+          <div class="flex items-center gap-1 bg-white-50 border border-gray-200 rounded-lg p-1 mb-2">
+            <%= link_to import_warranties_path,
+              class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+              data: { turbo_frame: "modal" } do %>
+              <%= image_tag 'icons/import.svg',
+                class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+              Importar
+            <% end %>
+
+            <%= link_to export_warranties_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]),
+              class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+              data: { turbo_frame: "modal" } do %>
+              <%= image_tag 'icons/export.svg',
+                class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+              Exportar
+            <% end %>
+          </div>
+        </div>
       <!-- Tabla interna -->
       <turbo-frame id="warranties_table">
         <div class="overflow-x-auto">
@@ -80,11 +100,13 @@
                       <%= t("activerecord.attributes.warranty.states.#{warranty.state}") %>
                     </span>
                   </td>
-                  <td class="px-4 py-2 text-gray-500 text-sm"><%= warranty.created_at.to_date %></td>
-                  <td class="px-4 py-2 text-right flex gap-2">
-                    <%= link_to "Ver", warranty_path(warranty), class: "text-indigo-600 hover:underline", data: { turbo_frame: "modal" } %>
-                    <%= link_to "Editar", edit_warranty_path(warranty), class: "text-yellow-600 hover:underline", data: { turbo_frame: "modal" } %>
-                    <%= button_to "Eliminar", warranty_path(warranty), method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
+                  <td class="px-4 py-2 text-gray-500 text-sm"><%= warranty.created_at.strftime("%d/%m/%Y") %></td>
+                  <td class="px-4">
+                    <div class="flex items-center justify-end h-full gap-2">
+                      <%= link_to "Ver", warranty_path(warranty), class: "text-indigo-600 hover:underline", data: { turbo_frame: "modal" } %>
+                      <%= link_to "Editar", edit_warranty_path(warranty), class: "text-yellow-600 hover:underline", data: { turbo_frame: "modal" } %>
+                      <%= button_to "Eliminar", warranty_path(warranty), method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
+                    </div>
                   </td>
                 </tr>
               <% end %>
@@ -104,7 +126,7 @@
           </div>
           <div class="flex flex-wrap gap-2">
             <div>
-              <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Garantías de (#{@pagy.count})" %></span>
+              <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Garantías" %></span>
             </div>
             <div>
               <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="warranties_table"').html_safe %>
@@ -120,7 +142,3 @@
     <% end %>
   </div>
 </div>
-<turbo-frame
-  id="modal"
-  src="<%= warranties_path(params[:show]) if params[:show].present? %>">
-</turbo-frame>

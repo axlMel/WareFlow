@@ -7,11 +7,9 @@ class FoliosController < ApplicationController
 
     sort_column = params[:sort] || 'folios.created_at'
     sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
-    scoped = scoped.unscope(:limit, :offset)
+    scoped = scoped.reorder("#{sort_column} #{sort_direction}")
 
-    # Me aseguro que per_page sea un int no char
-    per_page = params[:per_page].presence&.to_i || 10
-    @pagy, @folios = pagy(scoped, items: per_page, limit: per_page)
+    @pagy, @folios = pagy(scoped, items: params[:per_page] || 10)
   end
 
   def create

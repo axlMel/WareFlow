@@ -19,7 +19,7 @@
 
       <div class="pt-4 flex justify-between">
         <%= link_to "Editar", edit_warranty_path(@warranty), class: "bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-xl shadow", data: { turbo_frame: "modal" } %>
-        <%= link_to "Volver", warranties_path, class: "text-indigo-600 hover:underline", data: { turbo_frame: "main_content" } %>
+        <%= link_to "← Volver al listado", warranties_path, class: "text-indigo-600 hover:underline", data: { turbo_frame: "main_content" } %>
       </div>
 
     <% end %>
