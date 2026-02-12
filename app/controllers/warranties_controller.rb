@@ -6,13 +6,14 @@ class WarrantiesController < ApplicationController
     scoped = finder.call
 
     sort_column = params[:sort] || 'warranties.created_at'
-    sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+    sort_direction = params[:direction] == 'asc' ? 'asc' : 'desc'
     scoped = scoped.reorder("#{sort_column} #{sort_direction}")
     
-    @pagy, @warranties = pagy(scoped, items: params[:per_page] || 10)
+    per_page = params[:per_page].presence&.to_i || 10
+    @pagy, @warranties = pagy(scoped, items: per_page, limit: per_page)
   end
 
-  def show;
+  def show
     render layout: false
   end
 
@@ -28,8 +29,20 @@ class WarrantiesController < ApplicationController
       redirect_to warranties_path(show: @warranty.id), notice: "Garantía creada exitosamente.", status: :see_other
     else
       load_dependencies
-      flash.now[:alert] = "No se pudo crear la garantía"
-      render :new, status: :unprocessable_entity, layout: false
+      
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "modal",
+            template: "warranties/new",
+            layout: false,
+            locals: { warranty: @warranty }
+          ), status: :unprocessable_entity
+        end
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
     end
   end
 
@@ -44,26 +57,51 @@ class WarrantiesController < ApplicationController
       redirect_to warranties_path(show: @warranty.id), notice: "Garantía actualizada exitosamente.", status: :see_other
     else
       load_dependencies
-      flash.now[:alert] = "No se pudo actualizar la garantía"
-      render :edit, status: :unprocessable_entity, layout: false, notice: "Entrega creada exitosamente y folio asignado."
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "modal",
+            template: "warranties/new",
+            layout: false,
+            locals: { warranty: @warranty }
+          ), status: :unprocessable_entity
+        end
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def destroy
-    @warranty.destroy
-    redirect_to warranties_path, notice: "Garantía eliminada exitosamente.", status: :see_other
+    if @warranty.destroy
+      redirect_to warranties_path, notice: "Garantía eliminada exitosamente.", status: :see_other
+    else
+      redirect_to warranties_path, alert: @warranty.errors.full_messages.to_sentence, status: :see_other
+    end
   end
 
   def import
+    if request.get?
+      render partial: "shared/import"
+      return
+    end
+
+    file = params[:file]
+    redirect_to folios_path, alert: "Archivo requerido" and return unless file
+    Imports::WarrantiesImporter.new(file).import!
+    redirect_to folios_path, notice: "Importación exitosa"
+  rescue => e
+    redirect_to folios_path, alert: e.message
+  end
+
+  def download_base
   end
 
   def export
   end
 
   def download
-  end
-
-  def download_base
   end
 
   private

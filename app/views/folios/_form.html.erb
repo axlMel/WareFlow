@@ -2,10 +2,10 @@
   <% if folio.errors.any? %>
     <div class="gb-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
       <h2 class="font-semibold mb-2">
-        <%= pluralize(folio.errors.count, "error") %> impidieron guardar el folio.
+        <%= pluralize(folio.errors.count, "error(es)") %> impidieron guardar el folio.
       </h2>
       <ul class="list-disc list-inside text-sm">
-        <%= folio.errors.full_messages.each do |message| %>
+        <% folio.errors.full_messages.each do |message| %>
         <li><%= message %></li>
         <% end %>
       </ul>

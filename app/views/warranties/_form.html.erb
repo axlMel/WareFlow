@@ -1,11 +1,11 @@
-<%= form_with(model: warranty, data: { turbo_frame: "_top" }, class: "space-y-4") do |form| %>
+<%= form_with(model: warranty, data: { turbo_frame: "_top"}, class: "space-y-4") do |form| %>
   <% if warranty.errors.any? %>
     <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
       <h2 class="font-semibold mb-2">
         <%= pluralize(warranty.errors.count, "error") %> impidieron guardar la garantía.
       </h2>
       <ul class="list-disc list-inside text-sm">
-        <%= warranty.errors.full_messages.each do |message| %>
+        <% warranty.errors.full_messages.each do |message| %>
         <li><%= message %></li>
         <% end %>
       </ul>

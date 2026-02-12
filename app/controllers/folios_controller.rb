@@ -6,20 +6,28 @@ class FoliosController < ApplicationController
     scoped = finder.call
 
     sort_column = params[:sort] || 'folios.created_at'
-    sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+    sort_direction = params[:direction] == 'asc' ? 'asc' : 'desc'
     scoped = scoped.reorder("#{sort_column} #{sort_direction}")
 
-    @pagy, @folios = pagy(scoped, items: params[:per_page] || 10)
+    per_page = params[:per_page].presence&.to_i || 10
+    @pagy, @folios = pagy(scoped, items: per_page, limit: per_page)
   end
 
   def create
     @folio = Folio.new(folio_params)
-    @folio.crafted!
+    @folio.status = :crafted
     if @folio.save
       redirect_to folios_path(show: @folio.id), notice: "Folio creado correctamente.", status: :see_other
     else
-      flash.now[:alert] = "No se pudo crear el folio"
-      render :new, status: :unprocessable_entity, layout: false
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace( "modal", template: "folios/new", layout: false, locals: { folio: @folio }), status: :unprocessable_entity
+        end
+
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
     end
   end
 
@@ -27,7 +35,15 @@ class FoliosController < ApplicationController
     if @folio.update(folio_params)
       redirect_to folios_path(show: @folio.id), notice: "Folio actualizado correctamente.", status: :see_other
     else
-      redirect_to folios_path, alert: @folio.errors.full_messages.to_sentence, status: :see_other
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace("modal", template: "folios/edit", layout: false, locals: {folio: @folio.id }), status: :unprocessable_entity
+        end
+
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
     end
   end
 
@@ -38,27 +54,12 @@ class FoliosController < ApplicationController
 
   def new
     @folio = Folio.new
-    @support = Support.new
-    @users = User.where(admin: false)
-    @assignments = [] # o puedes dejarlo nil si aún no hay folio seleccionado
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/form", locals: { folio: @folio }) })
-      end
-      format.html # fallback
-    end
+    render layout: false
   end
 
   def edit
     @users = User.where(admin: false)
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update("modal", partial: "shared/modal", locals: { content: render_to_string("folios/form", locals: { folio: @folio }) })
-      end
-      format.html
-    end
+    render layout: false
   end
 
   def destroy
