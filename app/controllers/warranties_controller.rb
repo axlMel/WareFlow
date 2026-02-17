@@ -89,11 +89,24 @@ class WarrantiesController < ApplicationController
 
     file = params[:file]
     redirect_to folios_path, alert: "Archivo requerido" and return unless file
-    Imports::WarrantiesImporter.new(file).import!
-    redirect_to folios_path, notice: "Importación exitosa"
-  rescue => e
-    redirect_to folios_path, alert: e.message
+    parser = Imports::Warranties::Parser.new(file)
+    @rows = parser.parse
+    render :preview
   end
+
+  def manual
+    @rows = [Imports::Warranties::Builder.empty_row]
+    render :preview
+  end
+
+  def confirm_import
+    rows = params[:rows]
+
+    Imports::Warranties::Persister.new(rows).persist!
+
+    redirect_to warranties_path, notice: "Importación exitosa"
+  end
+
 
   def download_base
   end

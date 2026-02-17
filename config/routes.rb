@@ -20,10 +20,12 @@ Rails.application.routes.draw do
   resources :warranties do
     collection do
       get :import
+      post :import
       get :download
       get :download_base
       get :export
-      post :import
+      get :manual
+      post :confirm_import
     end
   end
   resources :folios do
