@@ -100,11 +100,26 @@ class WarrantiesController < ApplicationController
   end
 
   def confirm_import
-    rows = params[:rows]
+    rows = (params[:rows] || {}).to_unsafe_h.values
+    persister = Imports::Warranties::Persister.new(rows)
 
-    Imports::Warranties::Persister.new(rows).persist!
+    if persister.persist
+      redirect_to warranties_path, notice: "Importación exitosa"
+    else
+      @rows = rows
+      @warranty = Warranty.new
+      @warranty.errors.add(:base, "Hay filas inválidas en la importación")
 
-    redirect_to warranties_path, notice: "Importación exitosa"
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace( "modal", template: "warranties/preview", layout: false, locals: { warranty: @warranty }), status: :unprocessable_entity
+        end
+
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
+    end
   end
 
 

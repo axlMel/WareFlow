@@ -8,6 +8,18 @@
 
       <%= form_with url: confirm_import_warranties_path,
                     data: { turbo_frame: "_top" } do %>
+        <% if defined?(@warranty) && @warranty&.errors&.any? %>
+          <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
+            <h2 class="font-semibold mb-2">
+              <%= pluralize(@warranty.errors.count, "error") %> impidieron guardar la garantía.
+            </h2>
+            <ul class="list-disc list-inside text-sm">
+              <% @warranty.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
         <table class="min-w-full border text-sm">
           <thead>
@@ -75,7 +87,7 @@
           </tr>
 
 
-          <tbody data-import-table-target="tbody">
+          <tbody data-import-table-target="tbody" >
             <% @rows.each_with_index do |row, index| %>
               <tr class="border-t" data-import-table-target="row">
                 <td class="p-2">
@@ -113,15 +125,15 @@
         <template data-import-table-target="template">
           <tr class="border-t" data-import-table-target="row">
             <td class="p-2">
-              <input type="text" name="rows[INDEX][client]" class="border rounded w-full" data-action="change->import-table#validate change->import-table#validateAll">
+              <input type="text" name="rows[INDEX][client]" class="border rounded w-full">
             </td>
 
             <td class="p-2">
-              <input type="text" name="rows[INDEX][commit]" class="border rounded w-full" data-action="change->import-table#validate change->import-table#validateAll">
+              <input type="text" name="rows[INDEX][commit]" class="border rounded w-full">
             </td>
 
             <td class="p-2">
-              <select name="rows[INDEX][user_id]" class="border rounded w-full" data-action="change->import-table#validate change->import-table#validateAll">
+              <select name="rows[INDEX][user_id]" class="border rounded w-full">
                 <option value=""></option>
                 <% User.all.each do |u| %>
                   <option value="<%= u.id %>"><%= u.email %></option>
@@ -130,7 +142,7 @@
             </td>
 
             <td class="p-2">
-              <select name="rows[INDEX][product_id]" class="border rounded w-full" data-action="change->import-table#validate change->import-table#validateAll">
+              <select name="rows[INDEX][product_id]" class="border rounded w-full">
                 <option value=""></option>
                 <% Product.all.each do |p| %>
                   <option value="<%= p.id %>"><%= p.title %></option>
@@ -139,7 +151,7 @@
             </td>
 
             <td class="p-2">
-              <select name="rows[INDEX][state]" class="border rounded w-full" data-action="change->import-table#validate change->import-table#validateAll">
+              <select name="rows[INDEX][state]" class="border rounded w-full">
                 <% Warranty.states.keys.each do |s| %>
                   <option value="<%= s %>"><%= s %></option>
                 <% end %>
