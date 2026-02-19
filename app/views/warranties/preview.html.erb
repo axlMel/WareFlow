@@ -1,17 +1,14 @@
 <%= turbo_frame_tag "modal" do %>
   <div class="p-6" data-controller="import-table modal">
     <%= render "shared/modal" do %>
-
-      <h1 class="text-2xl font-bold mb-4">
+      <h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">
         Vista previa de importación
       </h1>
-
-      <%= form_with url: confirm_import_warranties_path,
-                    data: { turbo_frame: "_top" } do %>
-        <% if defined?(@warranty) && @warranty&.errors&.any? %>
+      <%= form_with url: confirm_import_warranties_path, data: { turbo_frame: "_top" }, class: "space-y-4" do %>
+        <% if @warranty.errors.any? %>
           <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
             <h2 class="font-semibold mb-2">
-              <%= pluralize(@warranty.errors.count, "error") %> impidieron guardar la garantía.
+              <%= pluralize(@warranty.errors.count, "error(es)") %> impidieron guardar la garantía.
             </h2>
             <ul class="list-disc list-inside text-sm">
               <% @warranty.errors.full_messages.each do |message| %>
@@ -20,101 +17,70 @@
             </ul>
           </div>
         <% end %>
-
-        <table class="min-w-full border text-sm">
-          <thead>
-            <tr class="bg-gray-100">
+        <div class="bg-amber-50 border border-amber-200 text-amber-800 p-2 rounded-xl text-sm">
+          <p class="font-semibold mb-1 text-xs">
+            Aplicación masiva
+          </p>
+          <p class="text-xs">
+            Los valores que ingreses en la fila resaltada se aplicarán automáticamente a todas las filas.
+            Estos datos no crean una garantía por sí mismos.
+          </p>
+        </div>
+        <table class="min-w-full text-sm border-collapse">
+          <thead class="text-xs text-gray-500 uppercase border-b">
+            <tr>
               <th class="p-2">Cliente</th>
               <th class="p-2">Comentario</th>
               <th class="p-2">Usuario</th>
               <th class="p-2">Producto</th>
-              <th class="p-2">Estado</th>
               <th class="p-2"></th>
             </tr>
           </thead>
-
-          <tr class="bg-yellow-50" data-import-table-target="bulkRow">
+          <tr class="bg-amber-50 border-y-2 border-amber-300" data-import-table-target="bulkRow">
             <td class="p-2">
-              <input type="text"
-                     placeholder="Cliente (aplicar a todos)"
-                     data-action="change->import-table#applyBulk"
-                     data-field="client"
-                     class="border rounded w-full">
+              <input type="text" placeholder="Cliente general" data-action="change->import-table#applyBulk" data-field="client" class="border rounded w-full">
             </td>
-
             <td class="p-2">
-              <input type="text"
-                     placeholder="Comentario (aplicar a todos)"
-                     data-action="change->import-table#applyBulk"
-                     data-field="commit"
-                     class="border rounded w-full">
+              <input type="text" placeholder="Com. general" data-action="change->import-table#applyBulk" data-field="commit" class="border rounded w-full">
             </td>
-
             <td class="p-2">
-              <select data-action="change->import-table#applyBulk"
-                      data-field="user_id"
-                      class="border rounded w-full">
+              <select data-action="change->import-table#applyBulk" data-field="user_id" class="border rounded w-full">
                 <option value=""></option>
                 <% User.all.each do |u| %>
                   <option value="<%= u.id %>"><%= u.username %></option>
                 <% end %>
               </select>
             </td>
-
             <td class="p-2">
-              <select data-action="change->import-table#applyBulk"
-                      data-field="product_id"
-                      class="border rounded w-full">
+              <select data-action="change->import-table#applyBulk" data-field="product_id" class="border rounded w-full">
                 <option value=""></option>
                 <% Product.all.each do |p| %>
                   <option value="<%= p.id %>"><%= p.title %></option>
                 <% end %>
               </select>
             </td>
-
-            <td class="p-2">
-              <select data-action="change->import-table#applyBulk"
-                      data-field="state"
-                      class="border rounded w-full">
-                <option value=""></option>
-                <% Warranty.states.keys.each do |state| %>
-                  <option value="<%= state %>"><%= state.humanize %></option>
-                <% end %>
-              </select>
-            </td>
-
             <td></td>
           </tr>
 
-
-          <tbody data-import-table-target="tbody" >
+          <tbody class="divide-y divide-gray-200 bg-white" data-import-table-target="tbody" >
             <% @rows.each_with_index do |row, index| %>
-              <tr class="border-t" data-import-table-target="row">
+              <tr class="hover:bg-sky-50 transition" data-import-table-target="row">
                 <td class="p-2">
                   <%= text_field_tag "rows[#{index}][client]", row[:client], class: "border rounded w-full" %>
                 </td>
-
                 <td class="p-2">
                   <%= text_field_tag "rows[#{index}][commit]", row[:commit], class: "border rounded w-full" %>
                 </td>
-
                 <td class="p-2">
                   <%= select_tag "rows[#{index}][user_id]",
                         options_from_collection_for_select(User.all, :id, :username, row[:user_id]),
                         include_blank: true,
                         class: "border rounded w-full" %>
                 </td>
-
                 <td class="p-2">
                   <%= select_tag "rows[#{index}][product_id]",
                         options_from_collection_for_select(Product.all, :id, :title, row[:product_id]),
                         include_blank: true,
-                        class: "border rounded w-full" %>
-                </td>
-
-                <td class="p-2">
-                  <%= select_tag "rows[#{index}][state]",
-                        options_for_select(Warranty.states.keys, row[:state]),
                         class: "border rounded w-full" %>
                 </td>
               </tr>
@@ -123,7 +89,7 @@
         </table>
 
         <template data-import-table-target="template">
-          <tr class="border-t" data-import-table-target="row">
+          <tr class="hover:bg-sky-50 transition" data-import-table-target="row">
             <td class="p-2">
               <input type="text" name="rows[INDEX][client]" class="border rounded w-full">
             </td>
@@ -131,16 +97,14 @@
             <td class="p-2">
               <input type="text" name="rows[INDEX][commit]" class="border rounded w-full">
             </td>
-
             <td class="p-2">
               <select name="rows[INDEX][user_id]" class="border rounded w-full">
                 <option value=""></option>
                 <% User.all.each do |u| %>
-                  <option value="<%= u.id %>"><%= u.email %></option>
+                  <option value="<%= u.id %>"><%= u.username %></option>
                 <% end %>
               </select>
             </td>
-
             <td class="p-2">
               <select name="rows[INDEX][product_id]" class="border rounded w-full">
                 <option value=""></option>
@@ -149,15 +113,6 @@
                 <% end %>
               </select>
             </td>
-
-            <td class="p-2">
-              <select name="rows[INDEX][state]" class="border rounded w-full">
-                <% Warranty.states.keys.each do |s| %>
-                  <option value="<%= s %>"><%= s %></option>
-                <% end %>
-              </select>
-            </td>
-
             <td class="p-2 text-center">
               <button type="button"
                       data-action="click->import-table#removeRow"
@@ -170,18 +125,15 @@
 
         <button type="button"
         data-action="click->import-table#addRow"
-        class="bg-gray-200 px-3 py-1 rounded">
+        class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">
           + Agregar fila
         </button>
 
-
-        <div class="mt-6 text-right">
+        <div class="mt-1 text-right">
           <%= submit_tag "Confirmar importación",
-                class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+                class: "bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow" %>
         </div>
-
       <% end %>
-
     <% end %>
   </div>
 <% end %>

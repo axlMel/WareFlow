@@ -21,7 +21,7 @@ module Imports
             user_id: nil,
             product_id: nil,
             state: "pending"
-          }R
+          }
         end
 
         rows

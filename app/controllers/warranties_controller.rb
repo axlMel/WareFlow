@@ -91,11 +91,14 @@ class WarrantiesController < ApplicationController
     redirect_to folios_path, alert: "Archivo requerido" and return unless file
     parser = Imports::Warranties::Parser.new(file)
     @rows = parser.parse
+    @warranty = Warranty.new
+
     render :preview
   end
 
   def manual
     @rows = [Imports::Warranties::Builder.empty_row]
+    @warranty = Warranty.new
     render :preview
   end
 
@@ -108,15 +111,19 @@ class WarrantiesController < ApplicationController
     else
       @rows = rows
       @warranty = Warranty.new
-      @warranty.errors.add(:base, "Hay filas inválidas en la importación")
+
+      persister.errors.each do |index, model_errors|
+        model_errors.full_messages.each do |message|
+          @warranty.errors.add(:base, "Fila #{index + 1}: #{message}")
+        end
+      end
 
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace( "modal", template: "warranties/preview", layout: false, locals: { warranty: @warranty }), status: :unprocessable_entity
+          render turbo_stream: turbo_stream.replace( "modal", template: "warranties/preview", layout: false ), status: :unprocessable_entity
         end
-
         format.html do
-          render :new, status: :unprocessable_entity
+          render :preview, status: :unprocessable_entity
         end
       end
     end

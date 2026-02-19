@@ -33,36 +33,5 @@ export default class extends Controller {
       }
     })
   }
-
-  validateRow(row) {
-    let valid = true
-
-    const requiredFields = ["client", "user_id", "product_id", "state"]
-
-    requiredFields.forEach(field => {
-      const input = row.querySelector(`[name*="[${field}]"]`)
-      if (!input || !input.value.trim()) {
-        valid = false
-      }
-    })
-
-    if (!valid) {
-      row.classList.add("bg-red-50", "border-red-400")
-    } else {
-      row.classList.remove("bg-red-50", "border-red-400")
-    }
-
-    return valid
-  }
-
-  validate(event){
-    const row = event.target.closest("tr")
-    this.validateRow(row)
-  }
-
-  validateAll(){
-    this.rowTargets.forEach(row =>{
-      this.validateRow(row)
-    })
-  }
+  
 }

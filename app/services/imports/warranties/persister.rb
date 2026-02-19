@@ -7,24 +7,26 @@ module Imports
         @rows = rows
         @errors = {}
       end
-
+      
       def persist
-        success = true
+        ActiveRecord::Base.transaction do
+          @rows.each_with_index do |row, index|
+            warranty = Warranty.new(
+              client: row["client"],
+              commit: row["commit"],
+              user_id: row["user_id"],
+              product_id: row["product_id"],
+              state: :pending
+            )
 
-        @rows.each_with_index do |row, index|
-          warranty = Warranty.new(
-            client: row["client"],
-            commit: row["commit"],
-            user_id: row["user_id"],
-            product_id: row["product_id"],
-            state: row["state"]
-          )
-          unless warranty.save
-            success = false
-            @errors[index] = warranty.errors
+            unless warranty.save
+              @errors[index] = warranty.errors
+              raise ActiveRecord::Rollback
+            end
           end
         end
-        success
+
+        @errors.empty?
       end
     end
   end
