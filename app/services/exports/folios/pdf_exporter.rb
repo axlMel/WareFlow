@@ -27,6 +27,10 @@ module Exports
         end
       end
 
+      def column_widths
+        [120, 60, 200, 50, 50, 60]
+      end
+
       def headers
         ["Cliente", "Servicio", "Accesorios", "Estado", "Usuario", "Fecha"]
       end

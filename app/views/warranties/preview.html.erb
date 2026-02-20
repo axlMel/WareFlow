@@ -4,9 +4,9 @@
       <h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">
         Vista previa de importación
       </h1>
-      <%= form_with url: confirm_import_warranties_path, data: { turbo_frame: "_top" }, class: "space-y-4" do %>
+      <%= form_with url: confirm_import_warranties_path, data: { turbo_frame: "_top" } do %>
         <% if @warranty.errors.any? %>
-          <div class="bg-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
+          <div class="bg-red-100 text-red-800 border border-red-300 p-2 space-x-1 rounded-xl shadow-sm mb-2">
             <h2 class="font-semibold mb-2">
               <%= pluralize(@warranty.errors.count, "error(es)") %> impidieron guardar la garantía.
             </h2>
@@ -26,9 +26,17 @@
             Estos datos no crean una garantía por sí mismos.
           </p>
         </div>
+        <div class="flex items-center justify-between">
+          <div></div>
+          <span data-import-table-target="bulkBadge"
+                class="hidden text-amber-700 text-xs mt-2">
+          </span>
+        </div>
+
         <table class="min-w-full text-sm border-collapse">
           <thead class="text-xs text-gray-500 uppercase border-b">
             <tr>
+              <th class="p-2 w-10 text-center">#</th>
               <th class="p-2">Cliente</th>
               <th class="p-2">Comentario</th>
               <th class="p-2">Usuario</th>
@@ -36,7 +44,8 @@
               <th class="p-2"></th>
             </tr>
           </thead>
-          <tr class="bg-amber-50 border-y-2 border-amber-300" data-import-table-target="bulkRow">
+          <tr class="bg-amber-50 border-y-2 border-amber-300" >
+            <td></td>
             <td class="p-2">
               <input type="text" placeholder="Cliente general" data-action="change->import-table#applyBulk" data-field="client" class="border rounded w-full">
             </td>
@@ -65,6 +74,9 @@
           <tbody class="divide-y divide-gray-200 bg-white" data-import-table-target="tbody" >
             <% @rows.each_with_index do |row, index| %>
               <tr class="hover:bg-sky-50 transition" data-import-table-target="row">
+                <td class="p-2 text-center text-gray-400 font-medium">
+                  <%= index + 1 %>    
+                </td>
                 <td class="p-2">
                   <%= text_field_tag "rows[#{index}][client]", row[:client], class: "border rounded w-full" %>
                 </td>
@@ -83,6 +95,13 @@
                         include_blank: true,
                         class: "border rounded w-full" %>
                 </td>
+                <td class="p-2 text-center">
+                  <button type="button"
+                          data-action="click->import-table#removeRow"
+                          class="text-red-500">
+                    ✕
+                  </button>
+                </td>
               </tr>
             <% end %>
           </tbody>
@@ -90,6 +109,9 @@
 
         <template data-import-table-target="template">
           <tr class="hover:bg-sky-50 transition" data-import-table-target="row">
+            <td class="p-2 text-center text-gray-400 font-medium">
+            INDEX_NUMBER
+            </td>
             <td class="p-2">
               <input type="text" name="rows[INDEX][client]" class="border rounded w-full">
             </td>
@@ -125,11 +147,11 @@
 
         <button type="button"
         data-action="click->import-table#addRow"
-        class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">
+        class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition mt-3">
           + Agregar fila
         </button>
 
-        <div class="mt-1 text-right">
+        <div class="text-right">
           <%= submit_tag "Confirmar importación",
                 class: "bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow" %>
         </div>

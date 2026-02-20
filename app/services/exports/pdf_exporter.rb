@@ -21,7 +21,7 @@ module Exports
 
     def build_table(pdf)
       pdf.move_down 10
-      pdf.table(table_data, header: true, column_widths: [120, 60, 200, 50, 50, 60], cell_style: { size: 9, padding: [4, 6, 4, 6], inline_format: true}) do
+      pdf.table(table_data, header: true, column_widths: column_widths, cell_style: { size: 9, padding: [4, 6, 4, 6], inline_format: true}) do
         row(0).font_style = :bold
         row(0).background_color = "EEEEEE"
 

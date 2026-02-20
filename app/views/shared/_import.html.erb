@@ -7,18 +7,19 @@
         Importar Excel
       </h1>
 
-      <!-- Descargar archivo base -->
-      <p class="text-sm text-gray-500 mb-1 text-right">
-        ¿No tienes el formato?
-        <%= link_to "Descargar archivo base",
-          download_base_folios_path,
-          data: { turbo: false },
-          class: "text-blue-600 font-medium hover:underline" %>
-      </p>
-
+      <% if local_assigns[:download_url].present? %>
+        <!-- Descargar archivo base -->
+        <p class="text-sm text-gray-500 mb-1 text-right">
+          ¿No tienes el formato?
+          <%= link_to "Descargar archivo base",
+            download_url,
+            data: { turbo: false },
+            class: "text-blue-600 font-medium hover:underline" %>
+        </p>
+      <% end %>
 
       <!-- Formulario -->
-      <%= form_with url: import_folios_path,
+      <%= form_with url: import_url,
                     multipart: true,
                     data: { turbo_frame: "_top", controller: "upload" },
                     class: "space-y-5" do |f| %>
@@ -105,12 +106,14 @@
             class: "w-full bg-blue-600 hover:bg-blue-700
                   text-white font-semibold py-3 rounded-full
                   transition" %>
-        <div class="text-center">
-          <%= link_to "Importar sin Excel",
-              manual_warranties_path,
-              data: { turbo_frame: "modal" },
-              class: "text-sm text-gray-500 hover:underline" %>
-        </div>
+        <% if local_assigns[:manual_url].present? %>
+          <div class="text-center">
+            <%= link_to "Importar sin Excel",
+                manual_url,
+                data: { turbo_frame: "modal" },
+                class: "text-sm text-gray-500 hover:underline" %>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
   </div>

@@ -72,7 +72,7 @@ class FoliosController < ApplicationController
 
   def import
     if request.get?
-      render partial: "shared/import"
+      render partial: "shared/import", locals: { import_url: import_folios_path, download_url: download_base_folios_path, manual_url: manual_folios_path }
       return
     end
 
@@ -84,6 +84,12 @@ class FoliosController < ApplicationController
     redirect_to folios_path, notice: "Importación exitosa"
   rescue => e
     redirect_to folios_path, alert: e.message
+  end
+
+  def manual
+    @rows = [Imports::Folios::Builder.empty_row]
+    @folio = Folio.new
+    render :preview
   end
 
   def download_base

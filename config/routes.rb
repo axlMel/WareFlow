@@ -34,6 +34,7 @@ Rails.application.routes.draw do
       get :download_base
       post :import
       get :export
+      get :manual
       get :download
     end
   end

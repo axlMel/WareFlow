@@ -83,17 +83,28 @@ class WarrantiesController < ApplicationController
 
   def import
     if request.get?
-      render partial: "shared/import"
+      render partial: "shared/import", locals: { import_url: import_warranties_path, download_url: download_base_warranties_path, manual_url: manual_warranties_path }
       return
     end
 
     file = params[:file]
-    redirect_to folios_path, alert: "Archivo requerido" and return unless file
+    redirect_to warranties_path, alert: "Archivo requerido" and return unless file
     parser = Imports::Warranties::Parser.new(file)
     @rows = parser.parse
     @warranty = Warranty.new
 
-    render :preview
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "modal",
+          template: "warranties/preview",
+          layout: false
+        )
+      end
+      format.html do
+        render :index, status: :unprocessable_entity
+      end
+    end
   end
 
   def manual
@@ -131,12 +142,37 @@ class WarrantiesController < ApplicationController
 
 
   def download_base
+    send_file Rails.root.join("public/templates/warrantiesImport_base.xlsx"), filename: "warrantiesImport_base.xlsx", type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", disposition: "attachment"
   end
 
   def export
+    render partial: "shared/export", locals: { export_url: download_warranties_path}
   end
 
   def download
+    scope = if params[:scope] == "filtered"
+      FindWarranties.new(Warranty.all, params).call.unscope(:limit, :offset)
+    else
+      Warranty.all
+    end
+
+    export_params = { exported_by: Current.user.username, filters: params.permit(:q, :status, :from, :to, :scope, :export_format).to_h }
+
+    exporter = case params[:export_format]
+    when "xlsx"
+      Exports::Warranties::ExcelExporter.new(scope, export_params)
+    when "pdf"
+      Exports::Warranties::PdfExporter.new(scope, export_params)
+    else
+      raise "Formato no soportado"
+    end
+
+    file = exporter.export
+    if params[:export_format] == "xlsx"
+      send_data file.to_stream.read, filename: "garantias.xlsx", disposition: "attachment"
+    else
+      send_data file.render, filename: "garantias.pdf", type: "application/pdf", disposition: "attachment"
+    end
   end
 
   private
