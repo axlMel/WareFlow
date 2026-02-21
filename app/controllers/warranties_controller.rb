@@ -140,7 +140,6 @@ class WarrantiesController < ApplicationController
     end
   end
 
-
   def download_base
     send_file Rails.root.join("public/templates/warrantiesImport_base.xlsx"), filename: "warrantiesImport_base.xlsx", type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", disposition: "attachment"
   end

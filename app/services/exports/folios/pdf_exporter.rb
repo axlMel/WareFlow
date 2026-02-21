@@ -22,7 +22,7 @@ module Exports
 
         @params[:filters].reject { |_k, v| v.blank? }.each do |key, value|
           label = I18n.t("exports.filters.#{key}", default: key.to_s.humanize)
-          result = I18n.t("exports.values.#{value}", default: key.to_s.humanize)
+          result = I18n.t("exports.values.#{value}", default: value.to_s.humanize)
           pdf.text "- #{label}: #{result}"
         end
       end

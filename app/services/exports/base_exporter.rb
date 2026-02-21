@@ -23,9 +23,11 @@ module Exports
     def filter_metadata
       return [] if @params[:filters].blank?
 
-      @params[:filters].to_h
-        .reject { |_k, v| v.blank? }
-        .map { |k, v| [k.to_s.humanize, v] }
+      @params[:filters].to_h.reject { |_k, v| v.blank? }.map do |k, v|
+        [ I18n.t("exports.filters.#{k}", default: k.to_s.humanize), 
+          I18n.t("exports.values.#{v}", default: v.to_s.humanize)
+        ]
+      end
     end
   end
 end

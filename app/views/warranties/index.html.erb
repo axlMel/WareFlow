@@ -68,7 +68,7 @@
       <!-- Tabla interna -->
       <turbo-frame id="warranties_table">
         <div class="overflow-x-auto">
-          <table class="min-w-full text-sm border-collapse">
+          <table class="min-w-full text-sm text-left border-collapse">
             <thead class="text-xs text-gray-500 uppercase border-b">
               <tr>
                 <th class="px-4 py-2"><%= sortable("id", "ID") %></th>
@@ -102,7 +102,7 @@
                   </td>
                   <td class="px-4 py-2 text-gray-500 text-sm"><%= warranty.created_at.strftime("%d/%m/%Y") %></td>
                   <td class="px-4">
-                    <div class="flex items-center justify-end h-full gap-2">
+                    <div class="flex items-center justify-start h-full gap-2">
                       <%= link_to "Ver", warranty_path(warranty), class: "text-indigo-600 hover:underline", data: { turbo_frame: "modal" } %>
                       <%= link_to "Editar", edit_warranty_path(warranty), class: "text-yellow-600 hover:underline", data: { turbo_frame: "modal" } %>
                       <%= button_to "Eliminar", warranty_path(warranty), method: :delete, data: { turbo_confirm: "¿Estás seguro?", turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>

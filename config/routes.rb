@@ -31,11 +31,12 @@ Rails.application.routes.draw do
   resources :folios do
     collection do
       get :import
-      get :download_base
       post :import
+      get :download
+      get :download_base
       get :export
       get :manual
-      get :download
+      post :confirm_import
     end
   end
   resources :replacements, only: [:create]

@@ -1,5 +1,5 @@
 module Imports
-  module Warranties
+  module Folios
     class Parser
       attr_reader :file, :spreadsheet, :header
 
@@ -17,8 +17,8 @@ module Imports
 
           rows << {
             client: row["cliente"],
-            commit: row["comentario"],
-            user_id: nil
+            service: nil,
+            accesories: row["accerorios"]
           }
         end
 

@@ -1,0 +1,138 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="p-6" data-controller="import-table modal">
+    <%= render "shared/modal" do %>
+      <h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">
+        Vista previa de importación
+      </h1>
+      <%= form_with url: confirm_import_folios_path, data: { turbo_frame: "_top" } do %>
+        <% if @folio.errors.any? %>
+          <div class="bg-red-100 text-red-800 border border-red-300 p-2 space-x-1 rounded-xl shadow-sm mb-2">
+            <h2 class="font-semibold mb-2">
+              <%= pluralize(@folio.errors.count, "error(es)") %> impidieron guardar el folio.
+            </h2>
+            <ul class="list-disc list-inside text-sm">
+              <% @folio.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="bg-amber-50 border border-amber-200 text-amber-800 p-2 rounded-xl text-sm">
+          <p class="font-semibold mb-1 text-xs">
+            Aplicación masiva
+          </p>
+          <p class="text-xs">
+            Los valores que ingreses en la fila resaltada se aplicarán automáticamente a todas las filas.
+            Estos datos no crean un folio por sí mismos.
+          </p>
+        </div>
+        <div class="flex items-center justify-between">
+          <div></div>
+          <span data-import-table-target="bulkBadge"
+                class="hidden text-amber-700 text-xs mt-2">
+          </span>
+        </div>
+
+        <table class="min-w-full text-sm border-collapse">
+          <thead class="text-xs text-gray-500 uppercase border-b">
+            <tr>
+              <th class="p-2 w-10 text-center">#</th>
+              <th class="p-2">Cliente</th>
+              <th class="p-2">Servicio</th>
+              <th class="p-2">Accesorios</th>
+              <th class="p-2"></th>
+            </tr>
+          </thead>
+          <tr class="bg-amber-50 border-y-2 border-amber-300" >
+            <td></td>
+            <td class="p-2">
+              <input type="text" placeholder="Cliente general" data-action="change->import-table#applyBulk" data-field="client" class="border rounded w-full">
+            </td>
+            <td class="p-2">
+              <select data-action="change->import-table#applyBulk" data-field="status" class="border rounded w-full">
+                <option value=""></option>
+                <option value="Instalación">Instalación</option>
+                <option value="Desinstalación">Desinstalación</option>
+                <option value="Revisión">Revisión</option>
+                <option value="Demo">Demo</option>
+              </select>
+            </td>
+            <td class="p-2">
+              <input type="text" placeholder="Accesorios" data-action="change->import-table#applyBulk" data-field="accesories" class="border rounded w-full">
+            </td>
+            <td></td>
+          </tr>
+
+          <tbody class="divide-y divide-gray-200 bg-white" data-import-table-target="tbody" >
+            <% @rows.each_with_index do |row, index| %>
+              <tr class="hover:bg-sky-50 transition" data-import-table-target="row">
+                <td class="p-2 text-center text-gray-400 font-medium">
+                  <%= index + 1 %>    
+                </td>
+                <td class="p-2">
+                  <%= text_field_tag "rows[#{index}][client]", row[:client], class: "border rounded w-full" %>
+                </td>
+                <td class="p-2">
+                  <%= select_tag "rows[#{index}][status]",
+                  options_for_select(
+                    ["Instalación", "Desinstalación", "Revisión", "Demo"],row[:status]), include_blank: true, class: "border rounded w-full"%>
+                </td>
+                <td class="p-2">
+                  <%= text_field_tag "rows[#{index}][accesories]", row[:accessories], class: "border rounded w-full" %>
+                </td>
+                <td class="p-2 text-center">
+                  <button type="button"
+                          data-action="click->import-table#removeRow"
+                          class="text-red-500">
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <template data-import-table-target="template">
+          <tr class="hover:bg-sky-50 transition" data-import-table-target="row">
+            <td class="p-2 text-center text-gray-400 font-medium">
+            INDEX_NUMBER
+            </td>
+            <td class="p-2">
+              <input type="text" name="rows[INDEX][client]" class="border rounded w-full">
+            </td>
+            <td class="p-2">
+              <select name="rows[INDEX][status]" class="border rounded w-full">
+                <option value=""></option>
+                <option value="Instalación">Instalación</option>
+                <option value="Desinstalación">Desinstalación</option>
+                <option value="Revisión">Revisión</option>
+                <option value="Demo">Demo</option>
+              </select>
+            </td>
+            <td class="p-2">
+              <input type="text" name="rows[INDEX][accesories]" class="border rounded w-full">
+            </td>
+            <td class="p-2 text-center">
+              <button type="button"
+                      data-action="click->import-table#removeRow"
+                      class="text-red-500">
+                ✕
+              </button>
+            </td>
+          </tr>
+        </template>
+
+        <button type="button"
+        data-action="click->import-table#addRow"
+        class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition mt-3">
+          + Agregar fila
+        </button>
+
+        <div class="text-right">
+          <%= submit_tag "Confirmar importación",
+                class: "bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

@@ -78,12 +78,21 @@ class FoliosController < ApplicationController
 
     file = params[:file]
     redirect_to folios_path, alert: "Archivo requerido" and return unless file
-
-    Imports::FoliosImporter.new(file).import!
-
-    redirect_to folios_path, notice: "Importación exitosa"
-  rescue => e
-    redirect_to folios_path, alert: e.message
+    parser = Imports::Folios::Parser.new(file)
+    @rows = parser.parse
+    @folio = Folio.new
+    #Imports::FoliosImporter.new(file).import!
+    #redirect_to folios_path, notice: "Importación exitosa"
+    #rescue => e
+    #redirect_to folios_path, alert: e.message
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace("modal", template: "folios/preview", layout: false)
+      end
+      format.html do
+        render :index, status: :unprocessable_entity
+      end
+    end
   end
 
   def manual
@@ -92,11 +101,11 @@ class FoliosController < ApplicationController
     render :preview
   end
 
+  def confirm_import
+  end
+
   def download_base
-    send_file Rails.root.join("public/templates/foliosImport_base.xlsx"),
-              filename: "foliosImport_base.xlsx",
-              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-              disposition: "attachment"
+    send_file Rails.root.join("public/templates/foliosImport_base.xlsx"), filename: "foliosImport_base.xlsx", type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", disposition: "attachment"
   end
 
   def export
@@ -109,24 +118,18 @@ class FoliosController < ApplicationController
     else
       Folio.all
     end
+    export_params = { exported_by: Current.user.username, filters: params.permit(:q, :status, :from, :to, :scope, :export_format).to_h }
 
-    export_params = { exported_by: Current.user.username,
-      filters: params.permit(:q, :status, :from, :to, :scope, :export_format).to_h
-    }
-
-
-    exporter =
-      case params[:export_format]
-      when "xlsx"
-        Exports::Folios::ExcelExporter.new(scope, export_params)
-      when "pdf"
-        Exports::Folios::PdfExporter.new(scope, export_params)
-      else
-        raise "Formato no soportado"
-      end
+    exporter = case params[:export_format]
+    when "xlsx"
+      Exports::Folios::ExcelExporter.new(scope, export_params)
+    when "pdf"
+      Exports::Folios::PdfExporter.new(scope, export_params)
+    else
+      raise "Formato no soportado"
+    end
 
     file = exporter.export
-
     if params[:export_format] == "xlsx"
       send_data file.to_stream.read, filename: "folios.xlsx", disposition: "attachment"
     else
