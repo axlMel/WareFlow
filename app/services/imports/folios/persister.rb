@@ -14,8 +14,8 @@ module Imports
             folio = Folio.new(
               client: row["client"],
               service: row["service"],
-              accesories: row["accesories"],
-              status: :pending
+              accessories: row["accesories"],
+              status: :crafted
             )
 
             unless folio.save

@@ -18,7 +18,7 @@ module Imports
           rows << {
             client: row["cliente"],
             service: nil,
-            accesories: row["accerorios"]
+            accesories: row["accesorio"]
           }
         end
 

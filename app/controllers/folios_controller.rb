@@ -102,6 +102,30 @@ class FoliosController < ApplicationController
   end
 
   def confirm_import
+    rows = (params[:rows] || {}).to_unsafe_h.values
+    persister = Imports::Folios::Persister.new(rows)
+
+    if persister.persist
+      redirect_to folios_path, notice: "Importación exitosa"
+    else
+      @rows = rows
+      @folio = Folio.new
+
+      persister.errors.each do |index, model_errors|
+        model_errors.full_messages.each do |message|
+          @folio.errors.add(:base, "Fila #{index + 1}: #{message}")
+        end
+      end
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace( "modal", template: "folios/preview", layout: false ), status: :unprocessable_entity
+        end
+        format.html do
+          render :preview, status: :unprocessable_entity
+        end
+      end
+    end
   end
 
   def download_base
