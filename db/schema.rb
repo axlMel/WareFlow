@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_22_214335) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_25_230718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,8 +50,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_214335) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.bigint "device_id"
+    t.bigint "sim_id"
     t.index ["delivery_id"], name: "index_assignments_on_delivery_id"
+    t.index ["device_id"], name: "index_assignments_on_device_id"
     t.index ["product_id"], name: "index_assignments_on_product_id"
+    t.index ["sim_id"], name: "index_assignments_on_sim_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
 
@@ -69,6 +73,32 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_214335) do
     t.datetime "updated_at", null: false
     t.index ["folio_id"], name: "index_deliveries_on_folio_id"
     t.index ["user_id"], name: "index_deliveries_on_user_id"
+  end
+
+  create_table "device_sim_histories", force: :cascade do |t|
+    t.bigint "device_id", null: false
+    t.bigint "sim_id", null: false
+    t.datetime "installed_at", null: false
+    t.datetime "removed_at"
+    t.string "reasons"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id", "removed_at"], name: "index_device_sim_histories_on_device_id_and_removed_at"
+    t.index ["device_id"], name: "index_device_sim_histories_on_device_id"
+    t.index ["sim_id", "removed_at"], name: "index_device_sim_histories_on_sim_id_and_removed_at"
+    t.index ["sim_id"], name: "index_device_sim_histories_on_sim_id"
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.string "imei", null: false
+    t.string "brand"
+    t.string "model"
+    t.integer "status", default: 0, null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["imei"], name: "index_devices_on_imei", unique: true
+    t.index ["product_id"], name: "index_devices_on_product_id"
   end
 
   create_table "favorites", force: :cascade do |t|
@@ -100,7 +130,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_214335) do
     t.datetime "updated_at", null: false
     t.bigint "category_id", null: false
     t.integer "stock"
+    t.boolean "trackable", default: false, null: false
     t.index ["category_id"], name: "index_products_on_category_id"
+  end
+
+  create_table "sims", force: :cascade do |t|
+    t.string "iccid", null: false
+    t.string "provider"
+    t.string "apn"
+    t.string "phone_number"
+    t.integer "status", default: 0, null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["iccid"], name: "index_sims_on_iccid", unique: true
+    t.index ["product_id"], name: "index_sims_on_product_id"
   end
 
   create_table "stocks", force: :cascade do |t|
@@ -159,27 +203,39 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_214335) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.bigint "product_id"
+    t.bigint "device_id"
+    t.bigint "sim_id"
+    t.index ["device_id"], name: "index_warranties_on_device_id"
     t.index ["product_id"], name: "index_warranties_on_product_id"
+    t.index ["sim_id"], name: "index_warranties_on_sim_id"
     t.index ["user_id"], name: "index_warranties_on_user_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assignments", "deliveries"
+  add_foreign_key "assignments", "devices"
   add_foreign_key "assignments", "products"
+  add_foreign_key "assignments", "sims"
   add_foreign_key "assignments", "users"
   add_foreign_key "deliveries", "folios"
   add_foreign_key "deliveries", "users"
+  add_foreign_key "device_sim_histories", "devices"
+  add_foreign_key "device_sim_histories", "sims"
+  add_foreign_key "devices", "products"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
   add_foreign_key "folios", "users"
   add_foreign_key "products", "categories"
+  add_foreign_key "sims", "products"
   add_foreign_key "stocks", "products"
   add_foreign_key "stocks", "users"
   add_foreign_key "support_assignments", "assignments"
   add_foreign_key "support_assignments", "supports"
   add_foreign_key "supports", "folios"
   add_foreign_key "supports", "users"
+  add_foreign_key "warranties", "devices"
   add_foreign_key "warranties", "products"
+  add_foreign_key "warranties", "sims"
   add_foreign_key "warranties", "users"
 end
