@@ -11,6 +11,11 @@ class Sim < ApplicationRecord
     damaged: 4,
     returned: 5
   }
+  scope :available, -> { where(status: :available) }
 
   validates :iccid, presence: true, uniqueness: true
+
+  def current_device
+    device_sim_histories.active.first&.device
+  end
 end

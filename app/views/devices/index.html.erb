@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <tr>
+      <th>IMEI</th>
+      <th>Modelo</th>
+      <th>SIM</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @devices.each do |device| %>
+      <tr>
+        <td><%= device.imei %></td>
+        <td><%= device.model %></td>
+        <td><%= device.active_sim&.iccid || "Sin SIM" %></td>
+        <td><%= device.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

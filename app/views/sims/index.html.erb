@@ -1,0 +1,23 @@
+<table>
+  <thead>
+    <tr>
+      <th>ICCID</th>
+      <th>PROVEEDOR</th>
+      <th>APN</th>
+      <th>TELEFONO</th>
+      <th>STATUS</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sims.each do |sim| %>
+      <tr>
+        <td><%= sim.iccid %></td>
+        <td><%= sim.provider %></td>
+        <td><%= sim.apn %></td>
+        <td><%= sim.phone_number %></td>
+        <td><%= sim.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   # Logout
   delete '/logout', to: 'authentication/sessions#destroy', as: :logout
 
+  get "laboratory", to: "laboratory#index"
+
   # Resto de rutas
   resources :favorites, only: [:index, :create, :destroy], param: :product_id
   resources :users, only: :show, path: "/user", param: :username
@@ -39,7 +41,14 @@ Rails.application.routes.draw do
       post :confirm_import
     end
   end
+  resources :devices do
+    member do
+      post :install_sim
+      post :remove_sim
+    end
+  end
   resources :replacements, only: [:create]
+  resources :sims
 
   namespace :folios do
     get "api/:id/data",    to: "api#data"

@@ -1,0 +1,55 @@
+<h1>Laboratorio</h1>
+
+<h2>Devices</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>IMEI</th>
+      <th>Modelo</th>
+      <th>SIM</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @devices.each do |device| %>
+      <tr>
+        <td><%= device.imei %></td>
+        <td><%= device.model %></td>
+
+        <td>
+          <% if device.current_sim %>
+            <%= device.current_sim.iccid %>
+          <% else %>
+            -
+          <% end %>
+        </td>
+
+        <td><%= device.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>Sims disponibles</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>ICCID</th>
+      <th>Proveedor</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @available_sims.each do |sim| %>
+      <tr>
+        <td><%= sim.iccid %></td>
+        <td><%= sim.provider %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
