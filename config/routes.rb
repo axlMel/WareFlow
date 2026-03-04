@@ -10,7 +10,10 @@ Rails.application.routes.draw do
   # Logout
   delete '/logout', to: 'authentication/sessions#destroy', as: :logout
 
-  get "laboratory", to: "laboratory#index"
+  get "laboratory", to: "laboratories#index"
+  resource :laboratory do
+    post :install_sim
+  end
 
   # Resto de rutas
   resources :favorites, only: [:index, :create, :destroy], param: :product_id

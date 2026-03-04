@@ -13,8 +13,34 @@ class Device < ApplicationRecord
   }
 
   validates :imei, presence: true, uniqueness: true
-  before_update :prevent_stock_change_if_trackable
-  has_many :device_sim_histories
+
+  def install_sim!(sim)
+    transaction do
+      active_history = device_sim_histories.active.first
+
+      if active_history
+        active_history.update!(
+          removed_at: Time.current,
+          reasons: "SIM reemplazada"
+        )
+      end
+
+      device_sim_histories.create!(
+        sim: sim,
+        installed_at: Time.current
+      )
+    end
+  end
+
+  def remove_sim!
+    active_history = device_sim_histories.active.first
+    return unless active_history
+
+    active_history.update!(
+      removed_at: Time.current,
+      reasons: "SIM removida en laboratorio"
+    )
+  end
 
   def current_sim
     device_sim_histories
@@ -22,13 +48,6 @@ class Device < ApplicationRecord
       .includes(:sim)
       .first
       &.sim
-  end
-
-  def prevent_stock_change_if_trackable
-    if trackable? && stock_changed?
-      errors.add(:stock, "No puede modificarse directamente en productos trackeables")
-      throw(:abort)
-    end
   end
 
   def active_sim
