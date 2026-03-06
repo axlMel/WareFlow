@@ -1,20 +1,86 @@
-<table>
-  <thead>
+<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
+  <!-- sidebar de filtros -->
+  <div class="w-full lg:w-1/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow space-y-4">
+      <h1 class="text-2xl font-bold text-gray-800">Filtrar dispositivos</h1>
+      <%= form_with url: devices_path, method: :get, data:{ controller: "debounce-search", turbo_action: "advance" }, class: "space-y-4" do |form| %>
+
+        <!-- Busqueda -->
+        <div>
+          <%= form.label :q, "Busqueda", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :q, value: params[:q], placeholder: "Imei marca o modelo", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
+        </div>
+
+        <!-- Estado -->
+        <div>
+          <%= form.label :status, "Estado de dispositivo", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.select :status, options_for_select([['Disponible', :available], ['Asignado', :assigned], ['Instalado', :installed], ['En garantía', :in_warranty], ['Dañado', :damaged], ['Regresado', :returned]], params[:status]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
+        </div>
+
+        <!-- Fechas -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <%= form.label :from, "Desde", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :from, value: params[:from], class:"w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
+          </div>
+          <div>
+            <%= form.label :to, "Hasta", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :to, value: params[:to], class: "w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <%= form.submit 'Filtrar', class: "w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
+        </div>
+      <% end %>
+
+      <div class="pt-4">
+        <%= link_to 'Nuevo dispositivo', new_device_path, data: { turbo_frame: "modal" }, class: "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-4">
+  <%= link_to "Nuevo Device", new_device_path, class: "px-4 py-2 bg-blue-600 text-white rounded" %>
+</div>
+
+<table class="min-w-full border">
+  <thead class="bg-gray-100">
     <tr>
-      <th>IMEI</th>
-      <th>Modelo</th>
-      <th>SIM</th>
-      <th>Status</th>
+      <th class="p-2 text-left">IMEI</th>
+      <th class="p-2 text-left">Marca</th>
+      <th class="p-2 text-left">Modelo</th>
+      <th class="p-2 text-left">SIM activa</th>
+      <th class="p-2 text-left">Status</th>
+      <th class="p-2 text-left">Acciones</th>
     </tr>
   </thead>
 
   <tbody>
     <% @devices.each do |device| %>
-      <tr>
-        <td><%= device.imei %></td>
-        <td><%= device.model %></td>
-        <td><%= device.active_sim&.iccid || "Sin SIM" %></td>
-        <td><%= device.status %></td>
+      <tr class="border-t">
+        <td class="p-2"><%= device.imei %></td>
+        <td class="p-2"><%= device.brand %></td>
+        <td class="p-2"><%= device.model %></td>
+
+        <td class="p-2">
+          <% if device.active_sim %>
+            <%= device.active_sim.iccid %>
+          <% else %>
+            <span class="text-gray-400">Sin SIM</span>
+          <% end %>
+        </td>
+
+        <td class="p-2"><%= device.status %></td>
+
+        <td class="p-2 space-x-2">
+          <%= link_to "Ver", device, class: "text-blue-600" %>
+          <%= link_to "Editar", edit_device_path(device), class: "text-yellow-600" %>
+          <%= link_to "Eliminar", device,
+                data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" },
+                class: "text-red-600" %>
+        </td>
       </tr>
     <% end %>
   </tbody>

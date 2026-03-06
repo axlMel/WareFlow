@@ -46,6 +46,10 @@ es:
     sidebar:
       app: 'AlmacenGT'
       warehouse: 'Almacen'
+      laboratory: 'Laboratorio'
+      assignsim: 'Relasiones'
+      devices: 'Dispositivos'
+      sims: 'Sims'
       stats: 'Gráficas'
       services: 'Servicios'
       dashboard: 'Dashboard'

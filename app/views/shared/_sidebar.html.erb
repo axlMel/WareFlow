@@ -25,9 +25,7 @@
       <% if Current.user %>
         <!-- Grupo Almacen -->
         <div class="flex flex-col w-full transition-all duration-300 ease-in-out">
-          <button type="button"
-                  class="sidebar-link flex space-x-2 pl-3 w-full group hover:opacity-100 transition"
-                  data-action="click->menu#toggleSubmenu">
+          <button type="button" class="sidebar-link flex space-x-2 pl-3 w-full group hover:opacity-100 transition" data-action="click->menu#toggleSubmenu">
             <%= image_tag 'icons/home.svg', class: "w-6 h-6 opacity-70 group-hover:opacity-100" %>
             <span class="menu-label group-hover:opacity-100"><%= t('.warehouse') %></span>
           </button>
@@ -53,7 +51,22 @@
         </div>
         <% if Current.user.admin? %>
           <%= sidebar_link_to supports_path, icon: 'icons/support.svg', label: t('.supports') %>
-          <%= sidebar_link_to warranties_path, icon: 'icons/warranty.svg', label: t('.warranties') %>
+
+          <!-- Grupo Laboratorio -->
+          <div class="flex flex-col w-full transition-all duration-300 ease-in-out">
+            <button type="button" class="sidebar-link flex space-x-2 pl-3 w-full group hover:opacity-100 transition" data-action="click->menu#toggleSubmenu">
+              <%= image_tag 'icons/home.svg', class: "w-6 h-6 opacity-70 group-hover:opacity-100" %>
+              <span class="menu-label group-hover:opacity-100"><%= t('.laboratory') %></span>
+            </button>
+
+            <div data-menu-target="submenu" class="ml-8 mt-0 flex flex-col gap-3 overflow-hidden transition-all duration-300 ease-in-out">
+              <%= sidebar_link_to devices_path, icon: 'icons/dashboard.svg', label: t('.devices'),  icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+              <%= sidebar_link_to sims_path, icon: 'icons/add.svg', label: t('.sims'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+              <%= sidebar_link_to laboratory_path, icon: 'icons/fav.svg', label: t('.assignsim'), icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+              <%= sidebar_link_to warranties_path, icon: 'icons/warranty.svg', label: t('.warranties'),  icon_class: "w-5 h-5 opacity-70 group-hover:opacity-100" %>
+            </div>
+          </div>
+
           <%= sidebar_link_to folios_path, icon: 'icons/folio.svg', label: t('.folios') %>
         <% end %>
       <% end %>

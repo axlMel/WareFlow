@@ -1,23 +1,154 @@
-<table>
-  <thead>
-    <tr>
-      <th>ICCID</th>
-      <th>PROVEEDOR</th>
-      <th>APN</th>
-      <th>TELEFONO</th>
-      <th>STATUS</th>
-    </tr>
-  </thead>
+<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
+  <!-- sidebar de filtros -->
+  <div class="w-full lg:w-1/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow space-y-4">
+      <h1 class="text-2xl font-bold mb-4">SIMs</h1>
 
-  <tbody>
-    <% @sims.each do |sim| %>
-      <tr>
-        <td><%= sim.iccid %></td>
-        <td><%= sim.provider %></td>
-        <td><%= sim.apn %></td>
-        <td><%= sim.phone_number %></td>
-        <td><%= sim.status %></td>
-      </tr>
+      <%= form_with url: sims_path, method: :get, data:{ controller: "debounce-search", turbo_action: "advance" }, class: "space-y-4" do |form| %>
+        <!-- Busqueda -->
+        <div>
+          <%= form.label :q, "Busqueda", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :q, value: params[:q], placeholder: "ICCID, apn o rpveedor", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
+        </div>
+
+        <!-- Estado -->
+        <div>
+          <%= form.label :status, "Estado de sim", class: "block text-sm font-medium text-gray-700" %>
+          <%= form.select :status, options_for_select([['Disponible', :available], ['Asignado', :assigned], ['Instalado', :installed], ['En garantía', :in_warranty], ['Dañado', :damaged], ['Regresado', :returned]], params[:status]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
+        </div>
+
+        <!-- Fechas -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <%= form.label :from, "Desde", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :from, value: params[:from], class:"w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
+          </div>
+          <div>
+            <%= form.label :to, "Hasta", class: "block text-sm text-gray-600" %>
+            <%= form.date_field :to, value: params[:to], class: "w-full border border-gray-300 rounded-xl px-2 py-1 text-sm" %>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <%= form.submit 'Filtrar', class: "w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
+        </div>
+      <% end %>
+
+      <div class="pt-4">
+        <%= link_to "Nueva SIM", new_sim_path, data: { turbo_frame: "modal" }, class: "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel derecho: tabla -->
+  <div class="w-full lg:w-3/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <div class="flex justify-between mt-2 mb-2">
+        <h2 class="text-xl font-semibold mb-4">Lista de SIMs</h2>
+        <!-- Top controls -->
+        <div class="flex items-center gap-1 bg-white-50 border border-gray-200 rounded-lg p-1 mb-2">
+          <%= link_to import_folios_path,
+            class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+            data: { turbo_frame: "modal" } do %>
+            <%= image_tag 'icons/import.svg',
+              class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+            Importar
+          <% end %>
+
+          <%= link_to export_folios_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]),
+            class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+            data: { turbo_frame: "modal" } do %>
+            <%= image_tag 'icons/export.svg',
+              class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+            Exportar
+          <% end %>
+        </div>
+      </div>
+
+      <turbo-frame id="sims_table">
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left border-collapse">
+            <thead class="text-xs text-gray-500 uppercase border-b">
+              <tr>
+                <th class="px-4 py-2 text-left"><%= sortable("id", "ID") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("iccid", "ICCID") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("provider", "PROVEEDOR") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("apn", "APN") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("phone_number", "TELEFONO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("status", "ESTADO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("created_at", "FECHA CREACION") %></th>
+                <th class="px-4 py-2 text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <% @sims.each do |sim| %>
+                <tr class="hover:bg-sky-50 transition">
+                  <td class="px-4 py-2 font-medium"><%= sim.id %></td>
+                  <td class="px-4 py-2"><%= sim.iccid %></td>
+                  <td class="px-4 py-2"><%= sim.provider %></td>
+                  <td class="px-4 py-2"><%= sim.apn %></td>
+                  <td class="px-4 py-2"><%= sim.phone_number %></td>
+                  <td class="px-4 py-2"><%= sim.status %></td>
+                  <td class="px-4 py-2">
+                    <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
+                      <%= case sim.status 
+                      when "available"
+                        'bg-amber-100 text-amber-600'
+                      when "assigned"
+                        'bg-sky-100 text-sky-800'
+                      when "installed"
+                        'bg-green-100 text-green-800'
+                      when "in_warranty"
+                        'bg-orange-100 text-orange-600'
+                      when "damaged"
+                        'bg-rose-100 text-rose-800'
+                      when "returned"
+                        'bg-purple-100 text-purple-800'
+                      end  %>">
+                      <%= t("activerecord.attributes.sim.statuses.#{sim.status}") %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-2"><%= sim.created_at.strftime("%d/%m/%Y") %></td> 
+                  <td class="px-4">
+                    <div class="flex items-center justify-start h-full gap-2">
+                      <%= link_to 'Ver', sim_path(sim), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
+                      
+                      <%= link_to "Editar", edit_sim_path(sim), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
+                      
+                      <%= button_to 'Eliminar', sim_path(sim), method: :delete, data: { turbo_confirm: '¿Estás seguro?', turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <label for="per_page">Mostrar:</label>
+            <%= form_with url: sims_path, method: :get, local: true do |f| %>
+              <%= hidden_field_tag :q, params[:q] %> <!-- conserva búsqueda -->
+              <%= select_tag :per_page,
+                    options_for_select([10, 30, 50, 100], params[:per_page] || 10),
+                    onchange: "this.form.submit();",
+                    class: "border border-gray-300 rounded-lg px-2 py-1 text-sm" %>
+            <% end %>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <div>
+              <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Sims)" %></span>
+            </div>
+            <div>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="folios_table"').html_safe %>
+            </div>
+          </div>
+        </div>
+      </turbo-frame>
+    </div>
+    <% if @sims.empty? %>
+      <div class="text-center py-10 text-gray-400">
+        No hay Folios para mostrar
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</div>

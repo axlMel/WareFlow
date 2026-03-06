@@ -45,6 +45,7 @@ en:
     sidebar:
       app: 'AlmacenGT'
       warehouse: 'Warehouse'
+      laboratory: "laboratory"
       stats: 'Stats'
       services: 'Services'
       dashboard: 'Dashboard'
