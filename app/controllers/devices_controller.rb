@@ -2,10 +2,19 @@ class DevicesController < ApplicationController
   before_action :set_device, only: [:show, :edit, :update, :destroy]
 
   def index
-    @devices = Device.includes(:product).order(created_at: :desc)
+    finder = FindDevices.new(Device.all, params)
+    scoped = finder.call
+
+    sort_column = params[:sort] || 'created_at'
+    sort_direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+    scoped = scoped.order("#{sort_column} #{sort_direction}")
+
+    @pagy, @devices = pagy(scoped, items: params[:per_page] || 10)
   end
 
   def show
+    @device = Device.find(params[:id])
+    render layout: false
   end
 
   def new

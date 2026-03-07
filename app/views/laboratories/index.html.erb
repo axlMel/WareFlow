@@ -9,6 +9,7 @@
       <th>Modelo</th>
       <th>SIM</th>
       <th>Estado</th>
+      <th class="p-2 text-left">device activa</th>
     </tr>
   </thead>
 
@@ -27,6 +28,13 @@
         </td>
 
         <td><%= device.status %></td>
+        <td class="p-2">
+          <% if device.active_sim %>
+            <%= device.active_sim.iccid %>
+          <% else %>
+            <span class="text-gray-400">Sin SIM</span>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

@@ -35,6 +35,22 @@ en:
         statuses:
           assigned: "Assigned"
           installed: "Installed"
+      device:
+        statuses:
+          available: "Available"
+          assigned: "Assigned"
+          installed: "Installed"
+          in_warranty: "In Warranties"
+          damaged: "Damaged"
+          returned: "Returned"
+      sim:
+        statuses:
+          available: "Available"
+          assigned: "Assigned"
+          installed: "Installed"
+          in_warranty: "In Warranties"
+          damaged: "Damaged"
+          returned: "Returned"
   common:
     confirm: 'Are you sure?'
     back: 'Go back'

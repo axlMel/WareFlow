@@ -35,6 +35,22 @@ es:
         statuses:
           assigned: "Asignado"
           installed: "Instaldo"
+      device:
+        statuses:
+          available: "Disponible"
+          assigned: "Asignado"
+          installed: "Instalado"
+          in_warranty: "Revisión"
+          damaged: "Dañado"
+          returned: "Regresado"
+      sim:
+        statuses:
+          available: "Disponible"
+          assigned: "Asignado"
+          installed: "Instalado"
+          in_warranty: "Revisión"
+          damaged: "Dañado"
+          returned: "Regresado"
 
   common:
     confirm: '¿Estás seguro?'

@@ -1,0 +1,37 @@
+<%= form_with(model: device, data: { turbo_frame: "_top"}, class: "space-y-4") do |f| %>
+  <% if device.errors.any? %>
+    <div class="gb-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
+      <h2 class="font-semibold mb-2">
+        <%= pluralize(device.errors.count, "error(es)") %> impidieron guardar el dispositivo.
+      </h2>
+      <ul class="list-disc list-inside text-sm">
+        <% device.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :imei, "IMEI", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :imei, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+    <%= f.label :brand, "Marca", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :brand, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+    <%= f.label :model, "Modelo", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :model, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+
+    <%= f.submit device.new_record? ? "Crear device" : "Actualizar device", class: "bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
+
+    
+    <%= link_to "Cancelar", devices_path, class: "bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
+  </div>
+<% end %>

@@ -1,20 +1,20 @@
-<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4 lg:p-6">
+<div class="min-h-screen flex flex-col lg:flex-row gap-6 p-4">
   <!-- sidebar de filtros -->
   <div class="w-full lg:w-1/4 space-y-4">
     <div class="bg-white p-4 rounded-2xl shadow space-y-4">
-      <h1 class="text-2xl font-bold text-gray-800">Filtrar dispositivos</h1>
+      <h1 class="text-2xl font-bold text-gray-800">Filtrar Dispositivos</h1>
       <%= form_with url: devices_path, method: :get, data:{ controller: "debounce-search", turbo_action: "advance" }, class: "space-y-4" do |form| %>
 
         <!-- Busqueda -->
         <div>
           <%= form.label :q, "Busqueda", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.text_field :q, value: params[:q], placeholder: "Imei marca o modelo", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
+          <%= form.text_field :q, value: params[:q], placeholder: "Imei, marca o modelo", data: { debounce_search_target: "input", action: "input->debounce-search#search" }, class: "w-full border border-gray-300 rounded-xl px-3 py-2 text-sm" %>
         </div>
 
         <!-- Estado -->
         <div>
           <%= form.label :status, "Estado de dispositivo", class: "block text-sm font-medium text-gray-700" %>
-          <%= form.select :status, options_for_select([['Disponible', :available], ['Asignado', :assigned], ['Instalado', :installed], ['En garantía', :in_warranty], ['Dañado', :damaged], ['Regresado', :returned]], params[:status]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
+          <%= form.select :status, options_for_select([['Disponible', :available], ['Asignado', :assigned], ['Instalado', :installed], ['Revisión', :in_warranty], ['Dañado', :damaged], ['Regresado', :returned]], params[:status]), { include_blank: true }, class: "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" %>
         </div>
 
         <!-- Fechas -->
@@ -35,53 +35,117 @@
       <% end %>
 
       <div class="pt-4">
-        <%= link_to 'Nuevo dispositivo', new_device_path, data: { turbo_frame: "modal" }, class: "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
+        <%= link_to 'Nuevo Dispositivo', new_device_path, data: { turbo_frame: "modal" }, class: "block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl transition" %>
       </div>
     </div>
   </div>
-</div>
 
-<div class="mb-4">
-  <%= link_to "Nuevo Device", new_device_path, class: "px-4 py-2 bg-blue-600 text-white rounded" %>
-</div>
-
-<table class="min-w-full border">
-  <thead class="bg-gray-100">
-    <tr>
-      <th class="p-2 text-left">IMEI</th>
-      <th class="p-2 text-left">Marca</th>
-      <th class="p-2 text-left">Modelo</th>
-      <th class="p-2 text-left">SIM activa</th>
-      <th class="p-2 text-left">Status</th>
-      <th class="p-2 text-left">Acciones</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @devices.each do |device| %>
-      <tr class="border-t">
-        <td class="p-2"><%= device.imei %></td>
-        <td class="p-2"><%= device.brand %></td>
-        <td class="p-2"><%= device.model %></td>
-
-        <td class="p-2">
-          <% if device.active_sim %>
-            <%= device.active_sim.iccid %>
-          <% else %>
-            <span class="text-gray-400">Sin SIM</span>
+  <!-- Panel derecho: tabla -->
+  <div class="w-full lg:w-3/4 space-y-4">
+    <div class="bg-white p-4 rounded-2xl shadow">
+      <div class="flex justify-between mt-2 mb-2">
+        <h2 class="text-xl font-semibold mb-4">Lista de Dispositivos</h2>
+        <!-- Top controls -->
+        <div class="flex items-center gap-1 bg-white-50 border border-gray-200 rounded-lg p-1 mb-2">
+          <%= link_to import_folios_path,
+            class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+            data: { turbo_frame: "modal" } do %>
+            <%= image_tag 'icons/import.svg',
+              class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+            Importar
           <% end %>
-        </td>
 
-        <td class="p-2"><%= device.status %></td>
+          <%= link_to export_folios_path(q: params[:q], status: params[:status], from: params[:from], to: params[:to]),
+            class: "group flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition",
+            data: { turbo_frame: "modal" } do %>
+            <%= image_tag 'icons/export.svg',
+              class: "w-5 h-5 opacity-70 group-hover:opacity-100 transition" %>
+            Exportar
+          <% end %>
+        </div>
+      </div>
 
-        <td class="p-2 space-x-2">
-          <%= link_to "Ver", device, class: "text-blue-600" %>
-          <%= link_to "Editar", edit_device_path(device), class: "text-yellow-600" %>
-          <%= link_to "Eliminar", device,
-                data: { turbo_method: :delete, turbo_confirm: "¿Seguro?" },
-                class: "text-red-600" %>
-        </td>
-      </tr>
+      <turbo-frame id="devices_table">
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm text-left border-collapse">
+            <thead class="text-xs text-gray-500 uppercase border-b">
+              <tr>
+                <th class="px-4 py-2 text-left"><%= sortable("id", "ID") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("imei", "IMEI") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("model", "MODELO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("brand", "MARCA") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("status", "ESTADO") %></th>
+                <th class="px-4 py-2 text-left"><%= sortable("created_at", "FECHA CREACION") %></th>
+                <th class="px-4 py-2 text-left">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <% @devices.each do |device| %>
+                <tr class="hover:bg-sky-50 transition">
+                  <td class="px-4 py-2 font-medium"><%= device.id %></td>
+                  <td class="px-4 py-2"><%= device.imei %></td>
+                  <td class="px-4 py-2"><%= device.model %></td>
+                  <td class="px-4 py-2"><%= device.brand %></td>
+                  <td class="px-4 py-2">
+                    <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
+                      <%= case device.status 
+                      when "available"
+                        'bg-amber-100 text-amber-600'
+                      when "assigned"
+                        'bg-sky-100 text-sky-800'
+                      when "installed"
+                        'bg-green-100 text-green-800'
+                      when "in_warranty"
+                        'bg-orange-100 text-orange-600'
+                      when "damaged"
+                        'bg-rose-100 text-rose-800'
+                      when "returned"
+                        'bg-purple-100 text-purple-800'
+                      end  %>">
+                      <%= t("activerecord.attributes.device.statuses.#{device.status}") %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-2"><%= device.created_at.strftime("%d/%m/%Y") %></td> 
+                  <td class="px-4">
+                    <div class="flex items-center justify-start h-full gap-2">
+                      <%= link_to 'Ver', device_path(device), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
+                      
+                      <%= link_to "Editar", edit_device_path(device), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
+                      
+                      <%= button_to 'Eliminar', device_path(device), method: :delete, data: { turbo_confirm: '¿Estás seguro?', turbo_frame: "_top" }, class: "text-red-600 hover:underline" %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <label for="per_page">Mostrar:</label>
+            <%= form_with url: devices_path, method: :get, local: true do |f| %>
+              <%= hidden_field_tag :q, params[:q] %> <!-- conserva búsqueda -->
+              <%= select_tag :per_page,
+                    options_for_select([10, 30, 50, 100], params[:per_page] || 10),
+                    onchange: "this.form.submit();",
+                    class: "border border-gray-300 rounded-lg px-2 py-1 text-sm" %>
+            <% end %>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <div>
+              <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Dispositivos)" %></span>
+            </div>
+            <div>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="folios_table"').html_safe %>
+            </div>
+          </div>
+        </div>
+      </turbo-frame>
+    </div>
+    <% if @devices.empty? %>
+      <div class="text-center py-10 text-gray-400">
+        No hay Folios para mostrar
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</div>
