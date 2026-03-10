@@ -20,34 +20,37 @@
               <p class="text-base text-gray-500">Estado:</p>
               <p class="text-sm font-medium text-gray-900"><%= @device.status.presence || "No status" %></p>
             </div>
-            <div class="md:col-span-2">
+            <div>
               <p class="ftext-base text-gray-500">Fecha de creación:</p>
               <p class="text-sm font-medium text-gray-900"><%= l(@device.created_at, format: :long) %></p>
             </div>
           </div>
+          <hr>
 
           <!-- Productos asignados -->
-          <div>
-            <h2 class="text-lg font-semibold text-gray-800 mb-2">Detalles del producto: </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-800 mb-2">Detalles del producto: </h2>
 
-            <% if @device.product.present? %>
-              <ul class="space-y-2 text-sm text-gray-700 list-disc pl-6">
-                <li>
-                  <span class="font-medium"><%= @device.product.title %></span>
-                  – Cantidad: <%= @device.product.real_stock %>
-                </li>
+              <% if @device.product.present? %>
+                <ul class="space-y-2 text-sm text-gray-700 list-disc pl-6">
+                  <li>
+                    <span class="font-medium"><%= @device.product.title %></span>
+                    – Cantidad: <%= @device.product.real_stock %>
+                  </li>
 
-              </ul>
-            <% end %>
-
-            <h2 class="text-lg font-semibold text-gray-800 mb-2">Sim actual: </h2>
-
-            <% if @device.active_sim %>
-              <%= @device.active_sim.iccid %>
-            <% else %>
-              <span class="text-gray-400">Sin SIM</span>
-            <% end %>
-          </div>
+                </ul>
+              <% end %>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-gray-800 mb-2">Sim actual: </h2>
+              <% if @device.active_sim %>
+                <%= @device.active_sim.iccid %>
+              <% else %>
+                <span class="text-gray-400">Sin SIM</span>
+              <% end %>
+            </div>
+          </div> 
         </div>
         <!-- Acciones -->
         <div class="flex justify-between items-center text-sm">

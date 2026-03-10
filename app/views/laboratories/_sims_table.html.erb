@@ -1,0 +1,39 @@
+<div class="bg-white rounded-2xl shadow p-4">
+
+  <h2 class="text-lg font-semibold mb-4">SIMs disponibles</h2>
+
+  <input type="text"
+         placeholder="Buscar ICCID"
+         class="w-full border rounded-lg px-3 py-2 mb-3 text-sm">
+
+  <div class="overflow-x-auto">
+
+    <table class="min-w-full text-sm">
+
+      <thead class="text-xs text-gray-500 border-b">
+        <tr>
+          <th class="px-3 py-2">ICCID</th>
+          <th class="px-3 py-2">Proveedor</th>
+          <th class="px-3 py-2">Estado</th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y">
+
+        <% @sims_available.each do |sim| %>
+
+        <tr class="hover:bg-sky-50 cursor-pointer">
+          <td class="px-3 py-2"><%= sim.iccid %></td>
+          <td class="px-3 py-2"><%= sim.provider %></td>
+          <td class="px-3 py-2">Disponible</td>
+        </tr>
+
+        <% end %>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

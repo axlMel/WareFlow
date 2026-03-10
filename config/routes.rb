@@ -12,6 +12,10 @@ Rails.application.routes.draw do
 
   get "laboratory", to: "laboratories#index"
   resource :laboratory do
+    collection do
+      get :inventory
+      post :activate
+    end
     post :install_sim
   end
 

@@ -14,4 +14,14 @@ class LaboratoriesController < ApplicationController
 
     redirect_to laboratory_path, notice: "SIM instalada correctamente"
   end
+
+  def inventory
+    @devices_available = Device.available
+    @sims_available = Sim.available
+
+    @recent_connections = DeviceSimHistory
+      .includes(:device, :sim)
+      .order(installed_at: :desc)
+      .limit(10)
+  end
 end
