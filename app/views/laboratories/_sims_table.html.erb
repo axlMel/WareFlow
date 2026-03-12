@@ -22,7 +22,7 @@
 
         <% @sims_available.each do |sim| %>
 
-        <tr class="hover:bg-sky-50 cursor-pointer">
+        <tr data-sim-id="<%= sim.id %>" data-sim-iccid="<%= sim.iccid %>" class="sim-row cursor-pointer hover:bg-green-50">
           <td class="px-3 py-2"><%= sim.iccid %></td>
           <td class="px-3 py-2"><%= sim.provider %></td>
           <td class="px-3 py-2">Disponible</td>

@@ -4,14 +4,14 @@
       <h1 class="text-2xl font-bold text-gray-800 border-b pb-2 mb-4">
         Vista previa de importación
       </h1>
-      <%= form_with url: confirm_import_folios_path, data: { turbo_frame: "_top" } do %>
-        <% if @folio.errors.any? %>
+      <%= form_with url: confirm_import_devices_path, data: { turbo_frame: "_top" } do %>
+        <% if @device.errors.any? %>
           <div class="bg-red-100 text-red-800 border border-red-300 p-2 space-x-1 rounded-xl shadow-sm mb-2">
             <h2 class="font-semibold mb-2">
-              <%= pluralize(@folio.errors.count, "error(es)") %> impidieron guardar el folio.
+              <%= pluralize(@device.errors.count, "error(es)") %> impidieron guardar el dispositivo.
             </h2>
             <ul class="list-disc list-inside text-sm">
-              <% @folio.errors.full_messages.each do |message| %>
+              <% @device.errors.full_messages.each do |message| %>
               <li><%= message %></li>
               <% end %>
             </ul>
@@ -23,7 +23,7 @@
           </p>
           <p class="text-xs">
             Los valores que ingreses en la fila resaltada se aplicarán automáticamente a todas las filas.
-            Estos datos no crean un folio por sí mismos.
+            Estos datos no crean un dispositivo por sí mismos.
           </p>
         </div>
         <div class="flex items-center justify-between">
@@ -37,16 +37,16 @@
           <thead class="text-xs text-gray-500 uppercase border-b">
             <tr>
               <th class="p-2 w-10 text-center">#</th>
-              <th class="p-2">Cliente</th>
-              <th class="p-2">Servicio</th>
-              <th class="p-2">Accesorios</th>
+              <th class="p-2">IMEI</th>
+              <th class="p-2">Marca</th>
+              <th class="p-2">Modelo</th>
               <th class="p-2"></th>
             </tr>
           </thead>
           <tr class="bg-amber-50 border-y-2 border-amber-300" >
             <td></td>
             <td class="p-2">
-              <input type="text" placeholder="Cliente general" data-action="change->import-table#applyBulk" data-field="client" class="border rounded w-full">
+              <input type="text" placeholder="IMEI general" data-action="change->import-table#applyBulk" data-field="client" class="border rounded w-full">
             </td>
             <td class="p-2">
               <select data-action="change->import-table#applyBulk" data-field="status" class="border rounded w-full">

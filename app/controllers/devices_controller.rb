@@ -19,6 +19,7 @@ class DevicesController < ApplicationController
 
   def new
     @device = Device.new
+    @products = Product.where(category: 154121870)
   end
 
   def create
@@ -27,7 +28,15 @@ class DevicesController < ApplicationController
     if @device.save
       redirect_to devices_path, notice: "Device creado"
     else
-      render :new
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace( "modal", template: "devices/new", layout: false, locals: { device: @device }), status: :unprocessable_entity
+        end
+
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
     end
   end
 

@@ -62,6 +62,10 @@ en:
       app: 'AlmacenGT'
       warehouse: 'Warehouse'
       laboratory: "laboratory"
+      assignsim: 'Relations'
+      inventory: 'Inventory'
+      devices: 'Devices'
+      sims: 'Sims'
       stats: 'Stats'
       services: 'Services'
       dashboard: 'Dashboard'

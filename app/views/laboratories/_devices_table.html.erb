@@ -22,7 +22,7 @@
 
         <% @devices_available.each do |device| %>
 
-        <tr class="hover:bg-sky-50 cursor-pointer">
+        <tr data-device-id="<%= device.id %>" data-device-imei="<%= device.imei %>" class="device-row cursor-pointer hover:bg-blue-50">
           <td class="px-3 py-2"><%= device.imei %></td>
           <td class="px-3 py-2"><%= device.model %></td>
           <td class="px-3 py-2">Disponible</td>

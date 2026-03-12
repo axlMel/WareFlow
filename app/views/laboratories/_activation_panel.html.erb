@@ -2,30 +2,23 @@
 
   <h2 class="text-lg font-semibold mb-4">Activación</h2>
 
-  <%= form_with url: activate_laboratory_index_path do |f| %>
+  <%= form_with url: activate_laboratories_path, method: :post, id: "activation-form" do %>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <%= hidden_field_tag :device_id, nil, id: "selected_device" %>
+    <%= hidden_field_tag :sim_id, nil, id: "selected_sim" %>
 
-      <div>
-        <label class="text-sm text-gray-600">Device</label>
-        <%= f.hidden_field :device_id, id: "selected_device" %>
-        <div class="border rounded-lg p-2 text-sm text-gray-500">
-          Device seleccionado
-        </div>
-      </div>
+    <div class="flex items-center gap-4">
+      <span id="selected_device_label" class="text-sm text-gray-500">
+        Device: ninguno
+      </span>
 
-      <div>
-        <label class="text-sm text-gray-600">SIM</label>
-        <%= f.hidden_field :sim_id, id: "selected_sim" %>
-        <div class="border rounded-lg p-2 text-sm text-gray-500">
-          SIM seleccionada
-        </div>
-      </div>
+      <span id="selected_sim_label" class="text-sm text-gray-500">
+        SIM: ninguna
+      </span>
 
+      <%= submit_tag "Activar",
+          class: "px-4 py-2 bg-blue-600 text-white rounded" %>
     </div>
-
-    <%= f.submit "Conectar",
-        class: "bg-sky-600 hover:bg-sky-700 text-white px-6 py-2 rounded-xl font-semibold" %>
 
   <% end %>
 

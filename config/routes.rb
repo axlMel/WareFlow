@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   delete '/logout', to: 'authentication/sessions#destroy', as: :logout
 
   get "laboratory", to: "laboratories#index"
-  resource :laboratory do
+  resource :laboratories do
     collection do
       get :inventory
       post :activate

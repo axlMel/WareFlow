@@ -28,6 +28,13 @@
   </div>
 
   <div>
+    <%= f.label :product_id, "Producto" %>
+    <%= f.collection_select :product_id, @products, :id, :title, {}, 
+            class: "w-full p-2 border rounded",
+            data: { action: "change->product-stock#update" } %>
+  </div>
+
+  <div>
 
     <%= f.submit device.new_record? ? "Crear device" : "Actualizar device", class: "bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
 
