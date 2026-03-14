@@ -12,6 +12,7 @@
 
       <thead class="text-xs text-gray-500 border-b">
         <tr>
+          <th class="w-10"></th>
           <th class="px-3 py-2">ICCID</th>
           <th class="px-3 py-2">Proveedor</th>
           <th class="px-3 py-2">Estado</th>
@@ -22,7 +23,8 @@
 
         <% @sims_available.each do |sim| %>
 
-        <tr data-sim-id="<%= sim.id %>" data-sim-iccid="<%= sim.iccid %>" class="sim-row cursor-pointer hover:bg-green-50">
+        <tr data-action="click->activation#toggleSim" data-sim-id="<%= sim.id %>" data-sim-iccid="<%= sim.iccid %>" class="sim-row cursor-pointer hover:bg-green-50">
+          <td class="index-cell text-center text-xs"></td>
           <td class="px-3 py-2"><%= sim.iccid %></td>
           <td class="px-3 py-2"><%= sim.provider %></td>
           <td class="px-3 py-2">Disponible</td>

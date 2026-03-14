@@ -1,24 +1,34 @@
 <div class="bg-white rounded-2xl shadow p-6">
 
-  <h2 class="text-lg font-semibold mb-4">Activación</h2>
+  <h2 class="text-lg font-semibold mb-4">
+    Activación masiva
+  </h2>
 
-  <%= form_with url: activate_laboratories_path, method: :post, id: "activation-form" do %>
+  <%= form_with url: bulk_activate_laboratories_path do %>
 
-    <%= hidden_field_tag :device_id, nil, id: "selected_device" %>
-    <%= hidden_field_tag :sim_id, nil, id: "selected_sim" %>
+  <%= hidden_field_tag :device_ids, nil,
+  data: { activation_target: "deviceInput" } %>
 
-    <div class="flex items-center gap-4">
-      <span id="selected_device_label" class="text-sm text-gray-500">
-        Device: ninguno
-      </span>
+  <%= hidden_field_tag :sim_ids, nil,
+  data: { activation_target: "simInput" } %>
 
-      <span id="selected_sim_label" class="text-sm text-gray-500">
-        SIM: ninguna
-      </span>
+  <div class="mb-4">
 
-      <%= submit_tag "Activar",
-          class: "px-4 py-2 bg-blue-600 text-white rounded" %>
+    <p class="text-sm text-gray-500 mb-2">
+      Pairs generados
+    </p>
+
+    <div
+      data-activation-target="pairsContainer"
+      class="bg-gray-50 rounded p-3 space-y-1 text-sm">
     </div>
+
+  </div>
+
+  <%= submit_tag "Activar pares",
+  disabled: true,
+  class: "px-4 py-2 bg-blue-600 text-white rounded",
+  data: { activation_target: "activateButton" } %>
 
   <% end %>
 

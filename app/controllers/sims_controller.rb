@@ -17,6 +17,7 @@ class SimsController < ApplicationController
 
   def new
     @sim = Sim.new
+    @products = Product.where(category: 785039888)
   end
 
   def create
@@ -25,7 +26,15 @@ class SimsController < ApplicationController
     if @sim.save
       redirect_to sims_path, notice: "SIM creada"
     else
-      render :new
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace( "modal", template: "sims/new", layout: false, locals: { sim: @sim }), status: :unprocessable_entity
+        end
+
+        format.html do
+          render :new, status: :unprocessable_entity
+        end
+      end
     end
   end
 

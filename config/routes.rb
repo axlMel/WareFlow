@@ -10,13 +10,14 @@ Rails.application.routes.draw do
   # Logout
   delete '/logout', to: 'authentication/sessions#destroy', as: :logout
 
-  get "laboratory", to: "laboratories#index"
-  resource :laboratories do
+  get "laboratory", to: "laboratories#inventory"
+  resources :laboratories, only: [] do
     collection do
       get :inventory
       post :activate
+      post :bulk_activate
+      post :swap_sim
     end
-    post :install_sim
   end
 
   # Resto de rutas
@@ -52,6 +53,7 @@ Rails.application.routes.draw do
     member do
       post :install_sim
       post :remove_sim
+      post :swap_sim
     end
   end
   resources :replacements, only: [:create]

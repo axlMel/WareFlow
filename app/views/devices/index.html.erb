@@ -108,7 +108,7 @@
                   <td class="px-4 py-2"><%= device.created_at.strftime("%d/%m/%Y") %></td> 
                   <td class="px-4">
                     <div class="flex items-center justify-start h-full gap-2">
-                      <%= link_to 'Ver', device_path(device), class: "text-blue-600 hover:underline", data: { turbo_frame: "modal" } %>
+                      <%= link_to 'Ver', device_path(device), class: "text-blue-600 hover:underline", data: { turbo_frame: "_top" } %>
                       
                       <%= link_to "Editar", edit_device_path(device), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:underline" %>
                       
@@ -136,7 +136,7 @@
               <span class="text-xs text-gray-400"><%= "Total: #{@pagy.count} Dispositivos)" %></span>
             </div>
             <div>
-              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="folios_table"').html_safe %>
+              <%= pagy_nav(@pagy, link_extra: 'data-turbo-frame="devices_table"').html_safe %>
             </div>
           </div>
         </div>

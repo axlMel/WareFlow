@@ -7,6 +7,7 @@ class LaboratoriesController < ApplicationController
 
   def inventory
     @devices_available = Device.available
+    @devices_installed = Device.installed
     @sims_available = Sim.available
 
     @recent_connections = DeviceSimHistory
@@ -23,5 +24,17 @@ class LaboratoriesController < ApplicationController
 
     redirect_to inventory_laboratories_path,
     notice: "SIM conectada correctamente"
+  end
+
+  def bulk_activate
+    devices = Device.find(params[:device_ids].split(","))
+    sims = Sim.find(params[:sim_ids].split(","))
+
+    devices.zip(sims).each do |device, sim|
+      device.install_sim!(sim)
+    end
+
+    redirect_to inventory_laboratories_path,
+      notice: "Activaciones completadas"
   end
 end

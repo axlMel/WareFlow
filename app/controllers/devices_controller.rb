@@ -14,12 +14,23 @@ class DevicesController < ApplicationController
 
   def show
     @device = Device.find(params[:id])
-    render layout: false
+    @sim_history = @device.device_sim_histories.includes(:sim).order(installed_at: :desc)
+    @available_sims = Sim.available
   end
 
   def new
     @device = Device.new
     @products = Product.where(category: 154121870)
+  end
+
+  def swap_sim
+    device = Device.find(params[:id])
+    sim = Sim.find(params[:sim_id])
+
+    device.remove_sim!
+    device.install_sim!(sim)
+
+    redirect_to device_path(device), notice: "SIM reemplazada correctamente"
   end
 
   def create

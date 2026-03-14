@@ -12,6 +12,7 @@
 
       <thead class="text-xs text-gray-500 border-b">
         <tr>
+          <th class="w-10"></th>
           <th class="px-3 py-2">IMEI</th>
           <th class="px-3 py-2">Modelo</th>
           <th class="px-3 py-2">Estado</th>
@@ -22,7 +23,8 @@
 
         <% @devices_available.each do |device| %>
 
-        <tr data-device-id="<%= device.id %>" data-device-imei="<%= device.imei %>" class="device-row cursor-pointer hover:bg-blue-50">
+        <tr class="device-row cursor-pointer" data-action="click->activation#toggleDevice" data-device-id="<%= device.id %>" data-device-imei="<%= device.imei %>">
+          <td class="index-cell text-center text-xs text-gray-500"></td>
           <td class="px-3 py-2"><%= device.imei %></td>
           <td class="px-3 py-2"><%= device.model %></td>
           <td class="px-3 py-2">Disponible</td>

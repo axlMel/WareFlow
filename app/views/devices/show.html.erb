@@ -1,66 +1,169 @@
-<%= turbo_frame_tag "modal" do %>
-  <div class="p-6" data-controller="modal">
-    <%= render "shared/modal" do %>
-      <div class="space-y-6">
-        <h1 class="text-2xl font-bold text-gray-800 border-b mb-4">Detalles del dispositivo-
-          <span class="inline-block px-1 py-1 font-semibold text-xl text-sky-600">ID: <%= @device.id %></span>
-        </h1>
+<div class="space-y-6">
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 ring-1 ring-gray-200 space-y-6 text-sm text-gray-700">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <p class="text-base text-gray-500">Marca:</p>
-              <p class="text-sm font-medium text-gray-900"><%= @device.brand || "-" %></p>
-            </div>
-            <div>
-              <p class="text-base text-gray-500">Modelo:</p>
-              <p class="text-sm font-medium text-gray-900"><%= @device.model || "Sin modelo" %></p>
-            </div>
-            <div>
-              <p class="text-base text-gray-500">Estado:</p>
-              <p class="text-sm font-medium text-gray-900"><%= @device.status.presence || "No status" %></p>
-            </div>
-            <div>
-              <p class="ftext-base text-gray-500">Fecha de creación:</p>
-              <p class="text-sm font-medium text-gray-900"><%= l(@device.created_at, format: :long) %></p>
-            </div>
-          </div>
-          <hr>
+  <!-- INFO DEVICE -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
 
-          <!-- Productos asignados -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Detalles del producto: </h2>
+    <h1 class="text-2xl font-bold text-gray-800">
+      Dispositivo <span class="text-sky-600">#<%= @device.id %></span>
+    </h1>
 
-              <% if @device.product.present? %>
-                <ul class="space-y-2 text-sm text-gray-700 list-disc pl-6">
-                  <li>
-                    <span class="font-medium"><%= @device.product.title %></span>
-                    – Cantidad: <%= @device.product.real_stock %>
-                  </li>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 text-sm">
 
-                </ul>
-              <% end %>
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Sim actual: </h2>
-              <% if @device.active_sim %>
-                <%= @device.active_sim.iccid %>
-              <% else %>
-                <span class="text-gray-400">Sin SIM</span>
-              <% end %>
-            </div>
-          </div> 
-        </div>
-        <!-- Acciones -->
-        <div class="flex justify-between items-center text-sm">
-          <%= link_to "← Volver al listado", devices_path, class: "text-sky-600 hover:text-blue-800 font-medium transition" %>
-          <% unless @device.installed? %>
-            <%= link_to "Editar", edit_device_path(@device), data: { turbo_frame: "modal" }, class: "text-yellow-600 hover:text-yellow-700 font-medium transition" %>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
+      <p><strong>Marca:</strong> <%= @device.brand || "-" %></p>
+
+      <p><strong>Modelo:</strong> <%= @device.model || "-" %></p>
+
+      <p><strong>Estado:</strong> <%= @device.status %></p>
+
+      <p><strong>Fecha creación:</strong>
+        <%= l(@device.created_at, format: :long) %>
+      </p>
+
+    </div>
+
   </div>
-<% end %>
 
+
+  <!-- SIM ACTUAL -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+
+    <h2 class="text-xl font-semibold text-gray-800">
+      SIM actual
+    </h2>
+
+    <% if @device.active_sim %>
+
+      <div class="flex justify-between items-center">
+
+        <span class="text-lg font-mono text-blue-600">
+          <%= @device.active_sim.iccid %>
+        </span>
+
+        <span class="text-sm text-gray-500">
+          instalada <%= time_ago_in_words(@device.device_sim_histories.last.installed_at) %> ago
+        </span>
+
+      </div>
+
+    <% else %>
+
+      <span class="text-gray-400">
+        Este dispositivo no tiene SIM instalada
+      </span>
+
+    <% end %>
+
+  </div>
+
+
+  <!-- SWAP SIM -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+
+    <h2 class="text-xl font-semibold text-gray-800">
+      Reemplazar SIM
+    </h2>
+
+    <%= form_with url: swap_sim_device_path(@device), method: :post do %>
+
+      <div class="flex gap-4 items-center">
+
+        <select name="sim_id"
+        class="border rounded-lg px-3 py-2 text-sm">
+
+          <% @available_sims.each do |sim| %>
+
+            <option value="<%= sim.id %>">
+              <%= sim.iccid %>
+            </option>
+
+          <% end %>
+
+        </select>
+
+        <%= submit_tag "Reemplazar",
+        class: "bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600" %>
+
+      </div>
+
+    <% end %>
+
+  </div>
+
+
+  <!-- HISTORIAL -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+
+    <h2 class="text-xl font-semibold text-gray-800">
+      Historial de SIM
+    </h2>
+
+    <div class="overflow-x-auto rounded shadow">
+
+      <table class="min-w-full text-sm border border-gray-200">
+
+        <thead class="bg-gray-100 text-gray-700">
+
+          <tr>
+
+            <th class="px-4 py-2 border-b">SIM</th>
+            <th class="px-4 py-2 border-b">Instalada</th>
+            <th class="px-4 py-2 border-b">Removida</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <% @sim_history.each do |relation| %>
+
+            <tr class="hover:bg-gray-50">
+
+              <td class="px-4 py-2 border-b font-mono">
+                <%= relation.sim.iccid %>
+              </td>
+
+              <td class="px-4 py-2 border-b">
+                <%= relation.installed_at.strftime("%d/%m/%Y") %>
+              </td>
+
+              <td class="px-4 py-2 border-b">
+
+                <% if relation.removed_at %>
+                  <%= relation.removed_at.strftime("%d/%m/%Y") %>
+                <% else %>
+                  <span class="text-green-600 font-semibold">
+                    Activa
+                  </span>
+                <% end %>
+
+              </td>
+
+            </tr>
+
+          <% end %>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCIONES -->
+
+  <div class="flex justify-end gap-4">
+
+    <%= link_to "Editar",
+      edit_device_path(@device),
+      class: "bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600" %>
+
+    <%= link_to "Volver",
+      devices_path,
+      class: "bg-gray-300 text-gray-800 px-4 py-2 rounded-xl hover:bg-gray-400" %>
+
+  </div>
+
+</div>

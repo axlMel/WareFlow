@@ -1,0 +1,49 @@
+<%= form_with(model: sim, data: { turbo_frame: "_top"}, class: "space-y-4") do |f| %>
+  <% if sim.errors.any? %>
+    <div class="gb-red-100 text-red-800 border border-red-300 p-4 rounded-xl shadow-sm">
+      <h2 class="font-semibold mb-2">
+        <%= pluralize(sim.errors.count, "error(es)") %> impidieron guardar la SIM.
+      </h2>
+      <ul class="list-disc list-inside text-sm">
+        <% sim.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :iccid, "ICCID", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :iccid, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+    <%= f.label :apn, "APN", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :apn, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+    <%= f.label :provider, "Provedor", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :provider, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+    <%= f.label :phone_number, "Numero telefónico", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.text_field :phone_number, class: "w-full border px-2 py-1 rounded" %>
+  </div>
+
+  <div>
+    <%= f.label :product_id, "Producto", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.collection_select :product_id, @products, :id, :title, {}, 
+            class: "w-full p-2 border rounded",
+            data: { action: "change->product-stock#update" } %>
+  </div>
+
+  <div>
+
+    <%= f.submit sim.new_record? ? "Crear sim" : "Actualizar sim", class: "bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
+
+    
+    <%= link_to "Cancelar", sims_path, class: "bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-xl shadow" %>
+  </div>
+<% end %>
