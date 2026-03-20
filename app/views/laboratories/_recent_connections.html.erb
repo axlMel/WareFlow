@@ -1,9 +1,6 @@
 <div class="bg-white rounded-2xl shadow p-4">
-
   <h2 class="text-lg font-semibold mb-4">Activaciones recientes</h2>
-
   <table class="min-w-full text-sm">
-
     <thead class="text-xs text-gray-500 border-b">
       <tr>
         <th class="px-3 py-2">Device</th>
@@ -13,19 +10,13 @@
     </thead>
 
     <tbody class="divide-y">
-
       <% @recent_connections.each do |c| %>
-
       <tr>
         <td class="px-3 py-2"><%= c.device.imei %></td>
         <td class="px-3 py-2"><%= c.sim.iccid %></td>
         <td class="px-3 py-2"><%= c.installed_at.strftime("%d/%m/%Y %H:%M") %></td>
       </tr>
-
       <% end %>
-
     </tbody>
-
   </table>
-
 </div>

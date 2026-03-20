@@ -25,12 +25,29 @@ class DevicesController < ApplicationController
 
   def swap_sim
     device = Device.find(params[:id])
-    sim = Sim.find(params[:sim_id])
+    sim = Sim.find_by(id: params[:sim_id])
+    reason = params[:reason]
 
-    device.remove_sim!
-    device.install_sim!(sim)
+    case params[:action_type]
 
-    redirect_to device_path(device), notice: "SIM reemplazada correctamente"
+    when "replace"
+      device.remove_sim!(reason: reason)
+      device.install_sim!(sim, reason: reason)
+
+    when "remove"
+      device.remove_sim!(reason: reason)
+
+    when "warranty"
+      device.remove_sim!(reason: reason)
+      device.in_warranty!
+
+    when "damaged"
+      device.remove_sim!(reason: reason)
+      device.damaged!
+
+    end
+
+    redirect_to device_path(device), notice: "Movimiento aplicado"
   end
 
   def create
@@ -52,6 +69,7 @@ class DevicesController < ApplicationController
   end
 
   def edit
+    @products = Product.where(category: 154121870)
   end
 
   def update

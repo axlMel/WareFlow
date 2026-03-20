@@ -1,15 +1,9 @@
 <div class="bg-white rounded-2xl shadow p-4">
-
   <h2 class="text-lg font-semibold mb-4">Devices disponibles</h2>
-
-  <input type="text"
-         placeholder="Buscar IMEI"
-         class="w-full border rounded-lg px-3 py-2 mb-3 text-sm">
+  <input type="text" placeholder="Buscar IMEI" class="w-full border rounded-lg px-3 py-2 mb-3 text-sm">
 
   <div class="overflow-x-auto">
-
     <table class="min-w-full text-sm">
-
       <thead class="text-xs text-gray-500 border-b">
         <tr>
           <th class="w-10"></th>
@@ -18,24 +12,16 @@
           <th class="px-3 py-2">Estado</th>
         </tr>
       </thead>
-
       <tbody class="divide-y">
-
         <% @devices_available.each do |device| %>
-
         <tr class="device-row cursor-pointer" data-action="click->activation#toggleDevice" data-device-id="<%= device.id %>" data-device-imei="<%= device.imei %>">
           <td class="index-cell text-center text-xs text-gray-500"></td>
           <td class="px-3 py-2"><%= device.imei %></td>
           <td class="px-3 py-2"><%= device.model %></td>
           <td class="px-3 py-2">Disponible</td>
         </tr>
-
         <% end %>
-
       </tbody>
-
     </table>
-
   </div>
-
 </div>
