@@ -16,6 +16,8 @@ class DevicesController < ApplicationController
     @device = Device.find(params[:id])
     @sim_history = @device.device_sim_histories.includes(:sim).order(installed_at: :desc)
     @available_sims = Sim.available
+    @active_history = @sim_history.detect { |history| history.removed_at.nil? }
+    @active_sim = @active_history&.sim
   end
 
   def new
@@ -26,28 +28,42 @@ class DevicesController < ApplicationController
   def swap_sim
     device = Device.find(params[:id])
     sim = Sim.find_by(id: params[:sim_id])
-    reason = params[:reason]
+    reason = params[:reason].to_s.strip
+    action_type = params[:action_type].to_s
 
-    case params[:action_type]
+    case action_type
+    when "assign"
+      device.assign_sim!(sim: sim, reason: reason)
+      notice = "SIM asignada correctamente."
 
     when "replace"
-      device.remove_sim!(reason: reason)
-      device.install_sim!(sim, reason: reason)
+      device.replace_sim!(new_sim: sim, reason: reason)
+      notice = "SIM reemplazada correctamente."
 
     when "remove"
       device.remove_sim!(reason: reason)
+      notice = "SIM removida correctamente."
 
     when "warranty"
-      device.remove_sim!(reason: reason)
-      device.in_warranty!
+      device.send_to_warranty!(reason: reason)
+      notice = "Dispositivo enviado a garantía."
 
     when "damaged"
-      device.remove_sim!(reason: reason)
-      device.damaged!
+      device.mark_as_damaged!(reason: reason)
+      notice = "Dispositivo marcado como dañado."
 
+    when "returned"
+      device.mark_as_returned!(reason: reason)
+      notice = "Dispositivo devuelto al proveedor."
+
+    else
+      redirect_to device_path(device), alert: "Movimiento no válido." and return
     end
 
-    redirect_to device_path(device), notice: "Movimiento aplicado"
+    redirect_to device_path(device), notice: notice
+
+  rescue ArgumentError, StandardError => e
+    redirect_to device_path(device), alert: e.message
   end
 
   def create

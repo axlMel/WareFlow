@@ -14,48 +14,130 @@ class Device < ApplicationRecord
 
   validates :imei, presence: true, uniqueness: true
 
-  def install_sim!(sim)
+  def assign_sim!(sim:, reason:)
+    raise ArgumentError, "Debes seleccionar una SIM." if sim.blank?
+    raise ArgumentError, "Debes indicar el motivo de la asignación." if reason.blank?
+    raise StandardError, "Este dispositivo ya tiene una SIM activa." if active_history.present?
+
     transaction do
-      active_history = device_sim_histories.active.first
-
-      if active_history
-        active_history.update!(
-          removed_at: Time.current,
-          reasons: "SIM reemplazada"
-        )
-      end
-
       device_sim_histories.create!(
         sim: sim,
-        installed_at: Time.current
+        installed_at: Time.current,
+        reasons: nil
       )
+
+      sim.assigned! if sim.respond_to?(:assigned!)
+      assigned!
     end
   end
 
-  def remove_sim!
-    active_history = device_sim_histories.active.first
-    return unless active_history
+  def replace_sim!(new_sim:, reason:)
+    raise ArgumentError, "Debes seleccionar una SIM." if new_sim.blank?
+    raise ArgumentError, "Debes indicar el motivo del reemplazo." if reason.blank?
 
-    active_history.update!(
-      removed_at: Time.current,
-      reasons: "SIM removida en laboratorio"
-    )
+    current_history = active_history
+    raise StandardError, "El dispositivo no tiene una SIM activa para reemplazar." if current_history.blank?
+
+    transaction do
+      current_history.update!(
+        removed_at: Time.current,
+        reasons: reason
+      )
+
+      current_history.sim.available! if current_history.sim.respond_to?(:available!)
+
+      device_sim_histories.create!(
+        sim: new_sim,
+        installed_at: Time.current,
+        reasons: nil
+      )
+
+      new_sim.assigned! if new_sim.respond_to?(:assigned!)
+      assigned!
+    end
+  end
+
+  def remove_sim!(reason:)
+    raise ArgumentError, "Debes indicar el motivo de la desasociación." if reason.blank?
+
+    current_history = active_history
+    raise StandardError, "El dispositivo no tiene una SIM activa para quitar." if current_history.blank?
+
+    transaction do
+      current_history.update!(
+        removed_at: Time.current,
+        reasons: reason
+      )
+
+      current_history.sim.available! if current_history.sim.respond_to?(:available!)
+      available!
+    end
+  end
+
+  def send_to_warranty!(reason:)
+    raise ArgumentError, "Debes indicar el motivo de garantía." if reason.blank?
+
+    transaction do
+      if active_history.present?
+        active_history.update!(
+          removed_at: Time.current,
+          reasons: reason
+        )
+
+        active_history.sim.available! if active_history.sim.respond_to?(:available!)
+      end
+
+      in_warranty!
+    end
+  end
+
+  def mark_as_damaged!(reason:)
+    raise ArgumentError, "Debes indicar el motivo del daño." if reason.blank?
+
+    transaction do
+      if active_history.present?
+        active_history.update!(
+          removed_at: Time.current,
+          reasons: reason
+        )
+
+        active_history.sim.available! if active_history.sim.respond_to?(:available!)
+      end
+
+      damaged!
+    end
+  end
+
+  def mark_as_returned!(reason:)
+    raise ArgumentError, "Debes indicar el motivo de la devolución." if reason.blank?
+
+    transaction do
+      if active_history.present?
+        active_history.update!(
+          removed_at: Time.current,
+          reasons: reason
+        )
+
+        active_history.sim.available! if active_history.sim.respond_to?(:available!)
+      end
+
+      returned!
+    end
+  end
+
+  def active_history
+    @active_history ||= device_sim_histories.active.includes(:sim).first
   end
 
   def current_sim
-    device_sim_histories
-      .where(removed_at: nil)
-      .includes(:sim)
-      .first
-      &.sim
+    active_history&.sim
   end
 
   def active_sim
-    device_sim_histories.active.first&.sim
+    current_sim
   end
 
   def current_holder
     assignments.last&.user
   end
-
 end

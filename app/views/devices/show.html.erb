@@ -1,92 +1,133 @@
 <div class="space-y-6">
-  <!-- INFO DEVICE -->
-  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
-    <h1 class="text-2xl font-bold text-gray-800">
-      Dispositivo <span class="text-sky-600">#<%= @device.id %></span>
-    </h1>
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <!-- INFO DEVICE -->
+    <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+      <h1 class="text-2xl font-bold text-gray-800">
+        Dispositivo <span class="text-sky-600">#<%= @device.id %></span>
+      </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 text-sm">
-      <p><strong>IMEI:</strong> <%= @device.imei || "-" %></p>
-      <p><strong>Marca:</strong> <%= @device.brand || "-" %></p>
-      <p><strong>Modelo:</strong> <%= @device.model || "-" %></p>
-      <p><strong>Estado:</strong> <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold <%= case @device.status 
-                      when "available"
-                        'bg-amber-100 text-amber-600'
-                      when "assigned"
-                        'bg-sky-100 text-sky-800'
-                      when "installed"
-                        'bg-green-100 text-green-800'
-                      when "in_warranty"
-                        'bg-orange-100 text-orange-600'
-                      when "damaged"
-                        'bg-rose-100 text-rose-800'
-                      when "returned"
-                        'bg-purple-100 text-purple-800'
-                      end  %>">
-                      <%= t("activerecord.attributes.device.statuses.#{@device.status}") %>
-                    </span></p>
-      <p><strong>Fecha creación:</strong> <%= l(@device.created_at, format: :long) %> </p>
-      <p><strong></strong> <% if @device.active_sim %>
-        instalada <%= time_ago_in_words(@device.device_sim_histories.last.installed_at) %> atrás
-      <% end %></p>
-      <p><strong>SIM:</strong> <%= @device.active_sim&.iccid || "SIN SIN ASIGNADA" %></p>
-      <p><strong>Proveedor:</strong> <%= @device.active_sim&.provider || "-" %></p>
-      <p><strong>APN:</strong> <%= @device.active_sim&.apn || "-" %></p>
-      <p><strong>Numero telefónico:</strong> <%= @device.active_sim&.phone_number || "-" %></p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 text-sm border border-gray-200 rounded-xl p-4 ">
+        <p><strong>IMEI:</strong> <%= @device.imei || "-" %></p>
+        <p><strong>Marca:</strong> <%= @device.brand || "-" %></p>
+        <p><strong>Modelo:</strong> <%= @device.model || "-" %></p>
+        <p><strong>Estado:</strong> <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold <%= case @device.status 
+                        when "available"
+                          'bg-amber-100 text-amber-600'
+                        when "assigned"
+                          'bg-sky-100 text-sky-800'
+                        when "installed"
+                          'bg-green-100 text-green-800'
+                        when "in_warranty"
+                          'bg-orange-100 text-orange-600'
+                        when "damaged"
+                          'bg-rose-100 text-rose-800'
+                        when "returned"
+                          'bg-purple-100 text-purple-800'
+                        end  %>">
+                        <%= t("activerecord.attributes.device.statuses.#{@device.status}") %>
+                      </span></p>
+        <p><strong>Fecha creación:</strong> <%= l(@device.created_at, format: :long) %> </p>
+        <p><strong>Asignación actual:</strong>
+          <% if @active_sim.present? %>
+            hace <%= time_ago_in_words(@active_history.installed_at) %>
+          <% else %>
+            -
+          <% end %>
+        </p>
+        <p><strong>SIM:</strong> <%= @active_sim&.iccid || "Sin SIM asignada" %></p>
+        <p><strong>Proveedor:</strong> <%= @active_sim&.provider || "-" %></p>
+        <p><strong>APN:</strong> <%= @active_sim&.apn || "-" %></p>
+        <p><strong>Numero telefónico:</strong> <%= @active_sim&.phone_number || "-" %></p>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow space-y-4"
+     data-controller="device-movement"
+     data-has-sim="<%= @active_sim.present? %>">
+
+      <div class="flex flex-wrap gap-2">
+        <% if @active_sim.present? %>
+          <button type="button"
+                  data-action="click->device-movement#setReplace"
+                  class="px-3 py-2 rounded-lg bg-indigo-100 text-indigo-700 text-sm font-medium hover:bg-indigo-200">
+            Reemplazar SIM
+          </button>
+
+          <button type="button"
+                  data-action="click->device-movement#setRemove"
+                  class="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200">
+            Quitar SIM
+          </button>
+        <% else %>
+          <button type="button"
+                  data-action="click->device-movement#setAssign"
+                  class="px-3 py-2 rounded-lg bg-blue-100 text-blue-700 text-sm font-medium hover:bg-blue-200">
+            Asignar SIM
+          </button>
+        <% end %>
+
+        <button type="button"
+                data-action="click->device-movement#setWarranty"
+                class="px-3 py-2 rounded-lg bg-amber-100 text-amber-800 text-sm font-medium hover:bg-amber-200">
+          Garantía
+        </button>
+
+        <button type="button"
+                data-action="click->device-movement#setDamaged"
+                class="px-3 py-2 rounded-lg bg-rose-100 text-rose-700 text-sm font-medium hover:bg-rose-200">
+          Dañado
+        </button>
+
+        <button type="button"
+                data-action="click->device-movement#setReturned"
+                class="px-3 py-2 rounded-lg bg-purple-100 text-purple-700 text-sm font-medium hover:bg-purple-200">
+          Devolución
+        </button>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl p-4 space-y-4">
+        <div>
+          <h3 data-device-movement-target="title"
+              class="text-sm font-semibold text-gray-800">
+          </h3>
+
+          <p data-device-movement-target="description"
+             class="text-xs text-gray-500 mt-1">
+          </p>
+        </div>
+
+        <%= form_with url: swap_sim_device_path(@device), method: :post, class: "space-y-4" do %>
+          <%= hidden_field_tag :action_type, nil, data: { device_movement_target: "actionType" } %>
+
+          <div data-device-movement-target="simField">
+            <label class="block text-sm font-medium text-gray-700 mb-1">SIM</label>
+            <select name="sim_id" class="w-full border rounded-lg px-3 py-2 text-sm">
+              <option value="">Selecciona una SIM</option>
+              <% @available_sims.each do |sim| %>
+                <option value="<%= sim.id %>">
+                  <%= sim.iccid %> - <%= sim.provider %>
+                </option>
+              <% end %>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Motivo</label>
+            <textarea name="reason"
+                      rows="3"
+                      placeholder="Describe el motivo del movimiento..."
+                      class="w-full border rounded-lg px-3 py-2 text-sm resize-none"></textarea>
+          </div>
+
+          <div class="flex justify-end">
+            <%= submit_tag "Guardar movimiento",
+              data: { device_movement_target: "submit" },
+              class: "bg-slate-800 text-white px-4 py-2 rounded-xl hover:bg-slate-900 transition" %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
-
-  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
-
-    <h2 class="text-xl font-semibold text-gray-800">
-      Movimientos
-    </h2>
-
-    <%= form_with url: swap_sim_device_path(@device), method: :post do %>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-        <!-- Tipo de movimiento -->
-        <div>
-          <label class="text-xs text-gray-500">Acción</label>
-          <select name="action_type" class="w-full border rounded-lg px-3 py-2 text-sm">
-            <option value="replace">Reemplazar SIM</option>
-            <option value="remove">Quitar SIM</option>
-            <option value="warranty">Enviar a garantía</option>
-            <option value="damaged">Marcar como dañado</option>
-          </select>
-        </div>
-
-        <!-- Selección de SIM -->
-        <div>
-          <label class="text-xs text-gray-500">Nueva SIM</label>
-          <select name="sim_id" class="w-full border rounded-lg px-3 py-2 text-sm">
-            <option value="">-- Seleccionar --</option>
-            <% @available_sims.each do |sim| %>
-              <option value="<%= sim.id %>"><%= sim.iccid %></option>
-            <% end %>
-          </select>
-        </div>
-
-        <!-- Motivo -->
-        <div>
-          <label class="text-xs text-gray-500">Motivo</label>
-          <input type="text" name="reason"
-            placeholder="Ej: SIM defectuosa"
-            class="w-full border rounded-lg px-3 py-2 text-sm">
-        </div>
-
-      </div>
-
-      <div class="pt-2">
-        <%= submit_tag "Aplicar movimiento",
-          class: "bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700" %>
-      </div>
-
-    <% end %>
-
-  </div>
-
 
   <!-- HISTORIAL -->
   <div class="bg-white p-6 rounded-2xl shadow space-y-4">
@@ -116,13 +157,13 @@
                   <%= relation.sim.iccid %>
                 </td>
                 <td class="px-4 py-2 border-b">
-                  <%= relation.installed_at.strftime("%d/%m/%Y") %>
+                  <%= relation.installed_at.strftime("%d/%m/%Y %H:%M") %>
                 </td>
                 <td class="px-4 py-2 border-b">
                   <% if relation.removed_at %>
-                    <%= relation.removed_at.strftime("%d/%m/%Y") %>
+                    <%= relation.removed_at.strftime("%d/%m/%Y %H:%M") %>
                   <% else %>
-                    <span class="text-green-600 font-semibold">
+                    <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                       Activa
                     </span>
                   <% end %>
@@ -137,8 +178,6 @@
       <% end %>
     </div>
   </div>
-
-
   <!-- ACCIONES -->
   <div class="flex justify-end gap-4">
     <%= link_to "Editar",
