@@ -18,6 +18,7 @@ class DevicesController < ApplicationController
     @available_sims = Sim.available
     @active_history = @sim_history.detect { |history| history.removed_at.nil? }
     @active_sim = @active_history&.sim
+    @movements = @device.device_movements.order(performed_at: :desc)
   end
 
   def new
@@ -28,16 +29,15 @@ class DevicesController < ApplicationController
   def swap_sim
     device = Device.find(params[:id])
     sim = Sim.find_by(id: params[:sim_id])
-    reason = params[:reason].to_s.strip
-    action_type = params[:action_type].to_s
+    reason = params[:reason]
 
-    case action_type
+    case params[:action_type]
     when "assign"
-      device.assign_sim!(sim: sim, reason: reason)
+      device.install_sim!(sim, reason: reason.presence || "Asignación manual de SIM")
       notice = "SIM asignada correctamente."
 
     when "replace"
-      device.replace_sim!(new_sim: sim, reason: reason)
+      device.replace_sim!(sim, reason: reason)
       notice = "SIM reemplazada correctamente."
 
     when "remove"
@@ -57,12 +57,12 @@ class DevicesController < ApplicationController
       notice = "Dispositivo devuelto al proveedor."
 
     else
-      redirect_to device_path(device), alert: "Movimiento no válido." and return
+      redirect_to device_path(device), alert: "Movimiento no válido."
+      return
     end
 
     redirect_to device_path(device), notice: notice
-
-  rescue ArgumentError, StandardError => e
+  rescue ArgumentError, ActiveRecord::RecordInvalid => e
     redirect_to device_path(device), alert: e.message
   end
 

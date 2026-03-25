@@ -178,6 +178,63 @@
       <% end %>
     </div>
   </div>
+  <!-- HISTORIAL DE MOVIMIENTOS -->
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+    <h2 class="text-xl font-semibold text-gray-800">
+      Historial de movimientos
+    </h2>
+
+    <div class="overflow-x-auto rounded shadow">
+      <% if @device.device_movements.empty? %>
+        <div class="text-gray-400 text-sm">
+          No hay movimientos registrados
+        </div>
+      <% else %>
+        <table class="min-w-full text-sm border border-gray-200">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="px-4 py-2 border-b text-left">Tipo</th>
+              <th class="px-4 py-2 border-b text-left">SIM</th>
+              <th class="px-4 py-2 border-b text-left">Estado anterior</th>
+              <th class="px-4 py-2 border-b text-left">Estado nuevo</th>
+              <th class="px-4 py-2 border-b text-left">Motivo</th>
+              <th class="px-4 py-2 border-b text-left">Fecha</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @movements.each do |movement| %>
+              <tr>
+                <td class="px-4 py-2 border-b font-semibold">
+                  <%= movement.movement_type.humanize %>
+                </td>
+
+                <td class="px-4 py-2 border-b font-mono">
+                  <%= movement.sim&.iccid || "-" %>
+                </td>
+
+                <td class="px-4 py-2 border-b">
+                  <%= movement.from_status.present? ? Device.statuses.key(movement.from_status) : "-" %>
+                </td>
+
+                <td class="px-4 py-2 border-b">
+                  <%= movement.to_status.present? ? Device.statuses.key(movement.to_status) : "-" %>
+                </td>
+
+                <td class="px-4 py-2 border-b">
+                  <%= movement.reason %>
+                </td>
+
+                <td class="px-4 py-2 border-b">
+                  <%= movement.performed_at.strftime("%d/%m/%Y %H:%M") %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
   <!-- ACCIONES -->
   <div class="flex justify-end gap-4">
     <%= link_to "Editar",

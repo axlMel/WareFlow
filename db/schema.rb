@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_25_230718) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_24_200556) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,6 +73,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_25_230718) do
     t.datetime "updated_at", null: false
     t.index ["folio_id"], name: "index_deliveries_on_folio_id"
     t.index ["user_id"], name: "index_deliveries_on_user_id"
+  end
+
+  create_table "device_movements", force: :cascade do |t|
+    t.bigint "device_id", null: false
+    t.bigint "sim_id"
+    t.integer "movement_type", null: false
+    t.integer "from_status"
+    t.integer "to_status"
+    t.string "reason", null: false
+    t.datetime "performed_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id"], name: "index_device_movements_on_device_id"
+    t.index ["sim_id"], name: "index_device_movements_on_sim_id"
   end
 
   create_table "device_sim_histories", force: :cascade do |t|
@@ -220,6 +234,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_25_230718) do
   add_foreign_key "assignments", "users"
   add_foreign_key "deliveries", "folios"
   add_foreign_key "deliveries", "users"
+  add_foreign_key "device_movements", "devices"
+  add_foreign_key "device_movements", "sims"
   add_foreign_key "device_sim_histories", "devices"
   add_foreign_key "device_sim_histories", "sims"
   add_foreign_key "devices", "products"
