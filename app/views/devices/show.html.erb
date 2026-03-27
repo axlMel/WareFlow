@@ -132,7 +132,7 @@
   <!-- HISTORIAL -->
   <div class="bg-white p-6 rounded-2xl shadow space-y-4">
     <h2 class="text-xl font-semibold text-gray-800">
-      Historial de SIM
+      Historial de relación con SIM
     </h2>
     <div class="overflow-x-auto rounded shadow">
       <% if @sim_history.empty? %>
@@ -140,7 +140,7 @@
           Aún no comienzas a relacionar este equipo
         </div>
       <% else %>
-        <table class="min-w-full text-sm border border-gray-200">
+        <table class="min-w-full table-fixed text-xs border border-gray-200">
           <thead class="bg-gray-100 text-gray-700">
             <tr>
               <th class="px-4 py-2 border-b text-left">SIM</th>
@@ -149,26 +149,35 @@
               <th class="px-4 py-2 border-b text-left">Motivo</th>
             </tr>
           </thead>
-
           <tbody>
-            <% @sim_history.each do |relation| %>
-              <tr class="<%= 'bg-green-50' if relation.removed_at.nil? %>">
-                <td class="px-4 py-2 border-b font-mono">
+            <% @sim_history.each_with_index do |relation, index| %>
+              <tr class="
+                border-b
+                <%= relation.removed_at.nil? ? 'border-l-4 border-green-400' : '' %>
+                <%= index.even? ? 'bg-white' : 'bg-gray-50' %>
+                hover:bg-blue-50 transition">
+                <!-- SIM -->
+                <td class="px-3 py-2 font-mono truncate">
                   <%= relation.sim.iccid %>
                 </td>
-                <td class="px-4 py-2 border-b">
+                <!-- Instalada -->
+                <td class="px-3 py-2 truncate text-gray-600">
                   <%= relation.installed_at.strftime("%d/%m/%Y %H:%M") %>
                 </td>
-                <td class="px-4 py-2 border-b">
+                <!-- Removida -->
+                <td class="px-3 py-2 truncate">
                   <% if relation.removed_at %>
-                    <%= relation.removed_at.strftime("%d/%m/%Y %H:%M") %>
+                    <span class="text-gray-500">
+                      <%= relation.removed_at.strftime("%d/%m/%Y %H:%M") %>
+                    </span>
                   <% else %>
-                    <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                      Activa
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">
+                      ● Activa
                     </span>
                   <% end %>
                 </td>
-                <td class="px-4 py-2 border-b">
+                <!-- Motivo -->
+                <td class="px-3 py-2 truncate text-gray-600" title="<%= relation.reasons %>">
                   <%= relation.reasons.presence || "-" %>
                 </td>
               </tr>
@@ -190,43 +199,82 @@
           No hay movimientos registrados
         </div>
       <% else %>
-        <table class="min-w-full text-sm border border-gray-200">
+        <table class="min-w-full table-fixed text-xs border border-gray-200">
           <thead class="bg-gray-100 text-gray-700">
             <tr>
               <th class="px-4 py-2 border-b text-left">Tipo</th>
-              <th class="px-4 py-2 border-b text-left">SIM</th>
-              <th class="px-4 py-2 border-b text-left">Estado anterior</th>
-              <th class="px-4 py-2 border-b text-left">Estado nuevo</th>
-              <th class="px-4 py-2 border-b text-left">Motivo</th>
               <th class="px-4 py-2 border-b text-left">Fecha</th>
+              <th class="px-4 py-2 border-b text-left">Estado anterior</th>
+              <th class="px-4 py-2 border-b text-left">SIM</th>
+              <th class="px-4 py-2 border-b text-left">Motivo</th>
             </tr>
           </thead>
 
           <tbody>
             <% @movements.each do |movement| %>
-              <tr>
-                <td class="px-4 py-2 border-b font-semibold">
-                  <%= movement.movement_type.humanize %>
+              <tr class="hover:bg-teal-50">
+                <td class="px-2 py-2 border-b truncate">
+                  <span class="inline-block px-2 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap <%= case movement.movement_type
+                    when "created"
+                      'bg-amber-100 text-amber-600'
+                    when "sim_assigned"
+                      'bg-cyan-100 text-cyan-800'
+                    when "sim_replaced"
+                      'bg-sky-100 text-sky-800'
+                    when "sim_removed"
+                      'bg-blue-100 text-blue-800'
+                    when "installed_in_client"
+                      'bg-green-100 text-green-800'
+                    when "sent_to_warranty"
+                      'bg-orange-100 text-orange-600'
+                    when "marked_damaged"
+                      'bg-rose-100 text-rose-800'
+                    when "returned_to_provider"
+                      'bg-purple-100 text-purple-800'
+                  end %>">
+                    <%= t("activerecord.attributes.movement.movement_type.#{movement.movement_type}") %>
+                  </span>
                 </td>
 
-                <td class="px-4 py-2 border-b font-mono">
+                <!-- Fecha -->
+                <td class="px-4 py-2 border-b truncate text-[11px]">
+                  <%= movement.performed_at.strftime("%d/%m/%Y %H:%M") %>
+                </td>
+
+                <!-- Estado anterior -->
+                <td class="px-4 py-2 border-b truncate">
+                  <% status_key = Device.statuses.key(movement.from_status) %>
+
+                  <span class="inline-block px-2 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap <%= case status_key
+                    when "available"
+                      'bg-amber-100 text-amber-600'
+                    when "assigned"
+                      'bg-sky-100 text-sky-800'
+                    when "installed"
+                      'bg-green-100 text-green-800'
+                    when "in_warranty"
+                      'bg-orange-100 text-orange-600'
+                    when "damaged"
+                      'bg-rose-100 text-rose-800'
+                    when "returned"
+                      'bg-purple-100 text-purple-800'
+                    else
+                      'bg-gray-100 text-gray-500'
+                  end %>">
+                    <%= status_key.present? ?
+                        t("activerecord.attributes.device.statuses.#{status_key}")
+                        : "-" %>
+                  </span>
+                </td>
+
+                <!-- SIM -->
+                <td class="px-4 py-2 border-b font-mono truncate">
                   <%= movement.sim&.iccid || "-" %>
                 </td>
 
-                <td class="px-4 py-2 border-b">
-                  <%= movement.from_status.present? ? Device.statuses.key(movement.from_status) : "-" %>
-                </td>
-
-                <td class="px-4 py-2 border-b">
-                  <%= movement.to_status.present? ? Device.statuses.key(movement.to_status) : "-" %>
-                </td>
-
-                <td class="px-4 py-2 border-b">
+                <!-- Motivo -->
+                <td class="px-4 py-2 border-b truncate" title="<%= movement.reason %>">
                   <%= movement.reason %>
-                </td>
-
-                <td class="px-4 py-2 border-b">
-                  <%= movement.performed_at.strftime("%d/%m/%Y %H:%M") %>
                 </td>
               </tr>
             <% end %>
@@ -237,9 +285,7 @@
   </div>
   <!-- ACCIONES -->
   <div class="flex justify-end gap-4">
-    <%= link_to "Editar",
-      edit_device_path(@device),
-      class: "bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600" %>
+    <%= link_to "Editar", edit_device_path(@device), data: { turbo_frame: "modal" }, class: "bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600" %>
 
     <%= link_to "Volver",
       devices_path,

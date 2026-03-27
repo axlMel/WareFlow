@@ -8,46 +8,20 @@ class Assignment < ApplicationRecord
   validates :quantity, numericality: { greater_than: 0 }
   validate :quantity_cannot_exceed_product_stock, if: :will_save_change_to_quantity?
   validate :cannot_edit_installed, on: :update
-  validate :only_one_resource_type
 
   enum :status, { assigned: 0, installed: 1 }
 
   after_commit :move_stock_to_user, on: :create
   after_update :adjust_stock_by_delta, if: :saved_change_to_quantity?
   before_destroy :restore_stock
-  after_create :update_resource_status
-  after_destroy :restore_resource_status
 
   private
 
-  def update_resource_status
-    if device.present?
-      device.update!(status: :assigned)
-    elsif sim.present?
-      sim.update!(status: :assigned)
-    end
-  end
-
-  def restore_resource_status
-    if device.present?
-      if device.device_sim_histories.active.exists?
-        device.update!(status: :installed)
-      else
-        device.update!(status: :available)
-      end
-    elsif sim.present?
-      if sim.device_sim_histories.active.exists?
-        sim.update!(status: :installed)
-      else
-        sim.update!(status: :available)
-      end
-    end
-  end
-
   def only_one_resource_type
-    resources = [product_id, device_id, sim_id].compact.count
-    if resources != 1
-      errors.add(:base, "Debe asignarse exactamente un tipo de recurso")
+    resources = [device_id.present?, sim_id.present?].count(true)
+
+    if resources > 1
+      errors.add(:base, "No puedes asignar device y sim en el mismo assignment")
     end
   end
 

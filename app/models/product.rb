@@ -30,9 +30,9 @@ class Product < ApplicationRecord
     return stock unless trackable?
 
     if devices.exists?
-      devices.available.count
+      devices.count
     elsif sims.exists?
-      sims.available.count
+      sims.count
     else
       0
     end

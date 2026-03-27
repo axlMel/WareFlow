@@ -51,6 +51,16 @@ es:
           in_warranty: "Revisión"
           damaged: "Dañado"
           returned: "Regresado"
+      movement:
+        movement_type:
+          created: "Creado"
+          sim_assigned: "Sim asignada"
+          sim_replaced: "Sim reemplazada"
+          sim_removed: "Sim removida"
+          installed_in_client: "Instalado"
+          sent_to_warranty: "En garantías"
+          marked_damaged: "Dañado"
+          returned_to_provider: "Regresado a proveedor"
 
   common:
     confirm: '¿Estás seguro?'

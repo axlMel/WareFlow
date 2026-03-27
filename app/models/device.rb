@@ -45,6 +45,23 @@ class Device < ApplicationRecord
     end
   end
 
+  def mark_as_installed!(reason: "Instalación en vehículo")
+    transaction do
+      previous_status = self.class.statuses[status]
+      current_active_sim = active_sim
+
+      installed!
+
+      register_movement!(
+        movement_type: :installed,
+        sim: current_active_sim,
+        reason: reason,
+        from_status: previous_status,
+        to_status: self.class.statuses[status]
+      )
+    end
+  end
+
   def replace_sim!(sim, reason:)
     raise ArgumentError, "Debes seleccionar una SIM." if sim.blank?
     raise ArgumentError, "Debes indicar el motivo del reemplazo." if reason.blank?
