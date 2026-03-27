@@ -16,12 +16,16 @@ class AssignmentsController < ApplicationController
 
   def new
     @assignment = Assignment.new
+    @devices = Device.available.or(Device.assigned)
+    @sims = Sim.available.or(Sim.assigned)
     load_dependencies
     render layout: false
   end
 
   def edit
     @assignment = Assignment.find(params[:id])
+    @devices = Device.available.or(Device.assigned)
+    @sims = Sim.available.or(Sim.assigned)
     load_dependencies
     render layout: false
   end
@@ -67,5 +71,7 @@ class AssignmentsController < ApplicationController
     @products = Product.all.order(:title)
     @deliveries = Delivery.all
     @users = User.where(admin: false).order(:username)
+    @devices = Device.available.or(Device.assigned)
+    @sims = Sim.available.or(Sim.assigned)
   end
 end

@@ -12,7 +12,8 @@ class Device < ApplicationRecord
     installed: 2, # en un vehiculo de cliente "vendido"
     in_warranty: 3, #ingresado a laboratorio
     damaged: 4, #Dado de baja por daño irreparable
-    returned: 5 #garantía interna(devuelta a proveedor)
+    returned: 5, #garantía interna(devuelta a proveedor)
+    delivered:6
   }
 
   validates :imei, presence: true, uniqueness: true

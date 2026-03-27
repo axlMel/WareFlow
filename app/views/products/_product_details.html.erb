@@ -20,10 +20,36 @@
         <span class="text-gray-700"><%= product.category&.name || "Sin categoría" %></span>
       </div>
 
-      <div class="mb-2">
-        <span class="text-gray-500 text-sm">Stock:</span>
-        <span class="font-bold text-teal-600"><%= product.stock %> unidades</span>
-      </div>
+      <% if product.trackable? %>
+        <div class="mb-2">
+          <span class="text-gray-500 text-sm">Inventario:</span>
+          <span class="font-bold text-teal-600"><%= product.real_stock %> unidades</span>
+        </div>
+
+        <% counts = product.devices.exists? ? product.device_status_counts : product.sim_status_counts %>
+
+        <div class="flex flex-col gap-2 text-xs mt-2">
+          <% counts.each do |status, count| %>
+            <% color = case status
+              when "available" then "bg-amber-100 text-amber-600"
+              when "assigned" then "bg-sky-100 text-sky-800"
+              when "installed" then "bg-green-100 text-green-800"
+              when "in_warranty" then "bg-orange-100 text-orange-600"
+              when "damaged" then "bg-rose-100 text-rose-800"
+              when "returned" then "bg-purple-100 text-purple-700"
+            end %>
+            <div class="flex items-center px-2 py-1 rounded truncate w-fit <%= color %>">
+              <span class="inline-flex w-20 <%= color %> "><%= t("activerecord.attributes.device.statuses.#{status}") %>:</span>
+              <span class="font-semibold "><%= count %></span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="mb-2">
+          <span class="text-gray-500 text-sm">Stock:</span>
+          <span class="font-bold text-teal-600"><%= product.stock %> unidades</span>
+        </div>
+      <% end %>
 
       <div class="mb-2">
         <span class="text-gray-500 text-sm">Precio:</span>

@@ -37,4 +37,16 @@ class Product < ApplicationRecord
       0
     end
   end
+
+  def device_status_counts
+    return {} unless devices.exists?
+
+    devices.group(:status).count
+  end
+
+  def sim_status_counts
+    return {} unless sims.exists?
+
+    sims.group(:status).count
+  end
 end

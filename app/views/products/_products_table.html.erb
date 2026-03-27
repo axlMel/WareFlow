@@ -21,7 +21,13 @@
           <td class="w-64 max-w-[16rem] px-6 py-4 whitespace-nowrap text-left overflow-hidden truncate text-ellipsis"><%= product.title %></td>
           <td class="w-48 px-6 py-4 whitespace-nowrap text-left"><%= product.category&.name %></td>
           <td class="w-32 px-6 py-4 whitespace-nowrap text-left"><%= number_to_currency(product.price, unit: "$", precision: 0) %></td>
-          <td class="w-24 px-6 py-4 whitespace-nowrap text-center"><%= product.stock %></td>
+          <td class="w-24 px-6 py-4 whitespace-nowrap text-center">
+            <% if product.trackable? %>
+              <%= product.real_stock %>
+            <% else %>
+              <%= product.stock %>
+            <% end %>
+          </td>
           <td class="w-48 px-6 py-4 whitespace-nowrap text-left">
             <%= link_to "Ver", product_path(product), class: "text-indigo-600 hover:text-indigo-900 mr-2", data: { turbo_frame: "modal" } %>
             <%= link_to 'Edit', edit_product_path(product), class: "text-indigo-600 hover:underline", data: { turbo_frame: "modal" } %>

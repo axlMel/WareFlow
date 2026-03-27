@@ -8,14 +8,60 @@ class Assignment < ApplicationRecord
   validates :quantity, numericality: { greater_than: 0 }
   validate :quantity_cannot_exceed_product_stock, if: :will_save_change_to_quantity?
   validate :cannot_edit_installed, on: :update
+  validate :only_one_assignable
+  validate :resource_must_be_available
+
 
   enum :status, { assigned: 0, installed: 1 }
 
   after_commit :move_stock_to_user, on: :create
   after_update :adjust_stock_by_delta, if: :saved_change_to_quantity?
   before_destroy :restore_stock
+  after_create :mark_resource_as_assigned
+  after_destroy :restore_resource_status
 
   private
+
+  def mark_resource_as_delivered
+    device&.delivered!
+    sim&.delivered!
+  end
+
+  def restore_resource_status
+    if device.present?
+      if device.device_sim_histories.active.exists?
+        device.installed!
+      else
+        device.available!
+      end
+    end
+
+    if sim.present?
+      if sim.device_sim_histories.active.exists?
+        sim.installed!
+      else
+        sim.available!
+      end
+    end
+  end
+
+  def only_one_assignable
+    count = [product_id.present?, device_id.present?, sim_id.present?].count(true)
+
+    if count != 1
+      errors.add(:base, "Debes asignar solo un tipo: producto, device o sim")
+    end
+  end
+
+  def resource_must_be_available
+    if device.present? && !device.available? && !device.assigned?
+      errors.add(:device, "no está disponible para asignación")
+    end
+
+    if sim.present? && !sim.available? && !sim.assigned?
+      errors.add(:sim, "no está disponible para asignación")
+    end
+  end
 
   def only_one_resource_type
     resources = [device_id.present?, sim_id.present?].count(true)
@@ -39,6 +85,8 @@ class Assignment < ApplicationRecord
   end
 
   def move_stock_to_user
+    return if device.present? || sim.present?
+
     adjust_stock(quantity)
   end
 
@@ -48,14 +96,11 @@ class Assignment < ApplicationRecord
   end
 
   def adjust_stock(amount)
-    ApplicationRecord.transaction do
+    return if product.trackable?
 
-      if product.trackable?
-        raise "No se pueden asignar cantidades para productos trackeables"
-      else
-        product.with_lock do
-          product.update!(stock: product.stock - amount)
-        end
+    ApplicationRecord.transaction do
+      product.with_lock do
+        product.update!(stock: product.stock - amount)
       end
 
       stock = Stock.find_or_create_by!(user: user, product: product)

@@ -4,6 +4,12 @@
     <div class="text-gray-400 text-xs mb-1">ID: <%= product.id %></div>
     <h2 class="text-lg font-semibold"><%= product.title %></h2>
     <p class="text-sm text-gray-500"><%= product.description %></p>
-    <div class="text-right mt-2 font-bold text-teal-500"><%= product.stock %></div>
+    <div class="text-right mt-2 font-bold text-teal-500">
+      <% if product.trackable? %>
+        <%= product.real_stock %>
+      <% else %>
+        <%= product.stock %>
+      <% end %>
+    </div>
   </div>
 <% end %>
