@@ -6,9 +6,27 @@
 
         <div class="space-y-2 text-sm text-gray-700">
           <p><span class="font-semibold text-gray-800">ID:</span> <%= @assignment.id %></p>
-          <p><span class="font-semibold text-gray-800">Producto:</span> <%= @assignment.product.title %></p>
-          <p><span class="font-semibold text-gray-800">Cantidad:</span> <%= @assignment.quantity %></p>
           <p>
+            <span class="font-semibold text-gray-800">Producto:</span>
+
+            <% if @assignment.device %>
+              📱 <%= @assignment.device.imei %> - <%= @assignment.device.brand %>
+            <% elsif @assignment.sim %>
+              📶 <%= @assignment.sim.iccid %> - <%= @assignment.sim.provider %>
+            <% else %>
+              📦 <%= @assignment.product&.title %>
+            <% end %>
+          </p>
+
+          <p>
+            <span class="font-semibold text-gray-800">Cantidad:</span>
+
+            <% if @assignment.product && !@assignment.product.trackable? %>
+              <%= @assignment.quantity %>
+            <% else %>
+              1
+            <% end %>
+          </p>
             <span class="font-semibold text-gray-800">Estado:</span>
             <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold
               <%= @assignment.installed? ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">

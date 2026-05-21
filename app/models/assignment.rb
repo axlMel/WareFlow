@@ -1,116 +1,152 @@
 class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :delivery, optional: true
-  belongs_to :product
+  belongs_to :product, optional: true
   belongs_to :device, optional: true
   belongs_to :sim, optional: true
 
-  validates :quantity, numericality: { greater_than: 0 }
-  validate :quantity_cannot_exceed_product_stock, if: :will_save_change_to_quantity?
-  validate :cannot_edit_installed, on: :update
-  validate :only_one_assignable
-  validate :resource_must_be_available
-
-
   enum :status, { assigned: 0, installed: 1 }
 
-  after_commit :move_stock_to_user, on: :create
-  after_update :adjust_stock_by_delta, if: :saved_change_to_quantity?
-  before_destroy :restore_stock
-  after_create :mark_resource_as_assigned
-  after_destroy :restore_resource_status
+  # VALIDACIONES
 
-  private
+  validates :quantity, numericality: { greater_than: 0 }, if: :product?
+  validate :only_one_assignable
+  validate :resource_available
 
-  def mark_resource_as_delivered
-    device&.delivered!
-    sim&.delivered!
+  # CALLBACKS
+
+  after_create :apply_effects
+  before_destroy :rollback_effects
+
+  # HELPERS
+
+  def product?
+    product_id.present?
   end
 
-  def restore_resource_status
-    if device.present?
-      if device.device_sim_histories.active.exists?
-        device.installed!
-      else
-        device.available!
-      end
-    end
-
-    if sim.present?
-      if sim.device_sim_histories.active.exists?
-        sim.installed!
-      else
-        sim.available!
-      end
-    end
+  def device?
+    device_id.present?
   end
+
+  def sim?
+    sim_id.present?
+  end
+
+  # VALIDACIONES CUSTOM
 
   def only_one_assignable
-    count = [product_id.present?, device_id.present?, sim_id.present?].count(true)
+    count = [product?, device?, sim?].count(true)
 
     if count != 1
-      errors.add(:base, "Debes asignar solo un tipo: producto, device o sim")
+      errors.add(:base, "Solo puedes asignar un tipo")
     end
   end
 
-  def resource_must_be_available
-    if device.present? && !device.available? && !device.assigned?
-      errors.add(:device, "no está disponible para asignación")
+  def resource_available
+    if device? && !device.available?
+      errors.add(:device, "no disponible")
     end
 
-    if sim.present? && !sim.available? && !sim.assigned?
-      errors.add(:sim, "no está disponible para asignación")
-    end
-  end
-
-  def only_one_resource_type
-    resources = [device_id.present?, sim_id.present?].count(true)
-
-    if resources > 1
-      errors.add(:base, "No puedes asignar device y sim en el mismo assignment")
+    if sim? && !sim.available?
+      errors.add(:sim, "no disponible")
     end
   end
 
-  def cannot_edit_installed
-    if status_was == "installed"
-      errors.add(:base, "No se puede editar una asignación instalada")
+  # EFECTOS (CREATE)
+
+  def apply_effects
+    if product?
+      move_product_stock(quantity)
+    elsif device?
+      move_device_stock(+1)
+      device.update!(status: :delivered)
+    elsif sim?
+      move_sim_stock(+1)
+      sim.update!(status: :delivered)
     end
   end
 
-  def quantity_cannot_exceed_product_stock
-    return unless product && quantity
+  # EFECTOS (DESTROY)
 
-    available = product.stock + (quantity_before_last_save || 0)
-    errors.add(:quantity, "excede el stock disponible") if quantity > available
+  def rollback_effects
+    if product?
+      move_product_stock(-quantity)
+    elsif device?
+      move_device_stock(-1)
+      restore_device_status
+    elsif sim?
+      move_sim_stock(-1)
+      restore_sim_status
+    end
   end
 
-  def move_stock_to_user
-    return if device.present? || sim.present?
+  # STOCK PRODUCTOS
 
-    adjust_stock(quantity)
-  end
-
-  def adjust_stock_by_delta
-    delta = quantity - quantity_before_last_save
-    adjust_stock(delta)
-  end
-
-  def adjust_stock(amount)
-    return if product.trackable?
-
+  def move_product_stock(amount)
     ApplicationRecord.transaction do
       product.with_lock do
-        product.update!(stock: product.stock - amount)
+        new_stock = product.stock - amount
+        raise "Stock insuficiente" if new_stock < 0
+
+        product.update!(stock: new_stock)
       end
 
       stock = Stock.find_or_create_by!(user: user, product: product)
+
       stock.with_lock do
-        stock.update!(quantity: stock.quantity + amount)
+        new_qty = stock.quantity + amount
+        raise "Stock usuario inválido" if new_qty < 0
+
+        stock.update!(quantity: new_qty)
       end
     end
   end
 
-  def restore_stock
-    adjust_stock(-quantity)
+  # STOCK DEVICE
+
+  def move_device_stock(amount)
+    product = device.product
+
+    stock = Stock.find_or_create_by!(user: user, product: product)
+
+    stock.with_lock do
+      new_qty = stock.quantity + amount
+      raise "Stock negativo" if new_qty < 0
+
+      stock.update!(quantity: new_qty)
+    end
+  end
+
+  # STOCK SIM
+
+  def move_sim_stock(amount)
+    product = sim.product
+
+    stock = Stock.find_or_create_by!(user: user, product: product)
+
+    stock.with_lock do
+      new_qty = stock.quantity + amount
+      raise "Stock negativo" if new_qty < 0
+
+      stock.update!(quantity: new_qty)
+    end
+  end
+
+  # RESTORE STATUS
+
+  def restore_device_status
+    if device.device_sim_histories.active.exists?
+      device.update!(status: :installed)
+    else
+      device.update!(status: :available)
+    end
+  end
+
+  def restore_sim_status
+    if sim.device_sim_histories.active.exists?
+      sim.update!(status: :installed)
+    else
+      sim.update!(status: :available)
+    end
   end
 end

@@ -9,7 +9,8 @@ class Sim < ApplicationRecord
     installed: 2,
     in_warranty: 3,
     damaged: 4,
-    returned: 5
+    returned: 5,
+    delivered: 6
   }
   
   validates :iccid, presence: true, uniqueness: true

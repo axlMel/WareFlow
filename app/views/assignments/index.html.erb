@@ -74,8 +74,22 @@
               <% @assignments.each do |assignment| %>
                 <tr class="hover:bg-sky-50 transition" id="<%= dom_id(assignment) %>">
                   <td class="px-4 py-2 font-medium"><%= assignment.user.username %></td>
-                  <td class="px-4 py-2 text-gray-700"><%= assignment.product.title %></td>
-                  <td class="px-4 py-2 text-center font-semibold"><%= assignment.quantity %></td>
+                  <td class="px-4 py-2 text-gray-700">
+                    <% if assignment.device %>
+                      📱 <%= assignment.device.imei %>
+                    <% elsif assignment.sim %>
+                      📶 <%= assignment.sim.iccid %>
+                    <% else %>
+                      📦 <%= assignment.product&.title %>
+                    <% end %>
+                  </td>
+                  <td class="px-4 py-2 text-center font-semibold">
+                    <% if assignment.product && !assignment.product.trackable? %>
+                      <%= assignment.quantity %>
+                    <% else %>
+                      1
+                    <% end %>
+                  </td>
                   <td class="px-4 py-2 text-center">
                     <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
                       <%= case assignment.status

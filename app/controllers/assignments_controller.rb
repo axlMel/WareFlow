@@ -64,7 +64,7 @@ class AssignmentsController < ApplicationController
   end
 
   def assignment_params
-    params.require(:assignment).permit(:delivery_id, :product_id, :quantity, :status, :user_id)
+    params.require(:assignment).permit(:delivery_id, :product_id, :quantity, :status, :user_id, :device_id, :sim_id)
   end
 
   def load_dependencies
